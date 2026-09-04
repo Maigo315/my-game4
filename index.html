@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>戦闘 Prototype 0.1</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">ROGUE BATTLE TEST</p>
+        <h1>戦闘 Prototype 0.1</h1>
+      </div>
+      <button id="resetBtn" class="secondary">戦闘をリセット</button>
+    </header>
+
+    <section class="debug-panel card">
+      <div class="debug-grid">
+        <label>
+          敵
+          <select id="enemySelect"></select>
+        </label>
+        <label>
+          武器
+          <select id="weaponSelect"></select>
+        </label>
+        <label>
+          武器強化
+          <input id="weaponPlus" type="number" min="0" max="20" value="0" />
+        </label>
+        <label>
+          盾
+          <select id="shieldSelect"></select>
+        </label>
+        <label>
+          盾強化
+          <input id="shieldPlus" type="number" min="0" max="20" value="0" />
+        </label>
+        <button id="applyBtn">設定を反映</button>
+      </div>
+    </section>
+
+    <section class="battlefield">
+      <article class="combatant card player-card">
+        <div class="portrait player-portrait">⚔️</div>
+        <div class="combatant-body">
+          <div class="name-row">
+            <h2>プレイヤー</h2>
+            <span id="defendBadge" class="status-badge hidden">防御中</span>
+          </div>
+          <div class="hp-line">
+            <span>HP <strong id="playerHpText">100 / 100</strong></span>
+            <div class="bar"><div id="playerHpBar" class="fill hp"></div></div>
+          </div>
+          <div class="stats">
+            <span>攻撃 <strong id="playerAtk">4</strong></span>
+            <span>防御 <strong id="playerDef">4</strong></span>
+            <span>毒 <strong id="playerPoison">0</strong></span>
+          </div>
+          <div class="equipment">
+            <span id="weaponLabel">木の棒 +0</span>
+            <span id="shieldLabel">木の盾 +0</span>
+          </div>
+        </div>
+      </article>
+
+      <div class="versus">VS</div>
+
+      <article class="combatant card enemy-card">
+        <img id="enemyImg" class="portrait enemy-portrait" alt="" />
+        <div class="combatant-body">
+          <div class="name-row">
+            <h2 id="enemyName">スライム娘</h2>
+            <span id="enemyIntent" class="intent">通常攻撃</span>
+          </div>
+          <div class="hp-line">
+            <span>HP <strong id="enemyHpText">16 / 16</strong></span>
+            <div class="bar"><div id="enemyHpBar" class="fill enemy-hp"></div></div>
+          </div>
+          <div class="stats">
+            <span>攻撃 <strong id="enemyAtk">9</strong></span>
+            <span>防御 <strong id="enemyDef">0</strong></span>
+            <span>毒 <strong id="enemyPoison">0</strong></span>
+          </div>
+          <p id="enemyNote" class="enemy-note"></p>
+        </div>
+      </article>
+    </section>
+
+    <section class="commands card">
+      <button id="attackBtn" class="command primary">攻撃</button>
+      <button id="defendBtn" class="command">防御</button>
+      <button id="itemBtn" class="command">アイテム</button>
+      <button id="skillBtn" class="command">スキル</button>
+    </section>
+
+    <section id="itemPanel" class="item-panel card hidden">
+      <div class="panel-title-row">
+        <h3>アイテム</h3>
+        <button id="closeItemsBtn" class="ghost">閉じる</button>
+      </div>
+      <div id="itemGrid" class="item-grid"></div>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="card">
+        <div class="panel-title-row">
+          <h3>戦闘ログ</h3>
+          <span id="turnLabel">Turn 1</span>
+        </div>
+        <div id="battleLog" class="battle-log"></div>
+      </article>
+
+      <article class="card">
+        <h3>現在のルール</h3>
+        <ul class="rules">
+          <li>物理ダメージ = 攻撃 − 防御（最低1）</li>
+          <li>防御 = そのターンの直接ダメージ半減（切り上げ）</li>
+          <li>毒 = ターン終了時に毒値ダメージ、その後 −1</li>
+          <li>固定ダメージは防御力無視。ただし防御コマンドで半減</li>
+          <li>戦闘終了時に毒は解除</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
