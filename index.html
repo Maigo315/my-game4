@@ -258,6 +258,45 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
   width:100%;min-height:40px;margin-top:8px;border-radius:11px;
   border:1px solid #3b445a;background:#242a3a;color:#dbe1ed;font-weight:850;cursor:pointer;
 }
+
+/* Focused feedback: emphasize the UI element that actually changed */
+.feedback-pulse{animation:feedbackPulse .62s ease-out}
+.feedback-good{animation:feedbackGood .68s ease-out}
+.feedback-gauge{animation:feedbackGauge .68s ease-out}
+.feedback-atk{animation:feedbackAtk .72s ease-out}
+@keyframes feedbackPulse{
+  0%{transform:scale(1);filter:brightness(1)}
+  28%{transform:scale(1.08);filter:brightness(1.65)}
+  100%{transform:scale(1);filter:brightness(1)}
+}
+@keyframes feedbackGood{
+  0%{box-shadow:0 0 0 rgba(131,223,162,0);filter:brightness(1)}
+  30%{box-shadow:0 0 14px rgba(131,223,162,.75);filter:brightness(1.45)}
+  100%{box-shadow:0 0 0 rgba(131,223,162,0);filter:brightness(1)}
+}
+@keyframes feedbackGauge{
+  0%{box-shadow:0 0 0 rgba(120,216,255,0);filter:brightness(1)}
+  35%{box-shadow:0 0 13px rgba(120,216,255,.9);filter:brightness(1.7)}
+  100%{box-shadow:0 0 0 rgba(120,216,255,0);filter:brightness(1)}
+}
+@keyframes feedbackAtk{
+  0%{color:var(--muted);transform:scale(1)}
+  28%{color:var(--gold);transform:scale(1.12)}
+  100%{color:var(--muted);transform:scale(1)}
+}
+.change-pop{
+  position:absolute;z-index:20;pointer-events:none;
+  padding:3px 6px;border-radius:999px;font-size:10px;font-weight:950;
+  background:rgba(17,20,31,.96);border:1px solid #5d6374;color:#fff;
+  animation:changePop .82s ease-out forwards;
+}
+@keyframes changePop{
+  0%{opacity:0;transform:translateY(4px) scale(.86)}
+  18%{opacity:1;transform:translateY(0) scale(1.06)}
+  72%{opacity:1}
+  100%{opacity:0;transform:translateY(-13px) scale(.96)}
+}
+
 @media(max-width:380px){
   .stage{min-height:292px}
   .enemy-art{width:205px;height:205px}
@@ -386,7 +425,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
   ];
 
   const SPEEDS=[
-    {label:"標準",action:470,ability:980,pause:210,float:850},
+    {label:"標準",action:540,ability:1080,pause:250,float:920},
     {label:"×2",action:285,ability:720,pause:120,float:700},
     {label:"×4",action:165,ability:520,pause:70,float:560}
   ];
@@ -473,6 +512,61 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
     return document.querySelector(`[data-unit="${id}"]`);
   }
 
+  function pulseElement(el,cls="feedback-pulse"){
+    if(!el)return;
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
+    setTimeout(()=>el.classList.remove(cls),900);
+  }
+
+  function popNear(el,text){
+    if(!el)return;
+    const host=el.closest(".unit")||el.closest(".enemy-hud")||el.parentElement;
+    if(!host)return;
+    if(getComputedStyle(host).position==="static")host.style.position="relative";
+    const p=document.createElement("span");
+    p.className="change-pop";
+    p.textContent=text;
+    p.style.right="6px";
+    p.style.top="6px";
+    host.appendChild(p);
+    setTimeout(()=>p.remove(),900);
+  }
+
+  function feedbackEnemyStatus(text){
+    const el=document.querySelector("#enemyStatus .status-pill");
+    pulseElement(el,"feedback-pulse");
+    popNear(el,text);
+  }
+
+  function feedbackReason(text){
+    const el=$("#reasonText");
+    pulseElement(el,"feedback-pulse");
+    popNear(el,text);
+  }
+
+  function feedbackGauge(unit,text){
+    const el=document.querySelector(`[data-unit="${unit.id}"] [data-gauge-fill]`);
+    pulseElement(el,"feedback-gauge");
+    popNear(el,text);
+  }
+
+  function feedbackHp(unit,text){
+    const el=document.querySelector(`[data-unit="${unit.id}"] [data-hp-fill]`);
+    pulseElement(el,"feedback-good");
+    popNear(el,text);
+  }
+
+  function feedbackPartyAtk(text){
+    state.party.forEach(u=>{
+      const el=document.querySelector(`[data-unit="${u.id}"] [data-atkline]`);
+      pulseElement(el,"feedback-atk");
+    });
+    const first=document.querySelector("[data-atkline]");
+    popNear(first,text);
+  }
+
   function floatNumber(container,text,type="damage"){
     const n=document.createElement("div");
     n.className=`floating ${type}`;
@@ -537,6 +631,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
     addLog(`${unit.name}の${source}！ 敵に${dmg}ダメージ。`,"damage");
     showBanner(`${unit.name}の${source}！`,`${dmg}ダメージ`);
     render();
+    if(grantsGauge)feedbackGauge(unit,"+10");
     await enemyHitFeedback(dmg);
     await delay(Math.round(timing().action*.45));
 
@@ -561,6 +656,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
     addLog(`${unit.name}：被弾でゲージ+${gain}`,"system");
     showBanner(source,`${unit.name}に${dmg}ダメージ`);
     render();
+    feedbackGauge(unit,`+${gain}`);
     await allyHitFeedback(unit,dmg);
     await delay(Math.round(timing().action*.42));
 
@@ -569,6 +665,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
       addLog(`ぷるぷるボディ：理力+1（${state.reason}）`,"system");
       showBanner("ぷるぷるボディ","理力+1");
       render();
+      feedbackReason("+1");
       await infoFeedback(unit,"理力+1");
       await delay(Math.round(timing().ability*.38));
     }
@@ -595,6 +692,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
       addLog(`噛みつき：敵の被ダメージ+10%（2T） / 理力+1（${state.reason}）`,"system");
       showBanner("噛みつき発動","被ダメ+10% / 理力+1");
       render();
+      feedbackEnemyStatus("+10%");
+      feedbackReason("+1");
       await delay(timing().ability);
     }
 
@@ -603,6 +702,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
       addLog(`ぬめぬめ：敵の被ダメージ+2%（累積${state.enemy.permanentAmp}%）`,"system");
       showBanner("ぬめぬめ","敵の被ダメージ+2%");
       render();
+      feedbackEnemyStatus("+2%");
       await delay(timing().ability);
     }
 
@@ -620,23 +720,26 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
     enemyArt.classList.remove("flash");
 
     if(idx===0){
-      await damageAlly(randomAlive(),18,"敵・犬娘の攻撃");
+      await damageAlly(randomAlive(),15,"敵・犬娘の攻撃");
     }else if(idx===1){
       const t=randomAlive();
-      await damageAlly(t,15,"敵・犬娘の噛みつき");
+      await damageAlly(t,13,"敵・犬娘の噛みつき");
       if(t&&!t.dead){
-        t.statuses.push({name:"被ダメ+30%",turns:2,damageTakenAmp:30,kind:"debuff",short:"被↑30"});
-        addLog(`${t.name}に被ダメージ+30%（2T）。`,"system");
-        showBanner("噛みつき追加効果",`${t.name} 被ダメ+30%`);
+        t.statuses.push({name:"被ダメ+20%",turns:2,damageTakenAmp:20,kind:"debuff",short:"被↑20"});
+        addLog(`${t.name}に被ダメージ+20%（2T）。`,"system");
+        showBanner("噛みつき追加効果",`${t.name} 被ダメ+20%`);
         render();
+        const targetCard=unitEl(t.id);
+        pulseElement(targetCard,"feedback-pulse");
+        popNear(targetCard,"被ダメ+20%");
         await delay(timing().ability);
       }
     }else{
       const first=randomAlive();
-      if(first)await damageAlly(first,10,"敵・犬娘の駆け回る");
+      if(first)await damageAlly(first,8,"敵・犬娘の駆け回る");
       if(aliveParty().length>1){
         const second=randomAlive(first?[first.id]:[]);
-        if(second)await damageAlly(second,10,"敵・犬娘の駆け回る");
+        if(second)await damageAlly(second,8,"敵・犬娘の駆け回る");
       }
     }
 
@@ -679,6 +782,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
             addLog(`理力5以上：スライム娘が${actual}回復。`,"heal");
             showBanner("ジェルスプラッシュ追加効果",`HP+${actual}`);
             render();
+            feedbackHp(unit,`+${actual}`);
             const el=unitEl(unit.id);
             if(el)floatNumber(el,`+${actual}`,"heal");
             await delay(timing().ability);
@@ -705,6 +809,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
             showBanner("なめくじプレス","理力+1");
           }
           render();
+          feedbackReason("+1");
+          if(state.reason>=5)feedbackEnemyStatus("+5%");
           await delay(timing().ability);
         }
       }
@@ -741,6 +847,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
     addLog(`猛攻の宝珠：3ターン、味方攻撃力+${buffPct}%。`,"system");
     showBanner("猛攻の宝珠",`味方攻撃力+${buffPct}% / 3T`);
     render();
+    feedbackPartyAtk(`+${buffPct}%`);
     await delay(timing().ability);
   }
 
@@ -958,13 +1065,13 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
       card.innerHTML=`
         <div class="unit-img"><img src="${u.img}" alt="${u.name}"></div>
         <div class="unit-name">${u.name}</div>
-        <div class="atkline">ATK ${atk}</div>
+        <div class="atkline" data-atkline>ATK ${atk}</div>
 
         <div class="mini-label"><span>HP</span><span>${u.hp}/${u.maxHp}</span></div>
-        <div class="bar mini-bar"><div class="fill hp-fill" style="width:${hpPct}%"></div></div>
+        <div class="bar mini-bar"><div class="fill hp-fill" data-hp-fill style="width:${hpPct}%"></div></div>
 
         <div class="mini-label"><span>SKILL</span><span>${u.gauge}/100</span></div>
-        <div class="bar mini-bar"><div class="fill gauge-fill ${ready?"ready":""}" style="width:${u.gauge}%"></div></div>
+        <div class="bar mini-bar"><div class="fill gauge-fill ${ready?"ready":""}" data-gauge-fill style="width:${u.gauge}%"></div></div>
 
         <div class="status-row">
           ${statusHtml||'<span class="status-mini">効果なし</span>'}
