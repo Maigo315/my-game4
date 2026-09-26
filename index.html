@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 戦闘プロトタイプ v7</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 戦闘プロトタイプ v8</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -398,7 +398,7 @@ const ALLIES={
  slug:{id:'slug',name:'ナメクジ娘',baseHp:120,atk:12,img:IMG.slug,type:'physical',skill:'なめくじプレス',skillShort:'×1.3物理 / 理力+1'},
  demon:{id:'demon',name:'デーモン',baseHp:60,atk:20,img:IMG.demon,type:'magic',skill:'サンダー',skillShort:'×1.0魔導+ショック30 / 叡智5消費で×1.8'}
 };
-const ENEMIES={slime:{id:'slime',name:'スライム娘',maxHp:180,img:IMG.slime},dog:{id:'dog',name:'犬娘',maxHp:250,img:IMG.dog},arachne:{id:'arachne',name:'アラクネ',maxHp:260,img:IMG.arachne},golem:{id:'golem',name:'ゴーレム娘',maxHp:300,img:IMG.golem}};
+const ENEMIES={slime:{id:'slime',name:'スライム娘',maxHp:180,img:IMG.slime},dog:{id:'dog',name:'犬娘',maxHp:250,img:IMG.dog},arachne:{id:'arachne',name:'アラクネ',maxHp:260,img:IMG.arachne},golem:{id:'golem',name:'ゴーレム娘',maxHp:350,img:IMG.golem}};
 const SPEEDS=[{label:'標準',action:540,ability:1080,pause:250,float:920},{label:'×2',action:285,ability:720,pause:120,float:700},{label:'×4',action:165,ability:520,pause:70,float:560}];
 let speedIndex=0,animating=false,selectedDetailId=null,state;
 const cumulativeByConfig={};
