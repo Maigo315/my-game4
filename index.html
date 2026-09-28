@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 戦闘プロトタイプ v11 ボステスト</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 戦闘プロトタイプ v11.1 ボス調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -71,15 +71,17 @@ button.chip{cursor:pointer}
   to{filter:brightness(1.25)}
 }
 .enemy-status{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;min-height:19px}
-.boss-mechanic{display:none;margin-top:6px;padding:6px 8px;border-radius:10px;border:1px solid #4a4f61;background:rgba(12,15,24,.86);font-size:9px;line-height:1.4}
+.boss-mechanic{display:none;width:100%;margin-top:5px;padding:5px 8px;border-radius:9px;border:1px solid #41485a;background:rgba(12,15,24,.72);color:var(--text);font-size:9px;line-height:1.25;text-align:left;cursor:pointer}
 .boss-mechanic.show{display:block}
-.boss-mechanic.omen{border-color:#a95b62;background:rgba(54,24,29,.90);box-shadow:0 0 12px rgba(255,113,135,.15)}
-.boss-mechanic.broken{border-color:#50775a;background:rgba(25,48,31,.92)}
+.boss-mechanic.omen{border-color:#8d4d59;background:rgba(48,22,28,.82);box-shadow:0 0 10px rgba(255,113,135,.10)}
+.boss-mechanic.broken{border-color:#50775a;background:rgba(25,48,31,.82)}
 .boss-charge-row{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#cbd3e3}
-.boss-charge{font-weight:950;color:#ffd56e;letter-spacing:1px}
-.boss-omen-title{margin-top:4px;font-size:11px;font-weight:950;color:#ffb0bc}
+.boss-charge{font-weight:950;color:#ffd56e;letter-spacing:2px}
+.boss-omen-title{margin-top:3px;font-size:10px;font-weight:950;color:#ffb0bc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .boss-mechanic.broken .boss-omen-title{color:#bff0c9}
-.boss-omen-cond{margin-top:1px;color:#d7c7ca}
+.boss-detail-list{display:grid;gap:7px;margin-top:10px}
+.boss-detail-item{padding:8px 9px;border-radius:10px;border:1px solid #343d52;background:#101522;font-size:10px;line-height:1.5;color:#d5dbea}
+.boss-detail-item b{display:block;margin-bottom:2px;font-size:11px;color:#fff}
 .status-pill{
   font-size:9px;padding:4px 6px;border-radius:999px;
   border:1px solid #494154;background:#221d2a;color:#eadcf0;
@@ -370,7 +372,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 <header class="topbar"><div class="top-title">戦闘</div><div class="chip" id="battleChip">B1/3</div><div class="chip" id="turnChip">T1</div><button class="chip" type="button" id="speedBtn">標準</button></header>
 <section class="card setup"><button class="setup-toggle" type="button" id="setupToggle"><span>テスト設定</span><span id="setupMark">開く ▾</span></button><div class="setup-body" id="setupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="partySetup"></div><div class="setup-title">3連戦の敵</div><div class="setup-grid" id="enemySetup"></div>
 <button class="apply-setup" type="button" id="applySetup">設定を反映して3連戦開始</button></div></section>
-<section class="card stage" id="stage"><div class="enemy-hud"><div class="row-between"><div class="enemy-name" id="enemyName">スライム娘</div><div class="hp-num" id="enemyHpText">180 / 180</div></div><div class="bar" style="margin-top:6px"><div class="fill hp-fill" id="enemyHpFill"></div></div><div class="enemy-status" id="enemyStatus"></div><div class="boss-mechanic" id="bossMechanic"></div></div><div class="stage-floor"></div><div class="enemy-art" id="enemyArt"><img id="enemyImg" alt="敵"></div><div class="event-banner" id="eventBanner"></div></section>
+<section class="card stage" id="stage"><div class="enemy-hud"><div class="row-between"><div class="enemy-name" id="enemyName">スライム娘</div><div class="hp-num" id="enemyHpText">180 / 180</div></div><div class="bar" style="margin-top:6px"><div class="fill hp-fill" id="enemyHpFill"></div></div><div class="enemy-status" id="enemyStatus"></div><button class="boss-mechanic" id="bossMechanic" type="button" aria-label="ボス行動の詳細"></button></div><div class="stage-floor"></div><div class="enemy-art" id="enemyArt"><img id="enemyImg" alt="敵"></div><div class="event-banner" id="eventBanner"></div></section>
 <div class="section-title"><span>味方パーティ</span><span>カードタップで詳細</span></div><section class="party-grid" id="partyGrid"></section>
 <section class="card detail-panel" id="detailPanel"><div class="detail-head"><b id="detailName">詳細</b><button class="detail-close" type="button" id="detailClose">×</button></div><div class="detail-body" id="detailBody"></div><div class="detail-statuses" id="detailStatuses"></div></section>
 <section class="card resource-panel"><div class="resource-main" id="reasonText">理力 0 / 10</div><div class="resource-note">理力は共有 / 叡智は個別<br>状態Xはターン終了時に減少</div></section>
@@ -405,6 +407,12 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 <button class="jewel-choice" type="button" id="defenseJewelBtn" style="margin-top:7px"><span class="jewel-icon">盾</span><span><b>防御の宝珠</b><small>敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。</small></span></button>
 <button class="jewel-choice" type="button" id="healJewelBtn" style="margin-top:7px"><span class="jewel-icon">＋</span><span><b>回復の宝珠</b><small>参加人数×10%だけ味方全員のHPを回復。戦闘不能者は回復しない。</small></span></button>
 <button class="jewel-cancel" type="button" id="jewelCancelBtn">キャンセル</button>
+</div></dialog>
+<dialog id="bossDetailDialog"><div class="jewel-dialog">
+<h3 id="bossDetailTitle">ボス行動詳細</h3>
+<p id="bossDetailLead"></p>
+<div class="boss-detail-list" id="bossDetailBody"></div>
+<button class="jewel-cancel" type="button" id="bossDetailCloseBtn">閉じる</button>
 </div></dialog><script>(() => {
 const $=s=>document.querySelector(s), ceil=Math.ceil;
 const partyGrid=$('#partyGrid'),stage=$('#stage'),enemyArt=$('#enemyArt'),eventBanner=$('#eventBanner'),logEl=$('#log'),intermission=$('#intermission'),jewelDialog=$('#jewelDialog'),detailPanel=$('#detailPanel');
@@ -416,7 +424,7 @@ const ALLIES={
  slug:{id:'slug',name:'ナメクジ娘',baseHp:120,atk:12,img:IMG.slug,type:'physical',skill:'なめくじプレス',skillShort:'×1.3物理 / 理力+1'},
  demon:{id:'demon',name:'デーモン',baseHp:60,atk:20,img:IMG.demon,type:'magic',skill:'サンダー',skillShort:'×1.0魔導+ショック30 / 叡智5消費で×1.8'}
 };
-const ENEMIES={slime:{id:'slime',name:'スライム娘',maxHp:180,img:IMG.slime},dog:{id:'dog',name:'犬娘',maxHp:250,img:IMG.dog},arachne:{id:'arachne',name:'アラクネ',maxHp:260,img:IMG.arachne},golem:{id:'golem',name:'ゴーレム娘',maxHp:350,img:IMG.golem},crusher:{id:'crusher',name:'クラッシャー',maxHp:700,img:IMG.crusher,chargeMax:3,boss:true}};
+const ENEMIES={slime:{id:'slime',name:'スライム娘',maxHp:180,img:IMG.slime},dog:{id:'dog',name:'犬娘',maxHp:250,img:IMG.dog},arachne:{id:'arachne',name:'アラクネ',maxHp:260,img:IMG.arachne},golem:{id:'golem',name:'ゴーレム娘',maxHp:350,img:IMG.golem},crusher:{id:'crusher',name:'クラッシャー',maxHp:600,img:IMG.crusher,chargeMax:3,boss:true}};
 const SPEEDS=[{label:'標準',action:540,ability:1080,pause:250,float:920},{label:'×2',action:285,ability:720,pause:120,float:700},{label:'×4',action:165,ability:520,pause:70,float:560}];
 let speedIndex=0,animating=false,selectedDetailId=null,state;
 const cumulativeByConfig={};
@@ -594,7 +602,8 @@ function bossOmenKind(e=state.enemy){if(!e||e.id!=='crusher')return null;if(e.ac
 function bossOmenInfo(kind){if(kind==='rock')return {title:'岩石落とし',cond:'解除：3人でスキルチェイン'};if(kind==='crash')return {title:'クラッシュ',cond:'解除：このターンに状態異常・デバフを付与'};return null}
 function markBossDebuffApplied(){const e=state.enemy;if(!e||e.id!=='crusher'||e.activeOmen!=='crash'||e.omenBroken)return;e.omenBroken=true;addLog('予兆解除条件達成：クラッシュを解除！','system');render()}
 function prepareBossHpTrigger(){const e=state.enemy;if(!e||e.id!=='crusher'||e.dead||e.hpTriggerUsed)return;if(e.hp<=e.maxHp*.5){e.hpTriggerUsed=true;e.hpTriggerPending=true;addLog('クラッシャーのHP50%トリガー：次ターン【クラッシュ】予兆。','system')}}
-function renderBossMechanic(){const box=$('#bossMechanic'),e=state.enemy;if(!box)return;if(!e||e.id!=='crusher'){box.className='boss-mechanic';box.innerHTML='';return}const filled=Math.max(0,Math.min(e.chargeMax,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(e.chargeMax-filled),kind=bossOmenKind(e),info=bossOmenInfo(kind);box.className=`boss-mechanic show${kind?' omen':''}${e.omenBroken?' broken':''}`;let html=`<div class="boss-charge-row"><span>CHARGE</span><span class="boss-charge">${dots} ${filled}/${e.chargeMax}</span></div>`;if(info){html+=`<div class="boss-omen-title">${e.omenBroken?'✓ 予兆解除済み':'⚠ 予兆：'+info.title}</div><div class="boss-omen-cond">${e.omenBroken?'敵は通常行動を行います':info.cond}</div>`}else html+=`<div class="boss-omen-cond">3まで溜まると、次のターンに「岩石落とし」を予兆</div>`;box.innerHTML=html}
+function renderBossMechanic(){const box=$('#bossMechanic'),e=state.enemy;if(!box)return;if(!e||e.id!=='crusher'){box.className='boss-mechanic';box.innerHTML='';return}const filled=Math.max(0,Math.min(e.chargeMax,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(e.chargeMax-filled),kind=bossOmenKind(e),info=bossOmenInfo(kind);box.className=`boss-mechanic show${kind?' omen':''}${e.omenBroken?' broken':''}`;let html=`<div class="boss-charge-row"><span>CHARGE</span><span class="boss-charge">${dots}</span></div>`;if(info)html+=`<div class="boss-omen-title">${e.omenBroken?'✓ '+info.title+' 解除済み':'⚠ '+info.title}</div>`;box.innerHTML=html}
+function openBossDetail(){const e=state.enemy;if(!e||e.id!=='crusher')return;const filled=Math.max(0,Math.min(e.chargeMax,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(e.chargeMax-filled),kind=bossOmenKind(e),info=bossOmenInfo(kind);$('#bossDetailTitle').textContent='クラッシャー';$('#bossDetailLead').textContent=`CHARGE ${dots}（${filled}/${e.chargeMax}）${info?' / 予兆：'+info.title:''}`;$('#bossDetailBody').innerHTML=`<div class="boss-detail-item"><b>CHARGE</b>通常行動などの後に1段階上昇。3まで溜まると、次のターンに「岩石落とし」を予兆します。岩石落とし後は0に戻ります。</div><div class="boss-detail-item"><b>岩石落とし</b>味方全員に28物理ダメージ。<br>解除：3人でスキルチェイン。解除時は通常行動を行います。</div><div class="boss-detail-item"><b>クラッシュ（HP50% / 1回）</b>ランダムな味方1人に基礎24物理ダメージ、会心率100%（現行倍率で36相当）。<br>解除：予兆ターン中に状態異常またはデバフを新しく付与。解除時は通常行動を行います。HPトリガーはチャージ予兆より優先し、チャージを消費しません。</div>`;$('#bossDetailDialog').showModal()}
 function unitEl(uid){return document.querySelector(`[data-unit="${uid}"]`)}function totalEnemyAmp(){return state.enemy.permanentAmp+state.enemy.timedAmp.reduce((s,x)=>s+x.value,0)}function enemyStatus(n){return state.enemy.statuses.find(s=>s.name===n)}function hasAllyStatus(u,n){return u.statuses.some(s=>s.name===n)}function totalAttackBuffPct(){return state.partyBuffs.reduce((s,x)=>s+(x.valuePct||0),0)}function totalPartyDamageReductionPct(){return state.partyBuffs.reduce((s,x)=>s+(x.damageReductionPct||0),0)}
 function effectiveAtk(u){let a=u.atk;if(u.id==='dog'&&state.party.every(x=>x.statuses.length===0))a+=5;return ceil(a*(1+totalAttackBuffPct()/100))}function incomingAmp(u){return u.statuses.reduce((s,x)=>s+(x.damageTakenAmp||0),0)}
 function pulseElement(el,cls='feedback-pulse'){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),900)}function popNear(el,t){if(!el)return;const h=el.closest('.unit')||el.closest('.enemy-hud')||el.parentElement;if(!h)return;if(getComputedStyle(h).position==='static')h.style.position='relative';const p=document.createElement('span');p.className='change-pop';p.textContent=t;p.style.right='6px';p.style.top='6px';h.appendChild(p);setTimeout(()=>p.remove(),900)}
@@ -635,9 +644,9 @@ async function normalAttack(u){if(u.dead||state.enemy.dead)return;await actFlash
 async function crusherNormalAction(){
  const e=state.enemy;
  if(Math.random()<.8){
-   await damageAlly(randomAlive(),22,'クラッシャーの攻撃','physical')
+   await damageAlly(randomAlive(),18,'クラッシャーの攻撃','physical')
  }else{
-   await damageAlly(randomAlive(),15,'ストーンバッシュ','physical');
+   await damageAlly(randomAlive(),12,'ストーンバッシュ','physical');
    if(!e.dead&&aliveParty().length){
      addEnemyStatus({name:'硬化',x:2,decay:1,kind:'buff',short:'硬化'});
      addLog('クラッシャー：次のターン終了時まで被ダメージ-50%。','system');
@@ -653,10 +662,10 @@ async function crusherAction(){
      showBanner('予兆解除','岩石落とし → 通常行動');render();await delay(timing().ability);
      await crusherNormalAction()
    }else{
-     addLog('クラッシャーの予兆行動【岩石落とし】！ 味方全員に35物理ダメージ。','damage');
-     showBanner('岩石落とし','味方全員 35物理');render();await delay(timing().ability);
+     addLog('クラッシャーの予兆行動【岩石落とし】！ 味方全員に28物理ダメージ。','damage');
+     showBanner('岩石落とし','味方全員 28物理');render();await delay(timing().ability);
      const targets=[...aliveParty()];
-     for(const t of targets){if(t&&!t.dead)await damageAlly(t,35,'岩石落とし','physical')}
+     for(const t of targets){if(t&&!t.dead)await damageAlly(t,28,'岩石落とし','physical')}
    }
    e.charge=0;
    return
@@ -668,7 +677,7 @@ async function crusherAction(){
      await crusherNormalAction()
    }else{
      addLog('クラッシャーのHP50%予兆行動【クラッシュ】！','damage');
-     await damageAlly(randomAlive(),30,'クラッシュ','physical',true)
+     await damageAlly(randomAlive(),24,'クラッシュ','physical',true)
    }
    e.charge=Math.min(e.chargeMax,e.charge+1);
    return
@@ -878,5 +887,5 @@ function render(){
 $('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').addEventListener('click',()=>{if(!animating&&!state.battleOver)jewelDialog.showModal()});$('#attackJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'attack')});$('#defenseJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'defense')});$('#healJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'heal')});$('#jewelCancelBtn').addEventListener('click',()=>jewelDialog.close());$('#speedBtn').addEventListener('click',()=>{speedIndex=(speedIndex+1)%SPEEDS.length;render()});$('#nextBattleBtn').addEventListener('click',()=>state.runOver?resetRun():nextBattle());$('#detailClose').addEventListener('click',()=>{selectedDetailId=null;detailPanel.classList.remove('show')});$('#logToggle').addEventListener('click',()=>{const o=logEl.classList.toggle('show');$('#logToggleMark').textContent=o?'閉じる ▴':'開く ▾'});$('#resetBtn').addEventListener('click',resetRun);
 $('#statsToggle').addEventListener('click',()=>{const b=$('#statsBody'),o=b.classList.toggle('show');$('#statsMark').textContent=o?'閉じる ▴':'開く ▾'});
 $('#resetCumulativeBtn').addEventListener('click',()=>{delete cumulativeByConfig[configKey()];renderStats()});
-$('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});renderSetup();resetRun();
+$('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});$('#bossMechanic').addEventListener('click',openBossDetail);$('#bossDetailCloseBtn').addEventListener('click',()=>$('#bossDetailDialog').close());renderSetup();resetRun();
 })();</script></body></html>
