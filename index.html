@@ -491,8 +491,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .manage-dialog h3{margin:0 0 4px;font-size:15px}.manage-dialog p{margin:0;color:var(--muted);font-size:9px;line-height:1.5}
 .manage-list{display:grid;gap:6px;margin-top:10px}.manage-row{padding:8px;border-radius:10px;background:#101522;border:1px solid #2d374d;font-size:9px;line-height:1.5;color:#d7deec}.manage-row b{font-size:10px;color:#fff}
 .manage-close{width:100%;min-height:38px;margin-top:10px;border:1px solid #3b455d;border-radius:10px;background:#22293a;color:#e4e9f3;font-size:9px;font-weight:900;cursor:pointer}
-.enhance-dialog{width:min(92vw,430px);padding:14px}.enhance-dialog h3{margin:0;font-size:15px}.enhance-effect{margin-top:8px;padding:10px 11px;border-radius:12px;background:linear-gradient(135deg,#241d32,#191b2b);border:1px solid #5c4777}.enhance-effect b{display:block;font-size:12px;color:#efe6ff}.enhance-effect p{margin:3px 0 0;font-size:9px;line-height:1.45;color:#c3b8d5}.enhance-target-note{margin:10px 0 5px;font-size:8px;color:var(--muted)}.enhance-targets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.enhance-target{min-width:0;padding:7px 5px 8px;border-radius:11px;border:1px solid #39445b;background:#151b28;color:#edf1f8;cursor:pointer;text-align:center}.enhance-target img{width:46px;height:46px;border-radius:10px;object-fit:cover;background:#0c111a;border:1px solid #30394d}.enhance-target b{display:block;margin-top:4px;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.enhance-target small{display:block;margin-top:3px;font-size:7px;line-height:1.3;color:#aeb8ca}.enhance-target:active{transform:scale(.98)}
-@media(max-width:380px){.map-viewport{height:278px}.map-board{height:390px}.map-node{width:42px;height:42px;margin:-21px 0 0 -21px}.map-tools span{display:none}.explore-event .explore-action{min-width:78px;padding:0 8px}.explore-party-head span{display:none}}
+.enhance-dialog{width:min(94vw,460px);padding:15px}.enhance-dialog h3{margin:0;font-size:16px}.enhance-effect{margin-top:9px;padding:11px 12px;border-radius:12px;background:linear-gradient(135deg,#241d32,#191b2b);border:1px solid #5c4777}.enhance-effect b{display:block;font-size:12px;color:#efe6ff}.enhance-effect p{margin:3px 0 0;font-size:9px;line-height:1.45;color:#c3b8d5}.enhance-target-note{margin:11px 0 6px;font-size:8px;color:var(--muted)}.enhance-targets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.enhance-target{appearance:none;min-width:0;padding:10px 6px 11px;border-radius:13px;border:1px solid #39445b;background:#151b28;color:#edf1f8;cursor:pointer;text-align:center;transition:border-color .15s ease,background .15s ease,box-shadow .15s ease,transform .12s ease}.enhance-target img{width:62px;height:62px;border-radius:12px;object-fit:cover;background:#0c111a;border:1px solid #30394d}.enhance-target b{display:block;margin-top:6px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.enhance-target small{display:block;margin-top:4px;font-size:7.5px;line-height:1.35;color:#aeb8ca}.enhance-target:hover{border-color:#59657f}.enhance-target:focus{outline:none}.enhance-target:focus-visible{outline:2px solid #77628f;outline-offset:2px}.enhance-target.selected{border-color:#a36fcb;background:linear-gradient(180deg,#221c30,#181c2a);box-shadow:0 0 0 2px rgba(163,111,203,.25),0 0 18px rgba(132,77,176,.18)}.enhance-target.selected img{border-color:#8f6ab5}.enhance-target:active{transform:scale(.985)}.enhance-confirm{width:100%;min-height:44px;margin-top:12px;border-radius:12px;border:1px solid #8f65ad;background:linear-gradient(135deg,#7449a7,#9a4da6);color:#fff;font-size:10px;font-weight:950;cursor:pointer}.enhance-confirm:disabled{border-color:#384157;background:#202635;color:#70798c;cursor:default;box-shadow:none}.enhance-confirm:not(:disabled):active{transform:scale(.99)}
+@media(max-width:380px){.map-viewport{height:278px}.map-board{height:390px}.map-node{width:42px;height:42px;margin:-21px 0 0 -21px}.map-tools span{display:none}.explore-event .explore-action{min-width:78px;padding:0 8px}.explore-party-head span{display:none}.enhance-dialog{width:min(95vw,430px);padding:13px}.enhance-targets{gap:5px}.enhance-target{padding:8px 4px 9px}.enhance-target img{width:54px;height:54px}.enhance-target b{font-size:9px}.enhance-target small{font-size:6.7px}}
 
 
 /* ===== Exploration character UI pass v13.4 ===== */
@@ -600,11 +600,12 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
   <section class="sheet-section"><h4>装備中</h4><div class="sheet-gear" id="charSheetGear"></div></section>
   <button class="parallel-placeholder" type="button" disabled>パラレルドライブ<small>将来ここから形態変更・性能変更へ</small></button>
 </div></dialog>
-<dialog id="enhanceDialog"><div class="manage-dialog enhance-dialog">
+<dialog id="enhanceDialog" tabindex="-1"><div class="manage-dialog enhance-dialog">
   <h3>強化</h3>
   <div class="enhance-effect"><b id="enhanceEffectName">強化内容</b><p id="enhanceEffectText"></p></div>
   <div class="enhance-target-note">強化する魔物娘を1人選択</div>
   <div class="enhance-targets" id="enhanceTargets"></div>
+  <button class="enhance-confirm" id="enhanceConfirmBtn" type="button" disabled>魔物娘を選択してください</button>
 </div></dialog>
 <div id="battleScreen" class="screen-hidden">
 <header class="topbar"><div class="top-title">戦闘</div><div class="chip" id="battleChip">B1/3</div><div class="chip" id="turnChip">T1</div><button class="chip" type="button" id="speedBtn">標準</button></header>
@@ -1349,21 +1350,30 @@ function enhancementPreview(u,e){
  if(e.id==='atk'){const now=effectiveAtk(u);return `ATK ${now} → ${now+1}`}
  return `SKILL ${u.gauge} → ${Math.min(100,u.gauge+30)}`
 }
+let enhanceSelection=null;
 function applyEnhancement(nodeId,uid){
  const map=currentMap(),n=map.nodes[nodeId],u=state.party.find(x=>x.uid===uid);if(!n||n.type!=='enhance'||!u)return;
  const e=enhancementById(n.enhanceEffect);let result='';
  if(e.id==='hp'){u.maxHp+=5;if(!u.dead)u.hp=Math.min(u.maxHp,u.hp+5);result=`最大HPが${u.maxHp}に上昇${u.dead?'（戦闘不能中のためHP回復なし）':`、HPが${u.hp}に回復`}`}
  else if(e.id==='atk'){u.atk+=1;result=`攻撃力が+1された`}
  else{const before=u.gauge;u.gauge=Math.min(100,u.gauge+30);result=`スキルゲージが${before} → ${u.gauge}になった`}
- n.type='empty';delete n.enhanceEffect;
+ n.type='empty';delete n.enhanceEffect;enhanceSelection=null;
  const dlg=$('#enhanceDialog');if(dlg.open)dlg.close();
  showEvent('強化完了',`${u.name}：${e.text}。${result}。使用済みマスは「無」になった。`);toast(`${u.name}：${e.text}`);renderExplore();
 }
+function selectEnhancementTarget(nodeId,uid){
+ enhanceSelection={nodeId,uid};
+ const u=state.party.find(x=>x.uid===uid);
+ document.querySelectorAll('.enhance-target').forEach(b=>b.classList.toggle('selected',b.dataset.uid===uid));
+ const confirm=$('#enhanceConfirmBtn');confirm.disabled=!u;confirm.textContent=u?`${u.name}を強化する`:'魔物娘を選択してください';
+}
 function openEnhancement(n){
  if(!n.enhanceEffect)n.enhanceEffect=rand(ENHANCE_EFFECTS).id;
+ enhanceSelection=null;
  const e=enhancementById(n.enhanceEffect);$('#enhanceEffectName').textContent=e.name;$('#enhanceEffectText').textContent=e.text;
- const box=$('#enhanceTargets');box.innerHTML='';state.party.forEach(u=>{const b=document.createElement('button');b.type='button';b.className='enhance-target';b.innerHTML=`<img src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><small>${enhancementPreview(u,e)}</small>`;b.addEventListener('click',()=>applyEnhancement(n.id,u.uid));box.appendChild(b)});
- showEvent('強化',`${e.text}。対象にする魔物娘を1人選ぶ。`);const dlg=$('#enhanceDialog');if(!dlg.open)dlg.showModal();
+ const confirm=$('#enhanceConfirmBtn');confirm.disabled=true;confirm.textContent='魔物娘を選択してください';
+ const box=$('#enhanceTargets');box.innerHTML='';state.party.forEach(u=>{const b=document.createElement('button');b.type='button';b.className='enhance-target';b.dataset.uid=u.uid;b.innerHTML=`<img src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><small>${enhancementPreview(u,e)}</small>`;b.addEventListener('click',()=>selectEnhancementTarget(n.id,u.uid));box.appendChild(b)});
+ showEvent('強化',`${e.text}。対象にする魔物娘を1人選ぶ。`);const dlg=$('#enhanceDialog');if(!dlg.open){dlg.showModal();requestAnimationFrame(()=>dlg.focus())}
 }
 function resolveExploreNode(){
  const n=currentNode();
@@ -1448,7 +1458,7 @@ $('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').add
 $('#statsToggle').addEventListener('click',()=>{const b=$('#statsBody'),o=b.classList.toggle('show');$('#statsMark').textContent=o?'閉じる ▴':'開く ▾'});
 $('#resetCumulativeBtn').addEventListener('click',()=>{delete cumulativeByConfig[configKey()];renderStats()});
 $('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});$('#bossMechanic').addEventListener('click',openBossDetail);$('#bossDetailCloseBtn').addEventListener('click',()=>$('#bossDetailDialog').close());
-$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#itemManageBtn').addEventListener('click',()=>openExploreManager('item'));$('#gearManageBtn').addEventListener('click',()=>openExploreManager('gear'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());
+$('#enhanceConfirmBtn').addEventListener('click',()=>{if(enhanceSelection)applyEnhancement(enhanceSelection.nodeId,enhanceSelection.uid)});$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#itemManageBtn').addEventListener('click',()=>openExploreManager('item'));$('#gearManageBtn').addEventListener('click',()=>openExploreManager('gear'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());
 $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.current=f.map.start;showEvent('再生成','現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
