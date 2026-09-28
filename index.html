@@ -493,17 +493,19 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .explore-party-head span::after{content:' / タップで詳細';color:#8f99ad}
 .explore-unit{
   appearance:none;width:100%;color:var(--text);font:inherit;cursor:pointer;
-  display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-areas:'img name' 'img nums' 'hp hp' 'gauge gauge';
-  column-gap:5px;align-items:center;border:1px solid #2d374d;
-  transition:border-color .16s ease,background .16s ease,transform .16s ease;
+  display:block;border:1px solid #2d374d;transition:border-color .16s ease,background .16s ease,transform .16s ease;
 }
 .explore-unit:active{transform:scale(.985)}
 .explore-unit:hover{border-color:#46536e}
-.explore-unit-img{grid-area:img;width:34px;height:34px;border-radius:8px;object-fit:cover;background:#0c111a;border:1px solid #30394d;display:block}
-.explore-unit b{grid-area:name;text-align:left;align-self:end;line-height:1.15}
-.explore-unit span{grid-area:nums;text-align:left;align-self:start;margin-top:1px;font-size:6.5px}
-.explore-unit .explore-mini:not(.gauge){grid-area:hp}
-.explore-unit .explore-mini.gauge{grid-area:gauge}
+.explore-unit-top{display:grid;grid-template-columns:42px minmax(0,1fr);gap:7px;align-items:center}
+.explore-unit-img{width:42px;height:42px;border-radius:9px;object-fit:cover;background:#0c111a;border:1px solid #30394d;display:block}
+.explore-unit-main{min-width:0}
+.explore-unit b{display:block;text-align:left;line-height:1.15;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.explore-unit-hpnum{margin-top:2px;font-size:7px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.explore-meter{margin-top:5px}
+.explore-meter-label{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:2px;font-size:6.5px;color:var(--muted);line-height:1}
+.explore-meter-label .value{color:#dbe3f1;font-weight:800}
+.explore-unit .explore-mini{margin-top:0;height:5px}
 .explore-unit.dead{opacity:.58;filter:saturate(.45)}
 
 /* Character detail bottom sheet */
@@ -516,30 +518,33 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .character-sheet-dialog::backdrop{background:rgba(3,5,10,.72);backdrop-filter:blur(4px)}
 .character-sheet{max-height:88vh;overflow:auto;padding:8px 13px max(16px,env(safe-area-inset-bottom))}
 .sheet-handle{width:38px;height:4px;border-radius:999px;background:#495268;margin:0 auto 8px}
-.sheet-head{display:grid;grid-template-columns:76px minmax(0,1fr) 32px;gap:10px;align-items:start}
-.sheet-portrait{width:76px;height:76px;border-radius:14px;object-fit:cover;background:#0c111a;border:1px solid #30394d}
-.sheet-title small{display:block;color:var(--muted);font-size:8px;margin-top:3px}
-.sheet-title h3{font-size:17px;margin:2px 0 3px}
-.sheet-title p{font-size:8px;color:#c7cfdf;margin:0;line-height:1.45}
-.sheet-close{width:32px;height:32px;border:0;border-radius:9px;background:#252c3e;color:#e7ebf4;font-size:18px;cursor:pointer}
-.sheet-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
-.sheet-stat{padding:6px;border-radius:10px;background:#171d2b;border:1px solid #293248}
-.sheet-stat span{display:block;font-size:6px;color:var(--muted)}.sheet-stat b{display:block;margin-top:1px;font-size:10px}
-.sheet-section{margin-top:9px;padding-top:8px;border-top:1px solid #293145}
+.sheet-head{display:grid;grid-template-columns:96px minmax(0,1fr) 34px;gap:12px;align-items:start}
+.sheet-portrait{width:96px;height:96px;border-radius:16px;object-fit:cover;background:#0c111a;border:1px solid #30394d}
+.sheet-title small,.sheet-title p{display:none}
+.sheet-title h3{font-size:20px;margin:4px 0 0;line-height:1.15}
+.sheet-close{width:34px;height:34px;border:0;border-radius:10px;background:#252c3e;color:#e7ebf4;font-size:18px;cursor:pointer}
+.sheet-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:12px}
+.sheet-stat{padding:7px;border-radius:10px;background:#171d2b;border:1px solid #293248}
+.sheet-stat span{display:block;font-size:6px;color:var(--muted)}.sheet-stat b{display:block;margin-top:2px;font-size:11px}
+.sheet-section{margin-top:10px;padding-top:8px;border-top:1px solid #293145}
 .sheet-section h4{font-size:9px;margin:0 0 5px;color:#dfe4ef}
 .sheet-entry{padding:7px 8px;border-radius:10px;background:#171d2b;border:1px solid #293248;margin-top:5px}
 .sheet-entry:first-of-type{margin-top:0}
 .sheet-entry b{display:block;font-size:9px}.sheet-entry p{margin:2px 0 0;font-size:8px;line-height:1.5;color:#bdc6d8}
-.sheet-gear{font-size:9px;line-height:1.6;color:#d5dbea}
+.sheet-gear{display:grid;gap:5px;font-size:8px;line-height:1.5;color:#d5dbea}
+.sheet-gear-row{padding:7px 8px;border-radius:10px;background:#171d2b;border:1px solid #293248}
 .parallel-placeholder{width:100%;min-height:46px;margin-top:10px;border-radius:12px;border:1px solid #514467;background:linear-gradient(135deg,#292238,#211d2e);color:#9f96ad;font-weight:950;font-size:10px}
 .parallel-placeholder small{display:block;margin-top:2px;font-size:7px;font-weight:700;color:#766e82}
 .prototype-note{display:inline-flex;align-items:center;gap:4px;font-size:7px;color:#9ca6ba}
 .prototype-note::before{content:'TEST';padding:2px 4px;border-radius:999px;background:#32283b;border:1px solid #574464;color:#cdb6da;font-size:6px;font-weight:950}
 @media(max-width:380px){
-  .explore-unit{grid-template-columns:29px minmax(0,1fr);column-gap:4px;padding:4px}
-  .explore-unit-img{width:29px;height:29px;border-radius:7px}
-  .explore-unit b{font-size:8px}.explore-unit span{font-size:6px}
-  .sheet-head{grid-template-columns:68px minmax(0,1fr) 30px}.sheet-portrait{width:68px;height:68px}
+  .explore-unit{padding:4px}
+  .explore-unit-top{grid-template-columns:36px minmax(0,1fr);gap:6px}
+  .explore-unit-img{width:36px;height:36px;border-radius:8px}
+  .explore-unit b{font-size:8.5px}
+  .explore-unit-hpnum{font-size:6px}
+  .explore-meter-label{font-size:6px}
+  .sheet-head{grid-template-columns:82px minmax(0,1fr) 32px}.sheet-portrait{width:82px;height:82px}
 }
 
 </style></head><body><main class="app">
@@ -1301,17 +1306,31 @@ function openExploreManager(kind){
  dlg.showModal();
 }
 function gearNames(u){return [u.gear.dagger?'ダガー':'',u.gear.cloth?'布の服':'',u.gear.ring?'理力の指輪':''].filter(Boolean)}
+function gearSummaryRows(u){const rows=[];if(u.gear.dagger)rows.push('武器：ダガー');if(u.gear.cloth)rows.push('防具：布の服');if(u.gear.ring)rows.push('装飾：理力の指輪');return rows}
 function openExploreCharacter(uid){
  const u=state.party.find(x=>x.uid===uid);if(!u)return;
  const d=ALLY_DETAILS[u.id]||{role:'',summary:'',abilities:[],skill:[u.skill,u.skillShort]};
- $('#charSheetImg').src=u.img;$('#charSheetImg').alt=u.name;$('#charSheetName').textContent=u.name;$('#charSheetRole').textContent=d.role||'キャラクター詳細';$('#charSheetSummary').textContent=d.summary||'';
- const stats=$('#charSheetStats');stats.innerHTML=`<div class="sheet-stat"><span>HP</span><b>${u.hp}/${u.maxHp}</b></div><div class="sheet-stat"><span>ATK</span><b>${effectiveAtk(u)}</b></div><div class="sheet-stat"><span>SKILL</span><b>${u.gauge}/100</b></div>${u.id==='demon'?`<div class="sheet-stat"><span>叡智</span><b>${u.wisdom}</b></div>`:''}<div class="sheet-stat"><span>通常属性</span><b>${typeJP(u.type)}</b></div><div class="sheet-stat"><span>状態</span><b>${u.dead?'戦闘不能':(u.statuses.length?u.statuses.map(s=>s.short||s.name).join('・'):'正常')}</b></div>`;
+ $('#charSheetImg').src=u.img;$('#charSheetImg').alt=u.name;$('#charSheetName').textContent=u.name;$('#charSheetRole').textContent='';$('#charSheetSummary').textContent='';
+ const statusText=u.dead?'戦闘不能':(u.statuses.length?u.statuses.map(s=>s.short||s.name).join('・'):'正常');
+ const statBlocks=[`<div class="sheet-stat"><span>HP</span><b>${u.hp}/${u.maxHp}</b></div>`,`<div class="sheet-stat"><span>ATK</span><b>${effectiveAtk(u)}</b></div>`,`<div class="sheet-stat"><span>SKILL</span><b>${u.gauge}/100</b></div>`];
+ if(u.id==='demon')statBlocks.push(`<div class="sheet-stat"><span>叡智</span><b>${u.wisdom}</b></div>`);
+ statBlocks.push(`<div class="sheet-stat"><span>通常属性</span><b>${typeJP(u.type)}</b></div>`);
+ statBlocks.push(`<div class="sheet-stat"><span>状態</span><b>${statusText}</b></div>`);
+ const stats=$('#charSheetStats');stats.innerHTML=statBlocks.join('');
  const abs=$('#charSheetAbilities');abs.innerHTML='';d.abilities.forEach(([name,text])=>{const e=document.createElement('div');e.className='sheet-entry';e.innerHTML=`<b>${name}</b><p>${text}</p>`;abs.appendChild(e)});
  const sk=$('#charSheetSkill');sk.innerHTML=`<div class="sheet-entry"><b>${d.skill[0]}</b><p>${d.skill[1]}</p></div>`;
- const gears=gearNames(u);$('#charSheetGear').textContent=gears.length?gears.join(' / '):'装備なし';
+ const gearRows=gearSummaryRows(u);$('#charSheetGear').innerHTML=gearRows.length?gearRows.map(t=>`<div class="sheet-gear-row">${t}</div>`).join(''):'<div class="sheet-gear-row">装備なし</div>';
  $('#exploreCharacterDialog').showModal();
 }
-function renderExploreParty(){const box=$('#exploreParty');box.innerHTML='';state.party.forEach(u=>{const d=document.createElement('button');d.type='button';d.className=`card explore-unit${u.dead?' dead':''}`;d.innerHTML=`<img class="explore-unit-img" src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><span>HP ${u.hp}/${u.maxHp}　SKILL ${u.gauge}/100</span><div class="explore-mini"><i style="width:${Math.max(0,u.hp/u.maxHp*100)}%"></i></div><div class="explore-mini gauge"><i style="width:${u.gauge}%"></i></div>`;d.addEventListener('click',()=>openExploreCharacter(u.uid));box.appendChild(d)})}
+function renderExploreParty(){
+ const box=$('#exploreParty');box.innerHTML='';
+ state.party.forEach(u=>{
+   const d=document.createElement('button');d.type='button';d.className=`card explore-unit${u.dead?' dead':''}`;
+   d.innerHTML=`<div class="explore-unit-top"><img class="explore-unit-img" src="${u.img}" alt=""><div class="explore-unit-main"><b>${u.name}${u.dead?' ☠':''}</b><div class="explore-unit-hpnum">HP ${u.hp}/${u.maxHp}</div></div></div><div class="explore-meter"><div class="explore-meter-label"><span>HP</span><span class="value">${u.hp}/${u.maxHp}</span></div><div class="explore-mini"><i style="width:${Math.max(0,u.hp/u.maxHp*100)}%"></i></div></div><div class="explore-meter"><div class="explore-meter-label"><span>SKILL</span><span class="value">${u.gauge}</span></div><div class="explore-mini gauge"><i style="width:${u.gauge}%"></i></div></div>`;
+   d.addEventListener('click',()=>openExploreCharacter(u.uid));
+   box.appendChild(d)
+ })
+}
 function renderExplore(){
  if(!explore)return;const map=currentMap();$('#floorChip').textContent=`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=`迷宮 ${explore.floor}F`;mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
  const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?'崩壊中：休憩不可。移動時35%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。':'移動するたび+1。階をまたいで持ち越します。テスト用上限40（本番はもっと高い想定）。';
