@@ -520,8 +520,13 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .sheet-handle{width:38px;height:4px;border-radius:999px;background:#495268;margin:0 auto 8px}
 .sheet-head{display:grid;grid-template-columns:96px minmax(0,1fr) 34px;gap:12px;align-items:start}
 .sheet-portrait{width:96px;height:96px;border-radius:16px;object-fit:cover;background:#0c111a;border:1px solid #30394d}
-.sheet-title small,.sheet-title p{display:none}
 .sheet-title h3{font-size:20px;margin:4px 0 0;line-height:1.15}
+.sheet-resource{margin-top:8px;display:grid;gap:7px}
+.sheet-meter{padding:7px 8px;border-radius:11px;background:#151b29;border:1px solid #293248}
+.sheet-meter-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;font-size:8px;color:#d7deec}
+.sheet-meter-row b{font-size:8px;letter-spacing:.02em}
+.sheet-meter-row span{font-weight:900;color:#fff}
+.sheet-meter .explore-mini{height:7px;margin-top:0}
 .sheet-close{width:34px;height:34px;border:0;border-radius:10px;background:#252c3e;color:#e7ebf4;font-size:18px;cursor:pointer}
 .sheet-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:12px}
 .sheet-stat{padding:7px;border-radius:10px;background:#171d2b;border:1px solid #293248}
@@ -545,6 +550,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
   .explore-unit-hpnum{font-size:6px}
   .explore-meter-label{font-size:6px}
   .sheet-head{grid-template-columns:82px minmax(0,1fr) 32px}.sheet-portrait{width:82px;height:82px}
+  .sheet-resource{gap:6px}.sheet-meter{padding:6px 7px}
 }
 
 </style></head><body><main class="app">
@@ -570,7 +576,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
   <div class="sheet-handle"></div>
   <div class="sheet-head">
     <img class="sheet-portrait" id="charSheetImg" alt="">
-    <div class="sheet-title"><small id="charSheetRole">キャラクター詳細</small><h3 id="charSheetName">魔物娘</h3><p id="charSheetSummary"></p></div>
+    <div class="sheet-title"><h3 id="charSheetName">魔物娘</h3><div class="sheet-resource" id="charSheetResource"></div></div>
     <button class="sheet-close" id="charSheetCloseBtn" type="button" aria-label="閉じる">×</button>
   </div>
   <div class="sheet-stats" id="charSheetStats"></div>
@@ -1310,12 +1316,11 @@ function gearSummaryRows(u){const rows=[];if(u.gear.dagger)rows.push('武器：�
 function openExploreCharacter(uid){
  const u=state.party.find(x=>x.uid===uid);if(!u)return;
  const d=ALLY_DETAILS[u.id]||{role:'',summary:'',abilities:[],skill:[u.skill,u.skillShort]};
- $('#charSheetImg').src=u.img;$('#charSheetImg').alt=u.name;$('#charSheetName').textContent=u.name;$('#charSheetRole').textContent='';$('#charSheetSummary').textContent='';
+ $('#charSheetImg').src=u.img;$('#charSheetImg').alt=u.name;$('#charSheetName').textContent=u.name;
  const statusText=u.dead?'戦闘不能':(u.statuses.length?u.statuses.map(s=>s.short||s.name).join('・'):'正常');
- const statBlocks=[`<div class="sheet-stat"><span>HP</span><b>${u.hp}/${u.maxHp}</b></div>`,`<div class="sheet-stat"><span>ATK</span><b>${effectiveAtk(u)}</b></div>`,`<div class="sheet-stat"><span>SKILL</span><b>${u.gauge}/100</b></div>`];
+ $('#charSheetResource').innerHTML=`<div class="sheet-meter"><div class="sheet-meter-row"><b>HP</b><span>${u.hp}/${u.maxHp}</span></div><div class="explore-mini"><i style="width:${Math.max(0,u.hp/u.maxHp*100)}%"></i></div></div><div class="sheet-meter"><div class="sheet-meter-row"><b>SKILL</b><span>${u.gauge}/100</span></div><div class="explore-mini gauge"><i style="width:${u.gauge}%"></i></div></div>`;
+ const statBlocks=[`<div class="sheet-stat"><span>ATK</span><b>${effectiveAtk(u)}</b></div>`,`<div class="sheet-stat"><span>通常属性</span><b>${typeJP(u.type)}</b></div>`,`<div class="sheet-stat"><span>状態</span><b>${statusText}</b></div>`];
  if(u.id==='demon')statBlocks.push(`<div class="sheet-stat"><span>叡智</span><b>${u.wisdom}</b></div>`);
- statBlocks.push(`<div class="sheet-stat"><span>通常属性</span><b>${typeJP(u.type)}</b></div>`);
- statBlocks.push(`<div class="sheet-stat"><span>状態</span><b>${statusText}</b></div>`);
  const stats=$('#charSheetStats');stats.innerHTML=statBlocks.join('');
  const abs=$('#charSheetAbilities');abs.innerHTML='';d.abilities.forEach(([name,text])=>{const e=document.createElement('div');e.className='sheet-entry';e.innerHTML=`<b>${name}</b><p>${text}</p>`;abs.appendChild(e)});
  const sk=$('#charSheetSkill');sk.innerHTML=`<div class="sheet-entry"><b>${d.skill[0]}</b><p>${d.skill[1]}</p></div>`;
