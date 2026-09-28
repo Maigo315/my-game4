@@ -1197,23 +1197,64 @@ function edgeKey(a,b){return [a,b].sort().join('|')}
 function newNode(x,y,type='empty'){return {id:nodeKey(x,y),x,y,type,visited:false,infected:false}}
 function connect(map,a,b){const k=edgeKey(a,b);if(!map.edges.includes(k))map.edges.push(k)}
 function neighborsOf(map,id){const out=[];map.edges.forEach(k=>{const [a,b]=k.split('|');if(a===id)out.push(b);else if(b===id)out.push(a)});return out}
+function gridNeighborsOf(map,id){const n=map.nodes[id];if(!n)return[];return [[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>nodeKey(n.x+dx,n.y+dy)).filter(k=>map.nodes[k])}
+function graphDistances(map,start){const dist={[start]:0},q=[start];for(let i=0;i<q.length;i++){const id=q[i];neighborsOf(map,id).forEach(n=>{if(dist[n]!==undefined)return;dist[n]=dist[id]+1;q.push(n)})}return dist}
+function shortestPathIds(map,start,end){const prev={[start]:null},q=[start];for(let i=0;i<q.length;i++){const id=q[i];if(id===end)break;neighborsOf(map,id).forEach(n=>{if(prev[n]!==undefined)return;prev[n]=id;q.push(n)})}if(prev[end]===undefined)return[start];const path=[];for(let cur=end;cur!==null;cur=prev[cur])path.push(cur);return path.reverse()}
+function addLoopConnections(map){
+ // まず完全な行き止まりを減らす。隣接している既存ノードへ横道を通し、短いループを作る。
+ let guard=0;
+ while(guard++<40){
+   const dead=shuffle(Object.values(map.nodes).filter(n=>n.id!==map.start&&neighborsOf(map,n.id).length===1));
+   if(dead.length<=4)break;
+   let linked=false;
+   for(const n of dead){
+     const current=new Set(neighborsOf(map,n.id));
+     const options=shuffle(gridNeighborsOf(map,n.id).filter(id=>!current.has(id)));
+     if(options.length){connect(map,n.id,options[0]);linked=true;break}
+   }
+   if(!linked)break;
+ }
+ // さらに1〜3本ほど横道を追加。「ロ」「コ」のような複数経路を混ぜる。
+ const possible=[];
+ Object.values(map.nodes).forEach(n=>{
+   const current=new Set(neighborsOf(map,n.id));
+   gridNeighborsOf(map,n.id).forEach(id=>{if(!current.has(id)){const k=edgeKey(n.id,id);if(!possible.includes(k))possible.push(k)}})
+ });
+ shuffle(possible);const extra=1+Math.floor(Math.random()*3);for(let i=0;i<extra&&possible.length;i++){const [a,b]=possible.pop().split('|');connect(map,a,b)}
+}
+function chooseDestination(map,floor){
+ const dist=graphDistances(map,map.start),entries=Object.entries(dist).filter(([id,d])=>id!==map.start&&d>=3);
+ const maxDist=Math.max(...entries.map(([,d])=>d),3);
+ let lo=.6,hi=.82;
+ if(floor===EXPLORE_CFG.floors){lo=.72;hi=1.01}
+ else{const r=Math.random();if(r<.2){lo=.42;hi=.62}else if(r<.75){lo=.58;hi=.82}else{lo=.78;hi=1.01}}
+ let pool=entries.filter(([,d])=>d>=Math.max(3,Math.ceil(maxDist*lo))&&d<=Math.max(3,Math.ceil(maxDist*hi)));
+ if(!pool.length)pool=entries.filter(([,d])=>d>=Math.max(3,Math.ceil(maxDist*(floor===EXPLORE_CFG.floors?.65:.45))));
+ if(!pool.length)pool=entries;
+ return rand(pool)[0]
+}
 function generateFloor(floor){
  const W=EXPLORE_CFG.w,H=EXPLORE_CFG.h,map={nodes:{},edges:[],start:null,end:null};
- let x=2,y=H-1;let cur=newNode(x,y,'entrance');map.nodes[cur.id]=cur;map.start=cur.id;let path=[cur.id];
+ // 迷宮全体が縦方向にも広がるよう、まず上端まで届く「幹」を作る。出口そのものは後で別途抽選する。
+ let x=2,y=H-1;let cur=newNode(x,y,'entrance');map.nodes[cur.id]=cur;map.start=cur.id;
  while(y>0){
-   if(Math.random()<.48){const dirs=shuffle([-1,1]).filter(d=>x+d>=0&&x+d<W);if(dirs.length){const nx=x+dirs[0],nid=nodeKey(nx,y);if(!map.nodes[nid]){map.nodes[nid]=newNode(nx,y);connect(map,cur.id,nid);cur=map.nodes[nid];x=nx;path.push(cur.id)}}}
-   const ny=y-1,nid=nodeKey(x,ny);if(!map.nodes[nid])map.nodes[nid]=newNode(x,ny);connect(map,cur.id,nid);cur=map.nodes[nid];y=ny;path.push(cur.id)
+   if(Math.random()<.48){const dirs=shuffle([-1,1]).filter(d=>x+d>=0&&x+d<W);if(dirs.length){const nx=x+dirs[0],nid=nodeKey(nx,y);if(!map.nodes[nid]){map.nodes[nid]=newNode(nx,y);connect(map,cur.id,nid);cur=map.nodes[nid];x=nx}}}
+   const ny=y-1,nid=nodeKey(x,ny);if(!map.nodes[nid])map.nodes[nid]=newNode(x,ny);connect(map,cur.id,nid);cur=map.nodes[nid];y=ny
  }
- map.end=cur.id;map.nodes[map.end].type=floor===EXPLORE_CFG.floors?'boss':'exit';
+ // 枝を増やして19〜22ノード程度へ。
  const target=19+Math.floor(Math.random()*4);let guard=0;
  while(Object.keys(map.nodes).length<target&&guard++<300){
    const base=rand(Object.values(map.nodes));const dirs=shuffle([[1,0],[-1,0],[0,1],[0,-1]]);
    for(const [dx,dy] of dirs){const nx=base.x+dx,ny=base.y+dy;if(nx<0||nx>=W||ny<0||ny>=H)continue;const id=nodeKey(nx,ny);if(map.nodes[id])continue;map.nodes[id]=newNode(nx,ny);connect(map,base.id,id);break}
  }
+ addLoopConnections(map);
+ // 出口は最遠固定にせず、距離帯からランダム抽選。ボス階だけやや遠め。
+ map.end=chooseDestination(map,floor);map.nodes[map.end].type=floor===EXPLORE_CFG.floors?'boss':'exit';
  const candidates=Object.values(map.nodes).filter(n=>n.id!==map.start&&n.id!==map.end);
  candidates.forEach(n=>n.type='empty');
 
- // 通常敵は1ラン合計5〜6戦程度を目安に抑える。最短ルート上は各階0〜1体まで。
+ // ループ追加後の実際の最短ルートを基準に敵を置く。
+ const path=shortestPathIds(map,map.start,map.end);
  const mainPath=new Set(path.slice(1,-1));
  const pathCandidates=shuffle(candidates.filter(n=>mainPath.has(n.id)));
  const sideCandidates=shuffle(candidates.filter(n=>!mainPath.has(n.id)));
@@ -1225,10 +1266,11 @@ function generateFloor(floor){
  while(enemyNodes.length<enemyCount&&pathCandidates.length)enemyNodes.push(pathCandidates.pop());
  enemyNodes.forEach(n=>n.type='enemy');
 
- // 報酬・休憩は寄り道側を優先。敵以外から配置する。
+ // 行き止まりは「無駄道」にしない。報酬・休憩を優先配置し、残りは寄り道側へ。
+ const deadEnds=shuffle(candidates.filter(n=>n.type==='empty'&&neighborsOf(map,n.id).length===1));
  const freeSide=shuffle(candidates.filter(n=>n.type==='empty'&&!mainPath.has(n.id)));
  const freeAny=shuffle(candidates.filter(n=>n.type==='empty'));
- const takeFree=()=>{let n=null;while(freeSide.length){n=freeSide.pop();if(n.type==='empty')return n}while(freeAny.length){n=freeAny.pop();if(n.type==='empty')return n}return null};
+ const takeFree=()=>{let n=null;while(deadEnds.length){n=deadEnds.pop();if(n.type==='empty')return n}while(freeSide.length){n=freeSide.pop();if(n.type==='empty')return n}while(freeAny.length){n=freeAny.pop();if(n.type==='empty')return n}return null};
  const rewards=['item','item','equipment','rest'];
  rewards.forEach(type=>{const n=takeFree();if(n)n.type=type});
 
