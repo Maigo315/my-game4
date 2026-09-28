@@ -393,7 +393,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 @media(max-width:380px){.setup-grid{gap:4px}.setup-slot{padding:5px}.setup-slot select{font-size:9px}}
 
 
-/* ===== Exploration prototype v13 ===== */
+/* ===== Exploration prototype v13.1 ===== */
 .screen-hidden{display:none!important}
 #battleScreen .setup{display:none}
 #battleScreen .stats-cumulative{display:none}
@@ -418,12 +418,14 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .map-node small{font-size:6px;font-weight:850;line-height:1;color:#b9c2d5;max-width:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .map-node:disabled{cursor:default}
 .map-node.reachable{border-color:#c18cff;box-shadow:0 0 0 2px rgba(193,140,255,.14),0 0 15px rgba(193,140,255,.28);animation:nodeReady 1.05s ease-in-out infinite alternate}
-.map-node.current{border-color:#ffd56e;background:#302817;box-shadow:0 0 16px rgba(255,213,110,.48);transform:scale(1.08)}
+.map-node.current{z-index:8;border-color:#fff0a7;background:#3b2e12;box-shadow:0 0 0 4px rgba(255,213,110,.20),0 0 23px rgba(255,213,110,.82);transform:scale(1.18);animation:currentNodePulse .82s ease-in-out infinite alternate}
+.map-node.current::after{content:'現在地';position:absolute;left:50%;top:calc(100% + 5px);transform:translateX(-50%);padding:2px 5px;border-radius:999px;background:#ffd56e;color:#211a07;border:1px solid #fff0a7;font-size:6px;font-weight:950;white-space:nowrap;box-shadow:0 3px 8px rgba(0,0,0,.4)}
 .map-node.visited:not(.current){filter:saturate(.72);opacity:.82}
 .map-node.type-enemy{background:#331d27;border-color:#884458}.map-node.type-unique{background:#421a37;border-color:#e060bd;box-shadow:0 0 17px rgba(224,96,189,.42)}
-.map-node.type-item{background:#1b2d35;border-color:#477b89}.map-node.type-equipment{background:#302919;border-color:#806b3f}.map-node.type-rest{background:#1d3126;border-color:#4a7d5e}.map-node.type-exit,.map-node.type-boss{background:#30203c;border-color:#8b62a6}.map-node.type-entrance{background:#202938;border-color:#5d708e}
+.map-node.type-item{background:#1b2d35;border-color:#477b89}.map-node.type-equipment{background:#302919;border-color:#806b3f}.map-node.type-rest{background:#1d3126;border-color:#4a7d5e}.map-node.type-exit,.map-node.type-boss{background:#30203c;border-color:#8b62a6}.map-node.type-entrance{background:#202938;border-color:#5d708e}.map-node.type-unknown{background:#121722;border-color:#39435a;color:#8993a8}.map-node.type-unknown small{color:#758096}
 .map-node.infected{animation:infectPop .72s ease-out}
 @keyframes nodeReady{from{filter:brightness(1)}to{filter:brightness(1.18)}}
+@keyframes currentNodePulse{from{box-shadow:0 0 0 3px rgba(255,213,110,.15),0 0 18px rgba(255,213,110,.58)}to{box-shadow:0 0 0 6px rgba(255,213,110,.24),0 0 28px rgba(255,213,110,.95)}}
 @keyframes infectPop{0%{transform:scale(.72);filter:brightness(2)}55%{transform:scale(1.22)}100%{transform:scale(1)}}
 .explore-event{padding:10px 11px;margin-top:7px;min-height:82px}
 .explore-event h3{font-size:14px;margin:0 0 4px}.explore-event p{font-size:9px;line-height:1.55;color:var(--muted);margin:0}
@@ -447,7 +449,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
     <div class="collapse-note" id="collapseNote">移動するたび+1。階をまたいで持ち越します。テスト用上限24。</div>
   </section>
   <section class="card map-card">
-    <div class="map-head"><b id="mapTitle">迷宮 1F</b><span>光っている隣接ノードへ移動</span></div>
+    <div class="map-head"><b id="mapTitle">迷宮 1F</b><span>隣接するとマスの詳細が判明</span></div>
     <div class="map-board" id="mapBoard"><svg class="map-lines" id="mapLines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="mapNodes"></div></div>
     <div class="explore-legend"><span>⚔ 敵</span><span>✦ アイテム</span><span>◇ 装備</span><span>♥ 休憩</span><span>⇩ 次階</span><span>☠ ユニーク</span></div>
   </section>
@@ -1017,7 +1019,7 @@ async function finishBattle(){
    $('#nextBattleBtn').textContent='探索を最初から';
  }else{
    $('#intermissionTitle').textContent='勝利';
-   $('#intermissionText').textContent=`HP・スキルゲージ・SKILL ON/OFFを持ち越して探索へ戻ります。${recoveryBlocked()?' 現在は崩壊中のため回復不可。':''}`;
+   $('#intermissionText').textContent='HP・スキルゲージ・SKILL ON/OFFを持ち越して探索へ戻ります。';
    $('#nextBattleBtn').textContent='探索へ戻る';
  }
  intermission.classList.add('show');render();
@@ -1040,7 +1042,7 @@ function render(){
  document.querySelectorAll('[data-skill-toggle]').forEach(b=>b.addEventListener('click',()=>{if(animating||state.battleOver)return;const u=state.party.find(x=>x.uid===b.dataset.skillToggle);u.skillOn=!u.skillOn;render()}));const buff=totalAttackBuffPct();$('#reasonText').textContent=buff?`理力 ${state.reason}/10 ｜ 攻撃力+${buff}%`:`理力 ${state.reason}/10`;const readyOn=state.party.filter(u=>!u.dead&&u.gauge>=100&&u.skillOn&&!hasAllyStatus(u,'封印')).length;$('#attackBtn').disabled=animating||state.battleOver;$('#chainBtn').disabled=animating||state.battleOver||readyOn===0;if(selectedDetailId&&detailPanel.classList.contains('show'))openDetail(selectedDetailId);renderStats()
 }
 
-function recoveryBlocked(){return !!(explore&&explore.collapsed)}
+function recoveryBlocked(){return false}
 function showExplore(){exploreScreen.classList.remove('screen-hidden');battleScreen.classList.add('screen-hidden');window.scrollTo({top:0,behavior:'smooth'})}
 function showBattle(){exploreScreen.classList.add('screen-hidden');battleScreen.classList.remove('screen-hidden');window.scrollTo({top:0,behavior:'smooth'})}
 function nodeKey(x,y){return `${x},${y}`}
@@ -1086,7 +1088,7 @@ function addCollapse(n){if(!explore||state.runOver)return;const was=explore.coll
 function triggerCollapse(){
  toast('崩壊発生！',true);const f=explore.floorData[explore.floor];
  if(!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}
- queueExploreMessage('崩壊発生','回復が封じられ、迷宮の無マスが敵へ侵食され始めた。ユニーク敵を倒せば崩壊度は0に戻る。','danger')
+ queueExploreMessage('崩壊発生','休憩マスが封じられ、迷宮の無マスが敵へ侵食され始めた。ユニーク敵を倒せば崩壊度は0に戻る。','danger')
 }
 function spawnUnique(){
  const map=currentMap(),cur=currentNode();let candidates=Object.values(map.nodes).filter(n=>n.type==='empty'&&n.id!==cur.id);
@@ -1099,12 +1101,17 @@ function maybeInfect(){
 }
 function moveToNode(id){
  if(state.runOver||battleScreen.classList.contains('screen-hidden')===false)return;const map=currentMap();if(!neighborsOf(map,explore.current).includes(id))return;
- explore.current=id;map.nodes[id].visited=true;explore.steps++;const wasCollapsed=explore.collapsed;addCollapse(1);if(wasCollapsed)maybeInfect();resolveExploreNode();renderExplore()
+ explore.current=id;map.nodes[id].visited=true;explore.steps++;const wasCollapsed=explore.collapsed;addCollapse(1);if(wasCollapsed)maybeInfect();
+ const landed=map.nodes[id];
+ renderExplore();
+ if(landed.type==='enemy'){startExploreBattle(landed.id,rand(['slime','dog','arachne','golem']),'enemy');return}
+ if(landed.type==='unique'){startExploreBattle(landed.id,'gluttonDog','unique');return}
+ resolveExploreNode();renderExplore()
 }
 function resolveExploreNode(){
  const n=currentNode();
  if(explore.lastMessage){const m=explore.lastMessage;explore.lastMessage=null;showEvent(m.title,m.text);return}
- if(n.type==='entrance'||n.type==='empty'){showEvent(n.type==='entrance'?'入口':'無のマス',n.type==='entrance'?'この階の入口。どの道を進むか選ぼう。':'何もない。だが移動すれば崩壊度は進む。');return}
+ if(n.type==='entrance'||n.type==='empty'){showEvent(n.type==='entrance'?'入口':'無のマス',n.type==='entrance'?'この階の入口。道の形は見えるが、離れたマスの中身はまだ分からない。':'何もない。だが移動すれば崩壊度は進む。');return}
  if(n.type==='item'){
    state.party.filter(u=>!u.dead).forEach(u=>u.gauge=Math.min(100,u.gauge+20));n.type='empty';showEvent('アイテム','仮アイテム「魔力の雫」を入手。生存中の味方全員のスキルゲージ+20。使用済みマスは「無」になった。');toast('全員 SKILL +20');return
  }
@@ -1113,7 +1120,7 @@ function resolveExploreNode(){
    if(options.length){const [u,k]=rand(options);u.gear[k]=true;if(k==='dagger')u.atk+=2;const names={dagger:'ダガー',cloth:'布の服',ring:'理力の指輪'};showEvent('装備',`${u.name}が「${names[k]}」を装備した。使用済みマスは「無」になった。`);toast(`${u.name}：${names[k]} 装備`)}else showEvent('装備','装備枠テストがすべて埋まっているため、今回は何も起こらなかった。');n.type='empty';return
  }
  if(n.type==='rest'){
-   if(recoveryBlocked()){showEvent('休憩','崩壊の影響で回復できない。ユニーク敵を倒して崩壊を鎮めれば、この休憩マスはまだ利用できる。');return}
+   if(explore&&explore.collapsed){showEvent('休憩','崩壊の影響で休憩できない。ユニーク敵を倒して崩壊を鎮めれば、この休憩マスはまだ利用できる。');return}
    let total=0;state.party.forEach(u=>{if(u.dead)return;const before=u.hp;u.hp=Math.min(u.maxHp,u.hp+ceil(u.maxHp*.3));total+=u.hp-before});n.type='empty';showEvent('休憩',`生存中の味方が最大HPの30%回復（実回復${total}）。使用済みマスは「無」になった。`);toast(`HP +${total}`);return
  }
  if(n.type==='enemy'){showEvent('敵','通常敵が待ち構えている。', '戦闘開始',()=>startExploreBattle(n.id,rand(['slime','dog','arachne','golem']),'enemy'));return}
@@ -1129,9 +1136,11 @@ function returnFromBattle(){if(state.runOver){resetRun();return}state.battleCont
 function renderExploreParty(){const box=$('#exploreParty');box.innerHTML='';state.party.forEach(u=>{const d=document.createElement('div');d.className='card explore-unit';d.innerHTML=`<b>${u.name}${u.dead?' ☠':''}</b><span>HP ${u.hp}/${u.maxHp}　SKILL ${u.gauge}/100</span><div class="explore-mini"><i style="width:${Math.max(0,u.hp/u.maxHp*100)}%"></i></div><div class="explore-mini gauge"><i style="width:${u.gauge}%"></i></div>`;box.appendChild(d)})}
 function renderExplore(){
  if(!explore)return;const map=currentMap();$('#floorChip').textContent=`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=`迷宮 ${explore.floor}F`;
- const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?'崩壊中：HP回復不可。移動時35%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。':'移動するたび+1。階をまたいで持ち越します。テスト用上限24（本番はもっと高い想定）。';
+ const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?'崩壊中：休憩不可。移動時35%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。':'移動するたび+1。階をまたいで持ち越します。テスト用上限24（本番はもっと高い想定）。';
  mapLinesEl.innerHTML='';map.edges.forEach(k=>{const [a,b]=k.split('|'),na=map.nodes[a],nb=map.nodes[b],line=document.createElementNS('http://www.w3.org/2000/svg','line');const px=n=>8+n.x*(84/(EXPLORE_CFG.w-1)),py=n=>8+n.y*(84/(EXPLORE_CFG.h-1));line.setAttribute('x1',px(na));line.setAttribute('y1',py(na));line.setAttribute('x2',px(nb));line.setAttribute('y2',py(nb));line.setAttribute('class',`map-line ${(na.visited&&nb.visited)?'visited':''}`);mapLinesEl.appendChild(line)});
- mapNodesEl.innerHTML='';const reachable=new Set(neighborsOf(map,explore.current));Object.values(map.nodes).forEach(n=>{const b=document.createElement('button');b.type='button';b.className=`map-node type-${n.type}${n.visited?' visited':''}${n.id===explore.current?' current':''}${reachable.has(n.id)?' reachable':''}${n.infected?' infected':''}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;b.innerHTML=`<span>${nodeIcon(n.type)}</span><small>${nodeLabel(n.type)}</small>`;b.disabled=!reachable.has(n.id)||n.id===explore.current;b.addEventListener('click',()=>moveToNode(n.id));mapNodesEl.appendChild(b);n.infected=false});
+ mapNodesEl.innerHTML='';const reachable=new Set(neighborsOf(map,explore.current));const visitedIds=new Set(Object.values(map.nodes).filter(x=>x.visited).map(x=>x.id));
+ const isRevealed=n=>n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
+ Object.values(map.nodes).forEach(n=>{const revealed=isRevealed(n),showType=revealed?n.type:'unknown';const b=document.createElement('button');b.type='button';b.className=`map-node type-${showType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${reachable.has(n.id)?' reachable':''}${n.infected&&revealed?' infected':''}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;b.innerHTML=revealed?`<span>${nodeIcon(n.type)}</span><small>${nodeLabel(n.type)}</small>`:'<span>?</span><small>不明</small>';b.disabled=!reachable.has(n.id)||n.id===explore.current;b.addEventListener('click',()=>moveToNode(n.id));mapNodesEl.appendChild(b);n.infected=false});
  renderExploreParty();if(!$('#exploreEventTitle').textContent)resolveExploreNode()
 }
 function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力の指輪</label></div>`;p.appendChild(b)})}
