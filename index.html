@@ -487,6 +487,61 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .manage-close{width:100%;min-height:38px;margin-top:10px;border:1px solid #3b455d;border-radius:10px;background:#22293a;color:#e4e9f3;font-size:9px;font-weight:900;cursor:pointer}
 @media(max-width:380px){.map-viewport{height:278px}.map-board{height:390px}.map-node{width:42px;height:42px;margin:-21px 0 0 -21px}.map-tools span{display:none}.explore-event .explore-action{min-width:78px;padding:0 8px}.explore-party-head span{display:none}}
 
+
+/* ===== Exploration character UI pass v13.4 ===== */
+.map-node.current::after{display:none!important}
+.explore-party-head span::after{content:' / タップで詳細';color:#8f99ad}
+.explore-unit{
+  appearance:none;width:100%;color:var(--text);font:inherit;cursor:pointer;
+  display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-areas:'img name' 'img nums' 'hp hp' 'gauge gauge';
+  column-gap:5px;align-items:center;border:1px solid #2d374d;
+  transition:border-color .16s ease,background .16s ease,transform .16s ease;
+}
+.explore-unit:active{transform:scale(.985)}
+.explore-unit:hover{border-color:#46536e}
+.explore-unit-img{grid-area:img;width:34px;height:34px;border-radius:8px;object-fit:cover;background:#0c111a;border:1px solid #30394d;display:block}
+.explore-unit b{grid-area:name;text-align:left;align-self:end;line-height:1.15}
+.explore-unit span{grid-area:nums;text-align:left;align-self:start;margin-top:1px;font-size:6.5px}
+.explore-unit .explore-mini:not(.gauge){grid-area:hp}
+.explore-unit .explore-mini.gauge{grid-area:gauge}
+.explore-unit.dead{opacity:.58;filter:saturate(.45)}
+
+/* Character detail bottom sheet */
+.character-sheet-dialog{
+  width:min(100vw,560px);max-width:560px;max-height:88vh;
+  margin:auto auto 0;inset:auto 0 0 0;padding:0;
+  border:1px solid #3a4359;border-bottom:0;border-radius:22px 22px 0 0;
+  background:#111624;color:var(--text);overflow:hidden;
+}
+.character-sheet-dialog::backdrop{background:rgba(3,5,10,.72);backdrop-filter:blur(4px)}
+.character-sheet{max-height:88vh;overflow:auto;padding:8px 13px max(16px,env(safe-area-inset-bottom))}
+.sheet-handle{width:38px;height:4px;border-radius:999px;background:#495268;margin:0 auto 8px}
+.sheet-head{display:grid;grid-template-columns:76px minmax(0,1fr) 32px;gap:10px;align-items:start}
+.sheet-portrait{width:76px;height:76px;border-radius:14px;object-fit:cover;background:#0c111a;border:1px solid #30394d}
+.sheet-title small{display:block;color:var(--muted);font-size:8px;margin-top:3px}
+.sheet-title h3{font-size:17px;margin:2px 0 3px}
+.sheet-title p{font-size:8px;color:#c7cfdf;margin:0;line-height:1.45}
+.sheet-close{width:32px;height:32px;border:0;border-radius:9px;background:#252c3e;color:#e7ebf4;font-size:18px;cursor:pointer}
+.sheet-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
+.sheet-stat{padding:6px;border-radius:10px;background:#171d2b;border:1px solid #293248}
+.sheet-stat span{display:block;font-size:6px;color:var(--muted)}.sheet-stat b{display:block;margin-top:1px;font-size:10px}
+.sheet-section{margin-top:9px;padding-top:8px;border-top:1px solid #293145}
+.sheet-section h4{font-size:9px;margin:0 0 5px;color:#dfe4ef}
+.sheet-entry{padding:7px 8px;border-radius:10px;background:#171d2b;border:1px solid #293248;margin-top:5px}
+.sheet-entry:first-of-type{margin-top:0}
+.sheet-entry b{display:block;font-size:9px}.sheet-entry p{margin:2px 0 0;font-size:8px;line-height:1.5;color:#bdc6d8}
+.sheet-gear{font-size:9px;line-height:1.6;color:#d5dbea}
+.parallel-placeholder{width:100%;min-height:46px;margin-top:10px;border-radius:12px;border:1px solid #514467;background:linear-gradient(135deg,#292238,#211d2e);color:#9f96ad;font-weight:950;font-size:10px}
+.parallel-placeholder small{display:block;margin-top:2px;font-size:7px;font-weight:700;color:#766e82}
+.prototype-note{display:inline-flex;align-items:center;gap:4px;font-size:7px;color:#9ca6ba}
+.prototype-note::before{content:'TEST';padding:2px 4px;border-radius:999px;background:#32283b;border:1px solid #574464;color:#cdb6da;font-size:6px;font-weight:950}
+@media(max-width:380px){
+  .explore-unit{grid-template-columns:29px minmax(0,1fr);column-gap:4px;padding:4px}
+  .explore-unit-img{width:29px;height:29px;border-radius:7px}
+  .explore-unit b{font-size:8px}.explore-unit span{font-size:6px}
+  .sheet-head{grid-template-columns:68px minmax(0,1fr) 30px}.sheet-portrait{width:68px;height:68px}
+}
+
 </style></head><body><main class="app">
 <section id="exploreScreen">
   <header class="explore-topbar"><div class="explore-title">探索</div><div class="chip" id="floorChip">1F</div><div class="chip" id="stepChip">0歩</div></header>
@@ -503,10 +558,22 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
   <section class="card explore-event" id="exploreEvent"><h3 id="exploreEventTitle">入口</h3><p id="exploreEventText">迷宮へ踏み込んだ。</p><button class="explore-action screen-hidden" id="exploreActionBtn" type="button"></button></section>
   <section class="card explore-party-card"><div class="explore-party-head"><b>探索パーティ</b><span>HP・SKILL 持ち越し</span></div><div class="explore-party" id="exploreParty"></div></section>
   <nav class="explore-dock" aria-label="探索メニュー"><button class="active" type="button">探索</button><button id="itemManageBtn" type="button">アイテム</button><button id="gearManageBtn" type="button">装備</button></nav>
-  <section class="card setup" style="margin-top:7px"><button class="setup-toggle" type="button" id="exploreSetupToggle"><span>探索テスト設定</span><span id="exploreSetupMark">開く ▾</span></button><div class="setup-body" id="exploreSetupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="explorePartySetup"></div><button class="apply-setup" type="button" id="exploreApplySetup">設定を反映して探索をやり直す</button><div class="explore-debug"><button id="collapsePlusBtn" type="button">崩壊度 +5</button><button id="collapseNearBtn" type="button">崩壊直前へ</button><button id="regenMapBtn" type="button">現在階を再生成</button></div></div></section>
-  <button class="reset" type="button" id="exploreResetBtn">探索を最初からやり直す</button>
+  <section class="card setup" style="margin-top:7px"><button class="setup-toggle" type="button" id="exploreSetupToggle"><span><span class="prototype-note">探索テスト設定</span></span><span id="exploreSetupMark">開く ▾</span></button><div class="setup-body" id="exploreSetupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="explorePartySetup"></div><button class="apply-setup" type="button" id="exploreApplySetup">設定を反映して探索をやり直す</button><div class="explore-debug"><button id="collapsePlusBtn" type="button">崩壊度 +5</button><button id="collapseNearBtn" type="button">崩壊直前へ</button><button id="regenMapBtn" type="button">現在階を再生成</button></div><button class="reset" type="button" id="exploreResetBtn">探索を最初からやり直す</button></div></section>
 </section>
 <dialog id="exploreManageDialog"><div class="manage-dialog"><h3 id="manageTitle">管理</h3><p id="manageIntro"></p><div class="manage-list" id="manageList"></div><button class="manage-close" id="manageCloseBtn" type="button">閉じる</button></div></dialog>
+<dialog id="exploreCharacterDialog" class="character-sheet-dialog"><div class="character-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <img class="sheet-portrait" id="charSheetImg" alt="">
+    <div class="sheet-title"><small id="charSheetRole">キャラクター詳細</small><h3 id="charSheetName">魔物娘</h3><p id="charSheetSummary"></p></div>
+    <button class="sheet-close" id="charSheetCloseBtn" type="button" aria-label="閉じる">×</button>
+  </div>
+  <div class="sheet-stats" id="charSheetStats"></div>
+  <section class="sheet-section"><h4>アビリティ</h4><div id="charSheetAbilities"></div></section>
+  <section class="sheet-section"><h4>スキル</h4><div id="charSheetSkill"></div></section>
+  <section class="sheet-section"><h4>装備中</h4><div class="sheet-gear" id="charSheetGear"></div></section>
+  <button class="parallel-placeholder" type="button" disabled>パラレルドライブ<small>将来ここから形態変更・性能変更へ</small></button>
+</div></dialog>
 <div id="battleScreen" class="screen-hidden">
 <header class="topbar"><div class="top-title">戦闘</div><div class="chip" id="battleChip">B1/3</div><div class="chip" id="turnChip">T1</div><button class="chip" type="button" id="speedBtn">標準</button></header>
 <section class="card setup"><button class="setup-toggle" type="button" id="setupToggle"><span>テスト設定</span><span id="setupMark">開く ▾</span></button><div class="setup-body" id="setupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="partySetup"></div><div class="setup-title">3連戦の敵</div><div class="setup-grid" id="enemySetup"></div>
@@ -567,6 +634,24 @@ const ALLIES={
  dog:{id:'dog',name:'犬娘',baseHp:70,atk:20,img:IMG.dog,type:'physical',skill:'ワイルドアタック',skillShort:'×1.2物理 / 理力5以上：×1.5'},
  slug:{id:'slug',name:'ナメクジ娘',baseHp:120,atk:12,img:IMG.slug,type:'physical',skill:'なめくじプレス',skillShort:'×1.3物理 / 理力+1'},
  demon:{id:'demon',name:'デーモン',baseHp:60,atk:20,img:IMG.demon,type:'magic',skill:'サンダー',skillShort:'×1.0魔導+ショック30 / 叡智5消費で×1.8'}
+};
+const ALLY_DETAILS={
+ slime:{role:'物理 / 耐久',summary:'被弾しながら理力を育てる前衛。',abilities:[
+   ['ぷるぷるボディ','物理被ダメージ-5%。ダメージを受けるたび理力+1。'],
+   ['ブルージェル','味方全員の最大HP+5%。']
+ ],skill:['ジェルスプラッシュ','攻撃力×1.2の物理ダメージ。理力5以上なら自身のHPを30%回復。']},
+ dog:{role:'物理 / 攻撃',summary:'通常攻撃と理力条件で火力を伸ばすアタッカー。',abilities:[
+   ['噛みつき','3の倍数ターン、通常攻撃後に敵へ2ターン被ダメージ+10%、理力+1。'],
+   ['元気なわんこ','状態異常の味方がいないなら自身の攻撃力+5。']
+ ],skill:['ワイルドアタック','攻撃力×1.2の物理ダメージ。理力5以上なら×1.5。']},
+ slug:{role:'物理 / 継戦',summary:'敵を徐々に脆くし、戦闘後に体勢を整える。',abilities:[
+   ['ぬめぬめ','通常攻撃後、敵に被ダメージ+2%。'],
+   ['ねばねば','戦闘終了時、自身のHPを5%回復。']
+ ],skill:['なめくじプレス','攻撃力×1.3の物理ダメージ、理力+1。理力5以上なら敵に被ダメージ+5%。']},
+ demon:{role:'魔導 / 妨害',summary:'炎上から叡智を蓄え、強化サンダーへつなぐ魔導型。',abilities:[
+   ['ファイア','通常攻撃後、敵が炎上でなければ40%で【炎上3】。既に炎上なら叡智+2。'],
+   ['魔術師悪魔','戦闘開始時、パーティ内の魔導キャラ数だけ叡智を獲得。']
+ ],skill:['サンダー','攻撃力×1.0の魔導ダメージ＋【ショック30】。叡智5以上なら5消費し、攻撃力×1.8へ強化。']}
 };
 const ENEMIES={slime:{id:'slime',name:'スライム娘',maxHp:180,img:IMG.slime},dog:{id:'dog',name:'犬娘',maxHp:250,img:IMG.dog},arachne:{id:'arachne',name:'アラクネ',maxHp:260,img:IMG.arachne},golem:{id:'golem',name:'ゴーレム娘',maxHp:350,img:IMG.golem},gluttonDog:{id:'gluttonDog',name:'食いしん坊の犬娘',maxHp:500,img:IMG.dog,chargeMax:3,unique:true},crusher:{id:'crusher',name:'クラッシャー',maxHp:600,img:IMG.crusher,chargeMax:3,boss:true}};
 const SPEEDS=[{label:'標準',action:540,ability:1080,pause:250,float:920},{label:'×2',action:285,ability:720,pause:120,float:700},{label:'×4',action:165,ability:520,pause:70,float:560}];
@@ -1215,7 +1300,18 @@ function openExploreManager(kind){
  }
  dlg.showModal();
 }
-function renderExploreParty(){const box=$('#exploreParty');box.innerHTML='';state.party.forEach(u=>{const d=document.createElement('div');d.className='card explore-unit';d.innerHTML=`<b>${u.name}${u.dead?' ☠':''}</b><span>HP ${u.hp}/${u.maxHp}　SKILL ${u.gauge}/100</span><div class="explore-mini"><i style="width:${Math.max(0,u.hp/u.maxHp*100)}%"></i></div><div class="explore-mini gauge"><i style="width:${u.gauge}%"></i></div>`;box.appendChild(d)})}
+function gearNames(u){return [u.gear.dagger?'ダガー':'',u.gear.cloth?'布の服':'',u.gear.ring?'理力の指輪':''].filter(Boolean)}
+function openExploreCharacter(uid){
+ const u=state.party.find(x=>x.uid===uid);if(!u)return;
+ const d=ALLY_DETAILS[u.id]||{role:'',summary:'',abilities:[],skill:[u.skill,u.skillShort]};
+ $('#charSheetImg').src=u.img;$('#charSheetImg').alt=u.name;$('#charSheetName').textContent=u.name;$('#charSheetRole').textContent=d.role||'キャラクター詳細';$('#charSheetSummary').textContent=d.summary||'';
+ const stats=$('#charSheetStats');stats.innerHTML=`<div class="sheet-stat"><span>HP</span><b>${u.hp}/${u.maxHp}</b></div><div class="sheet-stat"><span>ATK</span><b>${effectiveAtk(u)}</b></div><div class="sheet-stat"><span>SKILL</span><b>${u.gauge}/100</b></div>${u.id==='demon'?`<div class="sheet-stat"><span>叡智</span><b>${u.wisdom}</b></div>`:''}<div class="sheet-stat"><span>通常属性</span><b>${typeJP(u.type)}</b></div><div class="sheet-stat"><span>状態</span><b>${u.dead?'戦闘不能':(u.statuses.length?u.statuses.map(s=>s.short||s.name).join('・'):'正常')}</b></div>`;
+ const abs=$('#charSheetAbilities');abs.innerHTML='';d.abilities.forEach(([name,text])=>{const e=document.createElement('div');e.className='sheet-entry';e.innerHTML=`<b>${name}</b><p>${text}</p>`;abs.appendChild(e)});
+ const sk=$('#charSheetSkill');sk.innerHTML=`<div class="sheet-entry"><b>${d.skill[0]}</b><p>${d.skill[1]}</p></div>`;
+ const gears=gearNames(u);$('#charSheetGear').textContent=gears.length?gears.join(' / '):'装備なし';
+ $('#exploreCharacterDialog').showModal();
+}
+function renderExploreParty(){const box=$('#exploreParty');box.innerHTML='';state.party.forEach(u=>{const d=document.createElement('button');d.type='button';d.className=`card explore-unit${u.dead?' dead':''}`;d.innerHTML=`<img class="explore-unit-img" src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><span>HP ${u.hp}/${u.maxHp}　SKILL ${u.gauge}/100</span><div class="explore-mini"><i style="width:${Math.max(0,u.hp/u.maxHp*100)}%"></i></div><div class="explore-mini gauge"><i style="width:${u.gauge}%"></i></div>`;d.addEventListener('click',()=>openExploreCharacter(u.uid));box.appendChild(d)})}
 function renderExplore(){
  if(!explore)return;const map=currentMap();$('#floorChip').textContent=`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=`迷宮 ${explore.floor}F`;mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
  const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?'崩壊中：休憩不可。移動時35%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。':'移動するたび+1。階をまたいで持ち越します。テスト用上限40（本番はもっと高い想定）。';
@@ -1232,7 +1328,7 @@ $('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').add
 $('#statsToggle').addEventListener('click',()=>{const b=$('#statsBody'),o=b.classList.toggle('show');$('#statsMark').textContent=o?'閉じる ▴':'開く ▾'});
 $('#resetCumulativeBtn').addEventListener('click',()=>{delete cumulativeByConfig[configKey()];renderStats()});
 $('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});$('#bossMechanic').addEventListener('click',openBossDetail);$('#bossDetailCloseBtn').addEventListener('click',()=>$('#bossDetailDialog').close());
-$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#itemManageBtn').addEventListener('click',()=>openExploreManager('item'));$('#gearManageBtn').addEventListener('click',()=>openExploreManager('gear'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());
+$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#itemManageBtn').addEventListener('click',()=>openExploreManager('item'));$('#gearManageBtn').addEventListener('click',()=>openExploreManager('gear'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());
 $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.current=f.map.start;showEvent('再生成','現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
