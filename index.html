@@ -518,17 +518,18 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .character-sheet-dialog::backdrop{background:rgba(3,5,10,.72);backdrop-filter:blur(4px)}
 .character-sheet{max-height:88vh;overflow:auto;padding:8px 13px max(16px,env(safe-area-inset-bottom))}
 .sheet-handle{width:38px;height:4px;border-radius:999px;background:#495268;margin:0 auto 8px}
-.sheet-head{display:grid;grid-template-columns:96px minmax(0,1fr) 34px;gap:12px;align-items:stretch}
-.sheet-portrait{width:96px;height:112px;border-radius:16px;object-fit:cover;background:#0c111a;border:1px solid #30394d}
-.sheet-title{min-width:0;display:grid;grid-template-rows:auto 1fr;align-items:stretch}
-.sheet-title h3{font-size:20px;margin:3px 0 7px;line-height:1.15}
-.sheet-resource{display:grid;grid-template-rows:1fr 1fr;gap:7px;min-height:82px}
-.sheet-meter{padding:8px 9px;border-radius:11px;background:#151b29;border:1px solid #293248;display:flex;flex-direction:column;justify-content:center}
-.sheet-meter-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;font-size:8px;color:#d7deec}
+.sheet-head{display:block}
+.sheet-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.sheet-headline h3{font-size:20px;margin:0;line-height:1.15;flex:1;min-width:0}
+.sheet-top{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:stretch}
+.sheet-portrait{width:96px;height:96px;border-radius:16px;object-fit:cover;background:#0c111a;border:1px solid #30394d}
+.sheet-resource{display:grid;grid-template-rows:1fr 1fr;gap:8px;height:96px;min-height:96px}
+.sheet-meter{padding:10px 10px;border-radius:11px;background:#151b29;border:1px solid #293248;display:flex;flex-direction:column;justify-content:center}
+.sheet-meter-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:8px;color:#d7deec}
 .sheet-meter-row b{font-size:8px;letter-spacing:.02em}
 .sheet-meter-row span{font-weight:900;color:#fff}
 .sheet-meter .explore-mini{height:8px;margin-top:0}
-.sheet-close{width:34px;height:34px;border:0;border-radius:10px;background:#252c3e;color:#e7ebf4;font-size:18px;cursor:pointer}
+.sheet-close{width:34px;height:34px;border:0;border-radius:10px;background:#252c3e;color:#e7ebf4;font-size:18px;cursor:pointer;flex:0 0 auto}
 .sheet-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:12px}
 .sheet-stat{padding:7px;border-radius:10px;background:#171d2b;border:1px solid #293248}
 .sheet-stat span{display:block;font-size:6px;color:var(--muted)}.sheet-stat b{display:block;margin-top:2px;font-size:11px}
@@ -550,8 +551,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
   .explore-unit b{font-size:8.5px}
   .explore-unit-hpnum{font-size:6px}
   .explore-meter-label{font-size:6px}
-  .sheet-head{grid-template-columns:82px minmax(0,1fr) 32px}.sheet-portrait{width:82px;height:102px}
-  .sheet-title h3{margin-bottom:6px}.sheet-resource{gap:6px;min-height:74px}.sheet-meter{padding:6px 7px}.sheet-meter .explore-mini{height:7px}
+  .sheet-top{grid-template-columns:82px minmax(0,1fr);gap:10px}.sheet-portrait{width:82px;height:82px}
+  .sheet-headline{margin-bottom:8px}.sheet-headline h3{font-size:18px}.sheet-resource{gap:6px;height:82px;min-height:82px}.sheet-meter{padding:7px 8px}.sheet-meter .explore-mini{height:7px}
 }
 
 </style></head><body><main class="app">
@@ -576,9 +577,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 <dialog id="exploreCharacterDialog" class="character-sheet-dialog"><div class="character-sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-head">
-    <img class="sheet-portrait" id="charSheetImg" alt="">
-    <div class="sheet-title"><h3 id="charSheetName">魔物娘</h3><div class="sheet-resource" id="charSheetResource"></div></div>
-    <button class="sheet-close" id="charSheetCloseBtn" type="button" aria-label="閉じる">×</button>
+    <div class="sheet-headline"><h3 id="charSheetName">魔物娘</h3><button class="sheet-close" id="charSheetCloseBtn" type="button" aria-label="閉じる">×</button></div>
+    <div class="sheet-top"><img class="sheet-portrait" id="charSheetImg" alt=""><div class="sheet-resource" id="charSheetResource"></div></div>
   </div>
   <div class="sheet-stats" id="charSheetStats"></div>
   <section class="sheet-section"><h4>アビリティ</h4><div id="charSheetAbilities"></div></section>
