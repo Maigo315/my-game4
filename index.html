@@ -518,6 +518,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .gear-remove-btn,.gear-equip-btn{min-width:72px;min-height:35px;padding:0 9px;border-radius:9px;font-size:8px;font-weight:950;cursor:pointer}.gear-remove-btn{border:1px solid #3a455d;background:#202737;color:#dbe2ef}.gear-equip-btn{border:1px solid #74538f;background:#332742;color:#f4eff9}.gear-equip-btn:active,.gear-remove-btn:active{transform:scale(.98)}
 .gear-inventory{display:grid;gap:8px}.gear-item{align-items:center}.gear-compare{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}.gear-diff{padding:3px 5px;border-radius:999px;background:#192131;border:1px solid #33405a;color:#aeb9cb;font-size:7px;font-weight:800}.gear-diff.up{border-color:#426853;color:#a9dfbb}.gear-diff.down{border-color:#754852;color:#e8aeb7}.gear-diff.same{opacity:.65}
 .gear-empty-note{padding:14px;border-radius:11px;background:#101522;border:1px dashed #334059;color:#929db1;font-size:8.5px;line-height:1.5;text-align:center}
+.gear-item.incompatible{opacity:.58}.gear-equip-btn:disabled{cursor:not-allowed;opacity:.62;background:#202737;border-color:#3a455d;color:#98a4ba}
 @media(max-width:380px){#exploreManageDialog.gear-mode .manage-dialog{padding:13px}.gear-party-tab img{width:46px;height:46px}.gear-party-tab b{font-size:8.5px}.gear-slot-card{grid-template-columns:42px minmax(0,1fr) 16px;padding:9px 8px}.gear-slot-icon,.gear-item-icon{width:42px;height:42px;font-size:21px}.gear-current-card,.gear-item{grid-template-columns:44px minmax(0,1fr) auto;padding:9px 8px}.gear-remove-btn,.gear-equip-btn{min-width:64px;padding:0 7px}}
 #enhanceDialog{width:min(96vw,500px);max-height:84vh;overflow:auto;box-sizing:border-box}
 #enhanceDialog:focus{outline:none}
@@ -709,15 +710,46 @@ const ENHANCE_EFFECTS=[
  {id:'atk',name:'攻撃強化',text:'攻撃力 +1'},
  {id:'gauge',name:'技能充填',text:'スキルゲージ +30'}
 ];
-const GEAR_CATALOG={
- dagger:{id:'dagger',slot:'weapon',slotName:'武器',name:'ダガー',icon:'🗡️',stats:{atk:2},effects:['攻撃力 +2']},
- cloth:{id:'cloth',slot:'armor',slotName:'防具',name:'布の服',icon:'👕',stats:{physReduction:1},effects:['物理被ダメージ -1']},
- ring:{id:'ring',slot:'accessory',slotName:'装飾',name:'理力の指輪',icon:'💍',stats:{startReason:1},effects:['戦闘開始時 理力 +1']}
+const GEAR_ATTR_LABEL={physical:'物理',magic:'魔導',pleasure:'快楽'};
+const GEAR_CATALOG={};
+const addGear=g=>{GEAR_CATALOG[g.id]=g;return g};
+const WEAPON_SERIES={
+ physical:[
+  ['dagger','ダガー',2],['traveler_sword','旅人の剣',5],['iron_sword','鉄の剣',8],['silver_sword','シルバーソード',15],['desert_saber','デザートサーベル',24],['platinum_sword','プラチナソード',32],['golden_sword','煌金の剣',45]
+ ],
+ magic:[
+  ['cypress_staff','檜の杖',2],['mage_staff','魔術師の杖',4],['iron_rod','アイアンロッド',9],['silver_rod','シルバーロッド',15],['ritual_staff','祭杖',23],['platinum_rod','プラチナロッド',33],['golden_magic_staff','煌金の魔杖',45]
+ ],
+ pleasure:[
+  ['imp_heart','インプハート',2],['cutie_heart','キューティハート',4],['pink_heart','ピンクハート',8],['devil_heart','デビルハート',16],['succubus_heart','サキュバスハート',23],['nightmare_heart','ナイトメアハート',32],['lilith_heart','リリスハート',46]
+ ]
 };
-const GEAR_AFFIXES=[
- {id:'atk1',text:'攻撃力 +1',stats:{atk:1}},
- {id:'hp5',text:'最大HP +5',stats:{maxHp:5}},
- {id:'skill20',text:'スキルゲージ上昇量 +20%',stats:{skillGainPct:20}}
+Object.entries(WEAPON_SERIES).forEach(([weaponType,series])=>series.forEach(([id,name,atk],tier)=>addGear({id,slot:'weapon',slotName:'武器',name,icon:'🗡️',weaponType,tier,stats:{atk},effects:[`攻撃力 +${atk}`]})));
+const ARMOR_HP=[5,10,17,25,35,47,60],ARMOR_REDUCTION=[1,3,5,7,9,11,13];
+const ARMOR_SERIES={
+ physical:[['cloth','布の服'],['leather_armor','革の鎧'],['iron_armor','鉄の鎧'],['silver_mail','シルバーメイル'],['knight_armor','騎士団の鎧'],['platinum_mail','プラチナメイル'],['golden_armor','煌金の鎧']],
+ magic:[['ragged_robe','ボロボロローブ'],['mage_clothes','魔術師の服'],['magical_cloth','マジカルクロス'],['silver_robe','シルバーローブ'],['sage_robe','賢者の法衣'],['platinum_robe','プラチナローブ'],['golden_robe','煌金のローブ']],
+ pleasure:[['priest_clothes','僧侶の服'],['anti_imp','アンチインプ'],['empty_mind_garb','無心の装束'],['anti_succubus','アンチサキュバス'],['exorcist_garb','退魔の装束'],['anti_lilith','アンチリリス'],['golden_garb','煌金の装束']]
+};
+Object.entries(ARMOR_SERIES).forEach(([armorType,series])=>series.forEach(([id,name],tier)=>{const hp=ARMOR_HP[tier],red=ARMOR_REDUCTION[tier],redKey=armorType==='physical'?'physReduction':armorType==='magic'?'magicReduction':'pleasureReduction';addGear({id,slot:'armor',slotName:'防具',name,icon:'👕',armorType,tier,stats:{maxHp:hp,[redKey]:red},effects:[`最大HP +${hp}`,`被${GEAR_ATTR_LABEL[armorType]}ダメージ -${red}`]})}));
+[
+ {id:'ring',name:'理力のリング',stats:{startReason:1},effects:['戦闘開始時 理力 +1']},
+ {id:'wisdom_ring',name:'叡智のリング',stats:{startWisdom:2},effects:['戦闘開始時 叡智 +2']},
+ {id:'offense_ring',name:'攻勢のリング',stats:{atkPct:20},effects:['攻撃力 +20%']},
+ {id:'defense_ring',name:'守勢のリング',stats:{damageReductionPct:10},effects:['被ダメージ -10%']},
+ {id:'technique_ring',name:'技巧のリング',stats:{skillDamagePct:50},effects:['スキルダメージ +50%']},
+ {id:'efficiency_ring',name:'効率のリング',stats:{skillGainPct:30},effects:['スキルゲージ上昇量 +30%']},
+ {id:'charge_ring',name:'充填のリング',stats:{startGauge:10},effects:['戦闘開始時 スキルゲージ +10']},
+ {id:'critical_ring',name:'会心のリング',stats:{critRate:10},effects:['会心率 +10%']}
+].forEach(g=>addGear({...g,slot:'accessory',slotName:'装飾',icon:'💍'}));
+const ACCESSORY_IDS=['ring','wisdom_ring','offense_ring','defense_ring','technique_ring','efficiency_ring','charge_ring','critical_ring'];
+const GEAR_AFFIX_DEFS=[
+ {id:'atk',slots:['weapon','armor'],weight:20,min:1,max:10,stat:'atk',label:'攻撃力',suffix:''},
+ {id:'maxHp',slots:['weapon','armor'],weight:20,min:1,max:10,stat:'maxHp',label:'最大HP',suffix:''},
+ {id:'critRate',slots:['weapon','armor'],weight:14,min:1,max:10,stat:'critRate',label:'会心率',suffix:'%'},
+ {id:'skillGainPct',slots:['weapon','armor'],weight:18,min:10,max:30,stat:'skillGainPct',label:'スキルゲージ上昇量',suffix:'%'},
+ {id:'startGauge',slots:['weapon','armor'],weight:16,min:1,max:20,stat:'startGauge',label:'戦闘開始時スキルゲージ',suffix:''},
+ {id:'skillDamagePct',slots:['weapon','armor'],weight:12,min:10,max:30,stat:'skillDamagePct',label:'スキルダメージ',suffix:'%'}
 ];
 const GEAR_SLOTS=[['weapon','武器','🗡️'],['armor','防具','👕'],['accessory','装飾','💍']];
 let gearManageUid=null,gearPickerSlot=null,gearSerial=0;
@@ -910,7 +942,7 @@ function renderStats(){
 }
 
 function renderSetup(){
- const p=$('#partySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-party-select="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー ATK+2</label><label><input type="checkbox" data-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服 物理-1</label><label><input type="checkbox" data-gear="${i}:ring" ${slot.ring?'checked':''}>理力の指輪</label></div>`;p.appendChild(b)});
+ const p=$('#partySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-party-select="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー ATK+2</label><label><input type="checkbox" data-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服 HP+5 / 物理-1</label><label><input type="checkbox" data-gear="${i}:ring" ${slot.ring?'checked':''}>理力のリング</label></div>`;p.appendChild(b)});
  const e=$('#enemySetup');e.innerHTML='';config.enemies.forEach((id,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>BATTLE ${i+1}</label><select data-enemy-select="${i}">${Object.values(ENEMIES).map(x=>`<option value="${x.id}" ${x.id===id?'selected':''}>${x.name}</option>`).join('')}</select>`;e.appendChild(b)});
 }
 function readSetup(){document.querySelectorAll('[data-party-select]').forEach(s=>config.party[+s.dataset.partySelect].ally=s.value);document.querySelectorAll('[data-enemy-select]').forEach(s=>config.enemies[+s.dataset.enemySelect]=s.value);document.querySelectorAll('[data-gear]').forEach(c=>{const [i,k]=c.dataset.gear.split(':');config.party[+i][k]=c.checked})}
@@ -922,7 +954,7 @@ function freshEnemy(idOverride=null){
  const maxHp=boosted?ceil(t.maxHp*1.15):t.maxHp;
  return {...t,maxHp,hp:maxHp,actionIndex:0,dead:false,statuses:[],permanentAmp:0,timedAmp:[],charge:t.chargeMax?0:null,hpTriggerPending:false,hpTriggerUsed:false,activeOmen:null,omenBroken:false,damageMult:boosted?1.15:1};
 }
-function startBattleResources(){state.reason=0;state.partyBuffs=[];const rings=state.party.filter(u=>!u.dead).reduce((sum,u)=>sum+gearStat(u,'startReason'),0);state.reason=Math.min(10,rings);const magic=state.party.filter(u=>!u.dead&&u.type==='magic').length;state.party.forEach(u=>{u.statuses=[];u.wisdom=u.id==='demon'&&!u.dead?magic:0})}
+function startBattleResources(){state.reason=0;state.partyBuffs=[];const rings=state.party.filter(u=>!u.dead).reduce((sum,u)=>sum+gearStat(u,'startReason'),0);state.reason=Math.min(10,rings);const magic=state.party.filter(u=>!u.dead&&u.type==='magic').length;state.party.forEach(u=>{u.statuses=[];u.wisdom=u.id==='demon'&&!u.dead?magic+gearStat(u,'startWisdom'):0;const startGauge=gearStat(u,'startGauge');if(startGauge)u.gauge=Math.min(100,u.gauge+startGauge)})}
 function resetRun(){
  gearSerial=0;state={battleNo:0,turn:1,reason:0,gold:0,parallelPoints:0,inventory:[],party:makeParty(),enemy:null,partyBuffs:[],battleOver:true,runOver:false,battleContext:null,stats:{battles:[],current:null,recorded:false,lastWin:null}};
  initializeEquippedInstances();gearPickerSlot=null;
@@ -971,20 +1003,22 @@ function openBossDetail(){
  $('#bossDetailDialog').showModal()
 }
 function unitEl(uid){return document.querySelector(`[data-unit="${uid}"]`)}function totalEnemyAmp(){return state.enemy.permanentAmp+state.enemy.timedAmp.reduce((s,x)=>s+x.value,0)}function enemyStatus(n){return state.enemy.statuses.find(s=>s.name===n)}function hasAllyStatus(u,n){return u.statuses.some(s=>s.name===n)}function totalAttackBuffPct(){return state.partyBuffs.reduce((s,x)=>s+(x.valuePct||0),0)}function totalPartyDamageReductionPct(){return state.partyBuffs.reduce((s,x)=>s+(x.damageReductionPct||0),0)}
-function effectiveAtk(u){let a=u.atk;if(u.id==='dog'&&state.party.every(x=>x.statuses.length===0))a+=5;return ceil(a*(1+totalAttackBuffPct()/100))}function incomingAmp(u){return u.statuses.reduce((s,x)=>s+(x.damageTakenAmp||0),0)}
+function effectiveAtk(u){let a=u.atk;if(u.id==='dog'&&state.party.every(x=>x.statuses.length===0))a+=5;a*=1+gearStat(u,'atkPct')/100;return ceil(a*(1+totalAttackBuffPct()/100))}function incomingAmp(u){return u.statuses.reduce((s,x)=>s+(x.damageTakenAmp||0),0)}
 function pulseElement(el,cls='feedback-pulse'){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),900)}function popNear(el,t){if(!el)return;const h=el.closest('.unit')||el.closest('.enemy-hud')||el.parentElement;if(!h)return;if(getComputedStyle(h).position==='static')h.style.position='relative';const p=document.createElement('span');p.className='change-pop';p.textContent=t;p.style.right='6px';p.style.top='6px';h.appendChild(p);setTimeout(()=>p.remove(),900)}
 function feedbackEnemyStatus(t){const el=document.querySelector('#enemyStatus .status-pill');pulseElement(el);popNear(el,t)}function feedbackReason(t){const el=$('#reasonText');pulseElement(el);popNear(el,t)}function feedbackGauge(u,t){const el=document.querySelector(`[data-unit="${u.uid}"] [data-gauge-fill]`);pulseElement(el,'feedback-gauge');popNear(el,t)}function feedbackHp(u,t){const el=document.querySelector(`[data-unit="${u.uid}"] [data-hp-fill]`);pulseElement(el,'feedback-good');popNear(el,t)}function feedbackPartyAtk(t){state.party.forEach(u=>pulseElement(document.querySelector(`[data-unit="${u.uid}"] [data-atkline]`),'feedback-atk'));popNear(document.querySelector('[data-atkline]'),t)}
 function floatNumber(h,t,c='damage'){const n=document.createElement('div');n.className=`floating ${c}`;n.textContent=t;h.appendChild(n);setTimeout(()=>n.remove(),timing().float)}async function actFlash(u){const e=unitEl(u.uid);if(e){e.classList.add('acting');await delay(Math.round(timing().action*.33))}}function clearActing(){document.querySelectorAll('.unit.acting').forEach(x=>x.classList.remove('acting'))}async function enemyHitFeedback(d){enemyArt.classList.add('hit');floatNumber(stage,`-${d}`);await delay(Math.round(timing().action*.62));enemyArt.classList.remove('hit')}async function allyHitFeedback(u,d){const e=unitEl(u.uid);if(e){e.classList.add('target');floatNumber(e,`-${d}`)}await delay(Math.round(timing().action*.62));if(e)e.classList.remove('target')}
 function adjustedGaugeGain(u,base){return Math.max(0,Math.round(base*(1+gearStat(u,'skillGainPct')/100)))}function gainGaugeAttack(u){const gain=adjustedGaugeGain(u,10);u.gauge=Math.min(100,u.gauge+gain);return gain}function gaugeFromIncoming(u,d){const r=d/u.maxHp,base=r>=.75?50:r>=.5?25:10;return adjustedGaugeGain(u,base)}function enemyDamageReduction(){return enemyStatus('硬化')?50:0}
-async function damageEnemy(u,base,source,type='physical',gauge=false){if(state.enemy.dead)return;let raw=base*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100);const dmg=Math.max(0,ceil(raw));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');showBanner(`${u.name}の${source}！`,`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){state.enemy.dead=true;await finishBattle()}}
+async function damageEnemy(u,base,source,type='physical',gauge=false){if(state.enemy.dead)return;const crit=Math.random()<gearStat(u,'critRate')/100;let raw=base*(crit?1.5:1)*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100);const dmg=Math.max(0,ceil(raw));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}${crit?'【会心】':''}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');showBanner(`${u.name}の${source}${crit?'【会心】':''}！`,`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){state.enemy.dead=true;await finishBattle()}}
 async function damageAlly(u,base,source,type='physical',crit=false){
  if(!u||u.dead)return;
  let dmg=base*(state.enemy?.damageMult||1)*(crit?1.5:1)*(1+incomingAmp(u)/100);
  if(enemyStatus('炎上'))dmg*=.8;
  dmg*=Math.max(0,1-totalPartyDamageReductionPct()/100);
+ dmg*=Math.max(0,1-gearStat(u,'damageReductionPct')/100);
  if(type==='physical'&&u.id==='slime')dmg*=.95;
  dmg=ceil(dmg);
- if(type==='physical'){const red=gearStat(u,'physReduction');if(red)dmg=Math.max(0,dmg-red)}
+ const redKey=type==='physical'?'physReduction':type==='magic'?'magicReduction':type==='pleasure'?'pleasureReduction':null;
+ if(redKey){const red=gearStat(u,redKey);if(red)dmg=Math.max(0,dmg-red)}
  const beforeHp=u.hp;
  u.hp=Math.max(0,u.hp-dmg);
  const actual=beforeHp-u.hp;
@@ -1112,7 +1146,8 @@ async function enemyAction(){
  if(!aliveParty().length)await finishRun(false)
 }
 async function tickStatuses(){const burn=enemyStatus('炎上');if(burn&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*burn.x/100);if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【炎上${burn.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`炎上${burn.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}state.party.forEach(u=>{u.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay||1)));u.statuses=u.statuses.filter(s=>s.x>0)});state.enemy.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay||1)));state.enemy.statuses=state.enemy.statuses.filter(s=>s.x>0);state.enemy.timedAmp.forEach(s=>s.turns--);state.enemy.timedAmp=state.enemy.timedAmp.filter(s=>s.turns>0);state.partyBuffs.forEach(b=>b.turns--);state.partyBuffs=state.partyBuffs.filter(b=>b.turns>0);if(state.enemy.hp<=0)state.enemy.dead=true}
-async function runChain(sel){addLog(`スキルチェイン：${sel.map(u=>u.name).join('、')}`,'system');showBanner('スキルチェイン！',`${sel.length}人参加`);await delay(timing().ability);for(const u of sel){if(state.enemy.dead)break;u.gauge=0;await actFlash(u);const atk=effectiveAtk(u);if(u.id==='slime'){await damageEnemy(u,atk*1.2,'ジェルスプラッシュ','physical');if(!state.enemy.dead&&state.reason>=5&&!u.dead&&!recoveryBlocked()){const h=ceil(u.maxHp*.3),before=u.hp;u.hp=Math.min(u.maxHp,u.hp+h);const a=u.hp-before;if(a>0){if(state.stats&&state.stats.current)state.stats.current.healing+=a;addLog(`理力5以上：スライム娘が${a}回復。`,'heal');showBanner('ジェルスプラッシュ追加効果',`HP+${a}`);render();feedbackHp(u,`+${a}`);await delay(timing().ability)}}}if(u.id==='dog')await damageEnemy(u,atk*(state.reason>=5?1.5:1.2),'ワイルドアタック','physical');if(u.id==='slug'){await damageEnemy(u,atk*1.3,'なめくじプレス','physical');if(!state.enemy.dead){state.reason=Math.min(10,state.reason+1);addLog(`なめくじプレス：理力+1（${state.reason}）`,'system');if(state.reason>=5){state.enemy.permanentAmp=Math.min(30,state.enemy.permanentAmp+5);markBossDebuffApplied();showBanner('なめくじプレス追加効果','敵の被ダメ+5%')}else showBanner('なめくじプレス','理力+1');render();feedbackReason('+1');if(state.reason>=5)feedbackEnemyStatus('+5%');await delay(timing().ability)}}if(u.id==='demon'){const strong=u.wisdom>=5;if(strong)u.wisdom-=5;await damageEnemy(u,atk*(strong?1.8:1),'サンダー','magic');if(!state.enemy.dead){addEnemyStatus({name:'ショック',x:30,decay:10,kind:'debuff',short:'ショック'});addLog('サンダー：敵に【ショック30】。','system');showBanner('サンダー','ショック30');render();feedbackEnemyStatus('ショック30');await delay(timing().ability)}}clearActing()}}
+function skillDamageMultiplier(u){return 1+gearStat(u,'skillDamagePct')/100}
+async function runChain(sel){addLog(`スキルチェイン：${sel.map(u=>u.name).join('、')}`,'system');showBanner('スキルチェイン！',`${sel.length}人参加`);await delay(timing().ability);for(const u of sel){if(state.enemy.dead)break;u.gauge=0;await actFlash(u);const atk=effectiveAtk(u);if(u.id==='slime'){await damageEnemy(u,atk*1.2*skillDamageMultiplier(u),'ジェルスプラッシュ','physical');if(!state.enemy.dead&&state.reason>=5&&!u.dead&&!recoveryBlocked()){const h=ceil(u.maxHp*.3),before=u.hp;u.hp=Math.min(u.maxHp,u.hp+h);const a=u.hp-before;if(a>0){if(state.stats&&state.stats.current)state.stats.current.healing+=a;addLog(`理力5以上：スライム娘が${a}回復。`,'heal');showBanner('ジェルスプラッシュ追加効果',`HP+${a}`);render();feedbackHp(u,`+${a}`);await delay(timing().ability)}}}if(u.id==='dog')await damageEnemy(u,atk*(state.reason>=5?1.5:1.2)*skillDamageMultiplier(u),'ワイルドアタック','physical');if(u.id==='slug'){await damageEnemy(u,atk*1.3*skillDamageMultiplier(u),'なめくじプレス','physical');if(!state.enemy.dead){state.reason=Math.min(10,state.reason+1);addLog(`なめくじプレス：理力+1（${state.reason}）`,'system');if(state.reason>=5){state.enemy.permanentAmp=Math.min(30,state.enemy.permanentAmp+5);markBossDebuffApplied();showBanner('なめくじプレス追加効果','敵の被ダメ+5%')}else showBanner('なめくじプレス','理力+1');render();feedbackReason('+1');if(state.reason>=5)feedbackEnemyStatus('+5%');await delay(timing().ability)}}if(u.id==='demon'){const strong=u.wisdom>=5;if(strong)u.wisdom-=5;await damageEnemy(u,atk*(strong?1.8:1)*skillDamageMultiplier(u),'サンダー','magic');if(!state.enemy.dead){addEnemyStatus({name:'ショック',x:30,decay:10,kind:'debuff',short:'ショック'});addLog('サンダー：敵に【ショック30】。','system');showBanner('サンダー','ショック30');render();feedbackEnemyStatus('ショック30');await delay(timing().ability)}}clearActing()}}
 function averageLivingAttack(){
  const live=aliveParty();
  return live.length?live.reduce((sum,u)=>sum+effectiveAtk(u),0)/live.length:0
@@ -1267,7 +1302,7 @@ function finishRun(win){
  $('#nextBattleBtn').textContent='探索を最初から';intermission.classList.add('show');showBanner(win?'探索クリア！':'パーティは全滅した……');render();
 }
 function statusSummary(u){const a=[];u.statuses.forEach(s=>a.push({text:`${s.short||s.name}${s.x}`,kind:s.kind||'debuff',full:`${s.name}${s.x}`}));state.partyBuffs.forEach(b=>a.push({text:`${b.short} ${b.turns}T`,kind:'buff',full:`${b.name}：残り${b.turns}T`}));return a}
-function openDetail(uid){selectedDetailId=uid;const u=state.party.find(x=>x.uid===uid);if(!u)return;const gear=[u.gear.dagger?'ダガー':'',u.gear.cloth?'布の服':'',u.gear.ring?'理力の指輪':''].filter(Boolean).join(' / ')||'装備なし';$('#detailName').textContent=u.name;$('#detailBody').innerHTML=`ATK ${effectiveAtk(u)} / HP ${u.hp}/${u.maxHp} / SKILL ${u.gauge}/100${u.id==='demon'?` / 叡智 ${u.wisdom}`:''}<br>通常攻撃：${typeJP(u.type)}<br>スキル：${u.skill}｜${u.skillShort}<br>装備：${gear}`;const box=$('#detailStatuses');box.innerHTML='';const items=statusSummary(u);if(!items.length){const s=document.createElement('span');s.className='status-pill';s.textContent='バフ・デバフなし';box.appendChild(s)}else items.forEach(it=>{const s=document.createElement('span');s.className=`status-pill ${it.kind}`;s.textContent=it.full;box.appendChild(s)});detailPanel.classList.add('show')}
+function openDetail(uid){selectedDetailId=uid;const u=state.party.find(x=>x.uid===uid);if(!u)return;const gear=gearNames(u).join(' / ')||'装備なし';$('#detailName').textContent=u.name;$('#detailBody').innerHTML=`ATK ${effectiveAtk(u)} / HP ${u.hp}/${u.maxHp} / SKILL ${u.gauge}/100${u.id==='demon'?` / 叡智 ${u.wisdom}`:''}<br>通常攻撃：${typeJP(u.type)}<br>スキル：${u.skill}｜${u.skillShort}<br>装備：${gear}`;const box=$('#detailStatuses');box.innerHTML='';const items=statusSummary(u);if(!items.length){const s=document.createElement('span');s.className='status-pill';s.textContent='バフ・デバフなし';box.appendChild(s)}else items.forEach(it=>{const s=document.createElement('span');s.className=`status-pill ${it.kind}`;s.textContent=it.full;box.appendChild(s)});detailPanel.classList.add('show')}
 function render(){
  $('#battleChip').textContent=`戦闘${state.battleNo}`;$('#turnChip').textContent=`T${state.turn}`;$('#speedBtn').textContent=timing().label;$('#enemyName').textContent=state.enemy.name;$('#enemyImg').src=state.enemy.img;$('#enemyHpText').textContent=`${state.enemy.hp} / ${state.enemy.maxHp}`;$('#enemyHpFill').style.width=`${Math.max(0,state.enemy.hp/state.enemy.maxHp*100)}%`;
  const es=$('#enemyStatus');es.innerHTML='';const amp=totalEnemyAmp();if(amp){const p=document.createElement('span');p.className='status-pill debuff';p.textContent=`被ダメ+${amp}%`;es.appendChild(p)}state.enemy.statuses.forEach(s=>{const p=document.createElement('span');p.className=`status-pill ${s.kind||'debuff'}`;p.textContent=`${s.name}${s.x}`;es.appendChild(p)});if(!es.children.length){const p=document.createElement('span');p.className='status-pill';p.textContent='効果なし';es.appendChild(p)}renderBossMechanic();
@@ -1439,9 +1474,9 @@ function resolveExploreNode(){
    state.party.filter(u=>!u.dead).forEach(u=>u.gauge=Math.min(100,u.gauge+20));n.type='empty';showEvent('アイテム','仮アイテム「魔力の雫」を入手。生存中の味方全員のスキルゲージ+20。使用済みマスは「無」になった。');toast('全員 SKILL +20');return
  }
  if(n.type==='equipment'){
-   const k=rand(Object.keys(GEAR_CATALOG)),inst=createGearInstance(k,true),g=GEAR_CATALOG[k];state.inventory.push(inst);
-   const bonus=inst.affixes.length?`（${inst.affixes.map(id=>GEAR_AFFIXES.find(a=>a.id===id)?.text).filter(Boolean).join(' / ')}）`:'';
-   showEvent('装備入手',`「${g.name}」${bonus}を入手した。装備画面から好きな魔物娘に装備できる。使用済みマスは「無」になった。`);toast(`${g.icon} ${g.name} を入手`);n.type='empty';return
+   const inst=createRandomGearInstance(explore.floor),g=gearBase(inst);state.inventory.push(inst);
+   const bonus=gearAffixLines(inst);const attr=g.slot==='weapon'?` / ${GEAR_ATTR_LABEL[g.weaponType]}武器`:g.slot==='armor'?` / ${GEAR_ATTR_LABEL[g.armorType]}防具`:'';
+   showEvent('装備入手',`「${g.name}」${attr}${bonus.length?`（${bonus.join(' / ')}）`:''}を入手した。装備画面から確認できる。使用済みマスは「無」になった。`);toast(`${g.icon} ${g.name} を入手`);n.type='empty';return
  }
  if(n.type==='enhance'){openEnhancement(n);return}
  if(n.type==='rest'){
@@ -1464,33 +1499,43 @@ function centerMapOnCurrent(smooth=false){
  const top=Math.max(0,node.offsetTop+node.offsetHeight/2-mapViewport.clientHeight/2);
  mapViewport.scrollTo({left,top,behavior:smooth?'smooth':'auto'});
 }
+function rollInt(min,max){return min+Math.floor(Math.random()*(max-min+1))}
+function weightedPick(items){const total=items.reduce((sum,x)=>sum+(x.weight||1),0);let r=Math.random()*total;for(const x of items){r-=x.weight||1;if(r<=0)return x}return items[items.length-1]}
+function rollGearAffix(slot){const d=weightedPick(GEAR_AFFIX_DEFS.filter(x=>x.slots.includes(slot))),value=rollInt(d.min,d.max);return {id:d.id,value,stats:{[d.stat]:value}}}
+function affixText(id,value){const d=GEAR_AFFIX_DEFS.find(x=>x.id===id);return d?`${d.label} +${value}${d.suffix}`:`${id} +${value}`}
 function createGearInstance(baseId,withAffix=false){
- const affixes=[];
- if(withAffix){const pool=[...GEAR_AFFIXES];const a=pool.splice(Math.floor(Math.random()*pool.length),1)[0];if(a)affixes.push(a.id);if(Math.random()<.25&&pool.length){const b=pool[Math.floor(Math.random()*pool.length)];affixes.push(b.id)}}
+ const base=GEAR_CATALOG[baseId],affixes=[];
+ if(withAffix&&base&&base.slot!=='accessory'){const count=Math.random()<.20?2:1;for(let i=0;i<count;i++)affixes.push(rollGearAffix(base.slot))}
  return {uid:`gear${++gearSerial}`,baseId,affixes};
 }
+function rollGearTier(depth){const center=Math.max(0,Math.min(6,(depth||1)-1)),r=Math.random();if(r<.20)return Math.max(0,center-1);if(r<.90)return center;return Math.min(6,center+1)}
+function rollGearCategory(){const r=Math.random();return r<.40?'weapon':r<.80?'armor':'accessory'}
+function createRandomGearInstance(depth=1){const category=rollGearCategory();if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
 function gearBase(inst){return inst?GEAR_CATALOG[inst.baseId]:null}
-function gearInstanceStats(inst){const out={};if(!inst)return out;const base=gearBase(inst);Object.entries(base?.stats||{}).forEach(([k,v])=>out[k]=(out[k]||0)+v);(inst.affixes||[]).forEach(id=>{const a=GEAR_AFFIXES.find(x=>x.id===id);Object.entries(a?.stats||{}).forEach(([k,v])=>out[k]=(out[k]||0)+v)});return out}
-function gearEffectLines(inst){if(!inst)return[];const base=gearBase(inst);return [...(base?.effects||[]),...(inst.affixes||[]).map(id=>GEAR_AFFIXES.find(a=>a.id===id)?.text).filter(Boolean)]}
+function gearInstanceStats(inst){const out={};if(!inst)return out;const base=gearBase(inst);Object.entries(base?.stats||{}).forEach(([k,v])=>out[k]=(out[k]||0)+v);(inst.affixes||[]).forEach(a=>Object.entries(a?.stats||{}).forEach(([k,v])=>out[k]=(out[k]||0)+v));return out}
+function gearAffixLines(inst){if(!inst)return[];const sums={},order=[];(inst.affixes||[]).forEach(a=>{if(!(a.id in sums))order.push(a.id);sums[a.id]=(sums[a.id]||0)+(a.value||0)});return order.map(id=>affixText(id,sums[id]))}
+function gearEffectLines(inst){if(!inst)return[];const base=gearBase(inst);return [...(base?.effects||[]),...gearAffixLines(inst)]}
+function gearMeta(inst){const g=gearBase(inst);if(!g)return'';if(g.slot==='weapon')return `${g.slotName} / ${GEAR_ATTR_LABEL[g.weaponType]}`;if(g.slot==='armor')return `${g.slotName} / ${GEAR_ATTR_LABEL[g.armorType]}耐性`;return g.slotName}
 function equippedGear(u,slot){return u.gearInstances?.[slot]||null}
 function gearStat(u,key){return GEAR_SLOTS.reduce((sum,[slot])=>sum+(gearInstanceStats(equippedGear(u,slot))[key]||0),0)}
-function syncLegacyGearFlags(u){Object.keys(GEAR_CATALOG).forEach(k=>u.gear[k]=false);GEAR_SLOTS.forEach(([slot])=>{const inst=equippedGear(u,slot);if(inst)u.gear[inst.baseId]=true})}
+function canEquipGear(u,inst){const g=gearBase(inst);if(!g)return false;return g.slot!=='weapon'||g.weaponType===u.type}
+function syncLegacyGearFlags(u){['dagger','cloth','ring'].forEach(k=>u.gear[k]=false);GEAR_SLOTS.forEach(([slot])=>{const inst=equippedGear(u,slot);if(inst&&['dagger','cloth','ring'].includes(inst.baseId))u.gear[inst.baseId]=true})}
 function applyGearInstanceDelta(u,inst,sign){if(!inst)return;const st=gearInstanceStats(inst);if(st.atk)u.atk+=st.atk*sign;if(st.maxHp){const delta=st.maxHp*sign;u.maxHp=Math.max(1,u.maxHp+delta);u.hp=Math.min(u.hp,u.maxHp)}}
-function initializeEquippedInstances(){state.party.forEach(u=>{const legacy=Object.keys(GEAR_CATALOG).filter(k=>u.gear[k]);u.gearInstances={weapon:null,armor:null,accessory:null};legacy.forEach(k=>{const inst=createGearInstance(k,false),slot=GEAR_CATALOG[k].slot;u.gearInstances[slot]=inst;applyGearInstanceDelta(u,inst,1)});syncLegacyGearFlags(u)})}
+function initializeEquippedInstances(){state.party.forEach(u=>{const legacy=['dagger','cloth','ring'].filter(k=>u.gear[k]);u.gearInstances={weapon:null,armor:null,accessory:null};legacy.forEach(k=>{const inst=createGearInstance(k,false),slot=GEAR_CATALOG[k].slot;if(canEquipGear(u,inst)){u.gearInstances[slot]=inst;applyGearInstanceDelta(u,inst,1)}else state.inventory.push(inst)});syncLegacyGearFlags(u)})}
 function changeEquipmentInstance(u,slot,newUid){
  const current=equippedGear(u,slot);if(current?.uid===newUid)return false;
- let incoming=null,idx=-1;if(newUid){idx=state.inventory.findIndex(x=>x.uid===newUid);if(idx<0)return false;incoming=state.inventory[idx];if(gearBase(incoming)?.slot!==slot)return false}
+ let incoming=null,idx=-1;if(newUid){idx=state.inventory.findIndex(x=>x.uid===newUid);if(idx<0)return false;incoming=state.inventory[idx];if(gearBase(incoming)?.slot!==slot||!canEquipGear(u,incoming))return false}
  if(current){applyGearInstanceDelta(u,current,-1);state.inventory.push(current)}
  if(incoming){state.inventory.splice(idx,1);u.gearInstances[slot]=incoming;applyGearInstanceDelta(u,incoming,1)}else u.gearInstances[slot]=null;
  syncLegacyGearFlags(u);renderExploreParty();return true
 }
 function effectLinesHtml(inst){const base=gearBase(inst),baseCount=base?.effects?.length||0;return gearEffectLines(inst).map((t,i)=>`<div class="gear-effect-line${i>=baseCount?' affix':''}">${t}</div>`).join('')}
-const GEAR_COMPARE=[['atk','攻撃力',''],['maxHp','最大HP',''],['skillGainPct','SKILL獲得量','%'],['physReduction','物理軽減',''],['startReason','開始時理力','']];
+const GEAR_COMPARE=[['atk','攻撃力',''],['atkPct','攻撃力','%'],['maxHp','最大HP',''],['critRate','会心率','%'],['skillGainPct','SKILL獲得量','%'],['startGauge','開始時SKILL',''],['skillDamagePct','スキルダメージ','%'],['physReduction','物理軽減',''],['magicReduction','魔導軽減',''],['pleasureReduction','快楽軽減',''],['damageReductionPct','被ダメージ','%'],['startReason','開始時理力',''],['startWisdom','開始時叡智','']];
 function gearCompareHtml(current,candidate){const a=gearInstanceStats(current),b=gearInstanceStats(candidate),bits=[];GEAR_COMPARE.forEach(([k,label,suffix])=>{const d=(b[k]||0)-(a[k]||0);if(!d)return;bits.push(`<span class="gear-diff ${d>0?'up':'down'}">${label} ${d>0?'+':''}${d}${suffix}</span>`)});return bits.length?bits.join(''):'<span class="gear-diff same">数値差なし</span>'}
 function renderGearManager(){
  const list=$('#gearTabList');if(!list)return;list.innerHTML='';const u=state.party.find(x=>x.uid===gearManageUid)||state.party[0];gearManageUid=u.uid;
  if(!gearPickerSlot){
-   const intro=document.createElement('div');intro.className='gear-tab-intro';intro.innerHTML='<b>装備管理</b><p>キャラを選び、交換したいスロットをタップします。装備は個体ごとに管理され、同名装備も別々に並びます。</p>';list.appendChild(intro);
+   const intro=document.createElement('div');intro.className='gear-tab-intro';intro.innerHTML='<b>装備管理</b><p>キャラを選び、交換したいスロットをタップします。武器は現在の通常攻撃属性と一致するものだけ装備できます。</p>';list.appendChild(intro);
    const tabs=document.createElement('div');tabs.className='gear-party-tabs';
    state.party.forEach(x=>{const b=document.createElement('button');b.type='button';b.className=`gear-party-tab${x.uid===u.uid?' selected':''}`;b.innerHTML=`<img src="${x.img}" alt=""><b>${x.name}</b><small>ATK ${effectiveAtk(x)}</small>`;b.addEventListener('click',()=>{gearManageUid=x.uid;gearPickerSlot=null;renderGearManager()});tabs.appendChild(b)});list.appendChild(tabs);
    const sh=document.createElement('div');sh.className='gear-section-title';sh.innerHTML=`<b>${u.name}の装備</b><span>交換するスロットをタップ</span>`;list.appendChild(sh);
@@ -1499,9 +1544,9 @@ function renderGearManager(){
  }
  const slotInfo=GEAR_SLOTS.find(x=>x[0]===gearPickerSlot),label=slotInfo?.[1]||'',icon=slotInfo?.[2]||'',current=equippedGear(u,gearPickerSlot);
  const head=document.createElement('div');head.className='gear-picker-head';head.innerHTML=`<button class="gear-back" type="button">← 戻る</button><b>${icon} ${label}を選択</b><span>${u.name}</span>`;head.querySelector('button').addEventListener('click',()=>{gearPickerSlot=null;renderGearManager();window.scrollTo({top:0,behavior:'smooth'})});list.appendChild(head);
- const wrap=document.createElement('div');wrap.className='gear-current-wrap';const cg=gearBase(current);wrap.innerHTML=`<div class="gear-current-label">現在装備</div><div class="gear-current-card"><div class="gear-item-icon">${cg?.icon||icon}</div><div class="gear-item-main"><b>${cg?cg.name:'装備なし'}</b><span class="gear-item-meta">${u.name} / ${label}</span><div class="gear-effect-list">${current?effectLinesHtml(current):'<div class="gear-effect-line">効果なし</div>'}</div></div>${current?'<button class="gear-remove-btn" type="button">外す</button>':''}</div>`;const rem=wrap.querySelector('.gear-remove-btn');if(rem)rem.addEventListener('click',()=>{const name=cg.name;if(changeEquipmentInstance(u,gearPickerSlot,null)){toast(`${u.name}：${name}を外した`);renderGearManager()}});list.appendChild(wrap);
- const candidates=state.inventory.filter(inst=>gearBase(inst)?.slot===gearPickerSlot);const ih=document.createElement('div');ih.className='gear-section-title';ih.innerHTML=`<b>所持${label}</b><span>${candidates.length}個</span>`;list.appendChild(ih);
- const inv=document.createElement('div');inv.className='gear-inventory';if(!candidates.length){inv.innerHTML=`<div class="gear-empty-note">装備できる${label}を所持していません。<br>同じ装備でも個体ごとに別々にここへ並びます。</div>`}else candidates.forEach(inst=>{const g=gearBase(inst);const item=document.createElement('div');item.className='gear-item';item.innerHTML=`<div class="gear-item-icon">${g.icon}</div><div class="gear-item-main"><b>${g.name}</b><span class="gear-item-meta">${g.slotName}</span><div class="gear-effect-list">${effectLinesHtml(inst)}</div><div class="gear-compare">${gearCompareHtml(current,inst)}</div></div><button class="gear-equip-btn" type="button">${current?'付け替え':'装備する'}</button>`;item.querySelector('button').addEventListener('click',()=>{const before=gearBase(equippedGear(u,gearPickerSlot))?.name||'装備なし';if(changeEquipmentInstance(u,gearPickerSlot,inst.uid)){toast(`${u.name}：${g.name}を装備`);showEvent('装備変更',`${u.name}の${label}を「${before}」から「${g.name}」へ変更した。`);renderGearManager()}});inv.appendChild(item)});list.appendChild(inv)
+ const wrap=document.createElement('div');wrap.className='gear-current-wrap';const cg=gearBase(current);wrap.innerHTML=`<div class="gear-current-label">現在装備</div><div class="gear-current-card"><div class="gear-item-icon">${cg?.icon||icon}</div><div class="gear-item-main"><b>${cg?cg.name:'装備なし'}</b><span class="gear-item-meta">${u.name} / ${label}${current?` / ${gearMeta(current)}`:''}</span><div class="gear-effect-list">${current?effectLinesHtml(current):'<div class="gear-effect-line">効果なし</div>'}</div></div>${current?'<button class="gear-remove-btn" type="button">外す</button>':''}</div>`;const rem=wrap.querySelector('.gear-remove-btn');if(rem)rem.addEventListener('click',()=>{const name=cg.name;if(changeEquipmentInstance(u,gearPickerSlot,null)){toast(`${u.name}：${name}を外した`);renderGearManager()}});list.appendChild(wrap);
+ const candidates=state.inventory.filter(inst=>gearBase(inst)?.slot===gearPickerSlot);const usable=candidates.filter(inst=>canEquipGear(u,inst)),unusable=candidates.filter(inst=>!canEquipGear(u,inst));const ih=document.createElement('div');ih.className='gear-section-title';ih.innerHTML=`<b>所持${label}</b><span>${candidates.length}個${unusable.length?` / 装備不可 ${unusable.length}`:''}</span>`;list.appendChild(ih);
+ const inv=document.createElement('div');inv.className='gear-inventory';if(!candidates.length){inv.innerHTML=`<div class="gear-empty-note">${label}を所持していません。<br>同じ装備でも個体ごとに別々にここへ並びます。</div>`}else [...usable,...unusable].forEach(inst=>{const g=gearBase(inst),ok=canEquipGear(u,inst);const item=document.createElement('div');item.className=`gear-item${ok?'':' incompatible'}`;item.innerHTML=`<div class="gear-item-icon">${g.icon}</div><div class="gear-item-main"><b>${g.name}</b><span class="gear-item-meta">${gearMeta(inst)}${!ok?` / ${u.name}は${GEAR_ATTR_LABEL[u.type]}属性`:''}</span><div class="gear-effect-list">${effectLinesHtml(inst)}</div>${ok?`<div class="gear-compare">${gearCompareHtml(current,inst)}</div>`:'<div class="gear-compare"><span class="gear-diff down">現在の形態では装備不可</span></div>'}</div><button class="gear-equip-btn" type="button" ${ok?'':'disabled'}>${ok?(current?'付け替え':'装備する'):'属性不一致'}</button>`;if(ok)item.querySelector('button').addEventListener('click',()=>{const before=gearBase(equippedGear(u,gearPickerSlot))?.name||'装備なし';if(changeEquipmentInstance(u,gearPickerSlot,inst.uid)){toast(`${u.name}：${g.name}を装備`);showEvent('装備変更',`${u.name}の${label}を「${before}」から「${g.name}」へ変更した。`);renderGearManager()}});inv.appendChild(item)});list.appendChild(inv)
 }
 function renderItemTab(){
  const g=$('#itemGoldChip'),p=$('#itemPpChip');if(g)g.textContent=`G ${state.gold}`;if(p)p.textContent=`PP ${state.parallelPoints}`
@@ -1557,7 +1602,7 @@ function renderExplore(){
  Object.values(map.nodes).forEach(n=>{const revealed=isRevealed(n),showType=revealed?n.type:'unknown';const b=document.createElement('button');b.type='button';b.className=`map-node type-${showType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${reachable.has(n.id)?' reachable':''}${n.infected&&revealed?' infected':''}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;b.innerHTML=revealed?`<span>${nodeIcon(n.type)}</span><small>${nodeLabel(n.type)}</small>`:'<span>?</span>';b.disabled=!reachable.has(n.id)||n.id===explore.current;b.addEventListener('click',()=>moveToNode(n.id));mapNodesEl.appendChild(b);n.infected=false});
  renderExploreParty();requestAnimationFrame(()=>centerMapOnCurrent(false));if(!$('#exploreEventTitle').textContent)resolveExploreNode()
 }
-function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力の指輪</label></div>`;p.appendChild(b)})}
+function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力のリング</label></div>`;p.appendChild(b)})}
 function readExploreSetup(){document.querySelectorAll('[data-explore-party]').forEach(s=>config.party[+s.dataset.exploreParty].ally=s.value);document.querySelectorAll('[data-explore-gear]').forEach(c=>{const [i,k]=c.dataset.exploreGear.split(':');config.party[+i][k]=c.checked})}
 
 $('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').addEventListener('click',()=>{if(!animating&&!state.battleOver)jewelDialog.showModal()});$('#attackJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'attack')});$('#defenseJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'defense')});$('#healJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'heal')});$('#jewelCancelBtn').addEventListener('click',()=>jewelDialog.close());$('#speedBtn').addEventListener('click',()=>{speedIndex=(speedIndex+1)%SPEEDS.length;render()});$('#nextBattleBtn').addEventListener('click',()=>state.runOver?resetRun():returnFromBattle());$('#detailClose').addEventListener('click',()=>{selectedDetailId=null;detailPanel.classList.remove('show')});$('#logToggle').addEventListener('click',()=>{const o=logEl.classList.toggle('show');$('#logToggleMark').textContent=o?'閉じる ▴':'開く ▾'});$('#resetBtn').addEventListener('click',resetRun);
