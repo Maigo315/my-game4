@@ -554,7 +554,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .item-target-effect{margin-top:10px;padding:10px 11px;border-radius:11px;background:#18202d;border:1px solid #38465e;font-size:9px;line-height:1.45;color:#ccd5e4}
 
 
-/* ===== Shop prototype v13.19 ===== */
+/* ===== Shop prototype v13.19.1 ===== */
 #shopDialog{width:min(94vw,520px);max-height:88vh;box-sizing:border-box;overflow:hidden}
 .shop-panel{max-height:88vh;display:flex;flex-direction:column;padding:15px;box-sizing:border-box}
 .shop-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid #30394e}
@@ -813,7 +813,7 @@ const exploreScreen=$('#exploreScreen'),battleScreen=$('#battleScreen'),mapBoard
 let explore=null;
 const EXPLORE_CFG={floors:3,w:5,h:7,collapseMax:40,infectionChance:.35};
 const NORMAL_GEAR_DROP_RATE=.20;
-const REWARD_CFG={enemy:{gold:10,pp:1},unique:{gold:50,pp:10},boss:{gold:100,pp:10}};
+const REWARD_CFG={enemy:{gold:50,pp:1},unique:{gold:250,pp:10},boss:{gold:500,pp:10}};
 const ENHANCE_EFFECTS=[
  {id:'hp',name:'生命強化',text:'最大HP +5 / HP 5回復'},
  {id:'atk',name:'攻撃強化',text:'攻撃力 +1'},
