@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.18.0 戦闘アイテム</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.18.1 アイテム使用演出</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -233,6 +233,8 @@ button.chip{cursor:pointer}
   min-height:52px;border:0;border-radius:14px;font-weight:950;font-size:15px;cursor:pointer;
 }
 .action:disabled{opacity:.42;cursor:not-allowed}
+.action.item-bag{border:1px solid #5a647e;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
+.action.item-bag.used{border-color:#475166}
 .attack{background:#eef1f7;color:#161923}
 .chain{background:linear-gradient(135deg,#9c70ff,#e466cf);color:#180f1c}
 .intermission{margin-top:7px;padding:12px;text-align:center;display:none}
@@ -804,9 +806,9 @@ const ITEM_CATALOG={
 const ITEM_IDS=Object.keys(ITEM_CATALOG);
 const ITEM_DROP_TABLE=[
  {id:'potion',weight:40},
- {id:'skill_capsule',weight:30},
+ {id:'skill_capsule',weight:20},
  {id:'balance_scale',weight:20},
- {id:'panacea',weight:10}
+ {id:'panacea',weight:20}
 ];
 const GEAR_ATTR_LABEL={physical:'物理',magic:'魔導',pleasure:'快楽'};
 const GEAR_ATTR_ICON={physical:'🗡️',magic:'🪄',pleasure:'🩷'};
@@ -1380,9 +1382,19 @@ function renderBattleItemTargets(uid){
 function openBattleItemSheet(){
  if(animating||state.battleOver||battleItemAlreadyUsed())return;battleItemSelectedUid=null;battleItemTargetUid=null;renderBattleItemList();const dlg=$('#battleItemDialog');if(!dlg.open)dlg.showModal()
 }
+function playBattleItemFeedback(result){
+ const u=state.party.find(x=>x.uid===result?.targetUid);if(!u)return;const el=unitEl(u.uid);if(!el)return;
+ pulseElement(el,'feedback-good');
+ if(result.effect==='heal'){
+   const hp=document.querySelector(`[data-unit="${u.uid}"] [data-hp-fill]`);pulseElement(hp,'feedback-good');
+   floatNumber(el,result.amount>0?`+${result.amount}`:'HP MAX','heal');
+ }else if(result.effect==='cleanse'){
+   floatNumber(el,'状態解除','info');
+ }
+}
 function useSelectedBattleItem(){
  if(animating||state.battleOver||battleItemAlreadyUsed())return;const inst=state.items.find(x=>x.uid===battleItemSelectedUid);if(!inst||!battleItemTargetUid)return;const d=itemDef(inst.itemId);if(!d.battleUsable)return;const target=state.party.find(u=>u.uid===battleItemTargetUid);if(!battleItemTargetEligible(inst.itemId,target)){renderBattleItemTargets(inst.uid);return}
- const result=itemResultMessage(inst.itemId,battleItemTargetUid);if(!result)return;removeItemInstance(inst.uid);state.battleItemUsedTurn=state.turn;if(state.stats&&state.stats.current&&inst.itemId==='potion'){const m=result.text.match(/HPが(\d+) → (\d+)/);if(m)state.stats.current.healing+=Math.max(0,Number(m[2])-Number(m[1]))}addLog(`アイテム【${d.name}】：${result.text}`,'system');showBanner(`${d.icon} ${d.name}`,result.toast);closeBattleItemSheet();render();toast(result.toast)
+ const result=itemResultMessage(inst.itemId,battleItemTargetUid);if(!result)return;removeItemInstance(inst.uid);state.battleItemUsedTurn=state.turn;if(state.stats&&state.stats.current&&inst.itemId==='potion'){const m=result.text.match(/HPが(\d+) → (\d+)/);if(m)state.stats.current.healing+=Math.max(0,Number(m[2])-Number(m[1]))}addLog(`アイテム【${d.name}】：${result.text}`,'system');showBanner(`${d.icon} ${d.name}`,result.toast);closeBattleItemSheet();render();requestAnimationFrame(()=>playBattleItemFeedback(result));toast(result.toast)
 }
 function battleRewardFor(kind){return REWARD_CFG[kind]||{gold:0,pp:0}}
 function grantBattleReward(kind){const r=battleRewardFor(kind);state.gold+=r.gold;state.parallelPoints+=r.pp;return r}
@@ -1725,13 +1737,13 @@ function clearItemNode(nodeId){const n=currentMap().nodes[nodeId];if(!n||n.type!
 function itemResultMessage(itemId,targetUid=null){
  const d=itemDef(itemId);
  if(itemId==='potion'){
-   const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const before=u.hp;u.hp=Math.min(u.maxHp,u.hp+ceil(u.maxHp*.30));return {title:d.name,text:`${u.name}のHPが${before} → ${u.hp}になった。`,toast:`${u.name} HP +${u.hp-before}`}
+   const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const before=u.hp;u.hp=Math.min(u.maxHp,u.hp+ceil(u.maxHp*.30));return {title:d.name,text:`${u.name}のHPが${before} → ${u.hp}になった。`,toast:`${u.name} HP +${u.hp-before}`,targetUid:u.uid,effect:'heal',amount:u.hp-before}
  }
  if(itemId==='skill_capsule'){
    const living=state.party.filter(u=>!u.dead);living.forEach(u=>u.gauge=Math.min(100,u.gauge+20));return {title:d.name,text:`生存中の味方${living.length}人のスキルゲージを+20した。`,toast:'生存者 SKILL +20'}
  }
  if(itemId==='panacea'){
-   const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const removed=removableAllyStatuses(u);if(!removed.length)return null;const removedNames=removed.map(s=>s.short||s.name);u.statuses=u.statuses.filter(s=>(s.kind||'debuff')==='buff');return {title:d.name,text:`${u.name}の不利効果をすべて解除した（${removedNames.join('・')}）。`,toast:`${u.name} 状態解除`}
+   const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const removed=removableAllyStatuses(u);if(!removed.length)return null;const removedNames=removed.map(s=>s.short||s.name);u.statuses=u.statuses.filter(s=>(s.kind||'debuff')==='buff');return {title:d.name,text:`${u.name}の不利効果をすべて解除した（${removedNames.join('・')}）。`,toast:`${u.name} 状態解除`,targetUid:u.uid,effect:'cleanse',removedCount:removed.length}
  }
  if(itemId==='balance_scale'){
    if(!explore||explore.collapse<=0)return null;const before=explore.collapse;explore.collapse=Math.max(0,explore.collapse-20);return {title:d.name,text:`崩壊度が${before} → ${explore.collapse}になった。`,toast:`崩壊度 -${before-explore.collapse}`}
