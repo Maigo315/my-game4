@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.17.0 アイテム第1段階</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.17.2 アイテム比率調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -530,7 +530,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 @media(max-width:380px){.map-viewport{height:278px}.map-board{height:390px}.map-node{width:42px;height:42px;margin:-21px 0 0 -21px}.map-tools span{display:none}.explore-event .explore-action{min-width:78px;padding:0 8px}.explore-party-head span{display:none}#enhanceDialog{width:min(96vw,470px)}.enhance-dialog{min-height:min(58vh,500px);padding:15px}.enhance-targets{gap:6px}.enhance-target{min-height:166px;padding:11px 4px 10px}.enhance-target img{width:clamp(70px,21vw,82px);height:clamp(70px,21vw,82px)}.enhance-target b{font-size:9.5px}.enhance-target small{font-size:6.8px}.enhance-confirm{min-height:48px}}
 
 
-/* ===== Item system v13.17 ===== */
+/* ===== Item system v13.17.2 ===== */
 .item-tab-page{padding-bottom:76px}
 .item-tab-shell{display:grid;gap:8px;padding:3px 0 12px}
 .item-tab-intro{padding:12px 13px;border-radius:14px;background:#121824;border:1px solid #2e394f}
@@ -766,9 +766,14 @@ const ITEM_LIMIT=12;
 const ITEM_CATALOG={
  potion:{id:'potion',name:'ポーション',icon:'🧪',text:'生存中の味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。'},
  skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',text:'生存中の味方全員のスキルゲージ+20。戦闘不能者には効果がない。'},
- balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',text:'崩壊度-30。崩壊度0では使用できない。使用後、次のフロア移動時に崩壊度が最大値未満なら崩壊状態を解除する。'}
+ balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',text:'崩壊度-20。崩壊度0では使用できない。'}
 };
 const ITEM_IDS=Object.keys(ITEM_CATALOG);
+const ITEM_DROP_TABLE=[
+ {id:'potion',weight:50},
+ {id:'skill_capsule',weight:30},
+ {id:'balance_scale',weight:20}
+];
 const GEAR_ATTR_LABEL={physical:'物理',magic:'魔導',pleasure:'快楽'};
 const GEAR_ATTR_ICON={physical:'🗡️',magic:'🪄',pleasure:'🩷'};
 const GEAR_CATALOG={};
@@ -1344,7 +1349,7 @@ async function finishBattle(){
  addLog(`${state.enemy.name}を撃破！`,'system');addLog(`報酬：${reward.gold}G / PP +${reward.pp}`,'system');showBanner('勝利！',state.enemy.name);renderBattleReward(reward);render();
  if(ctx?.kind==='unique'){
    const f=explore.floorData[explore.floor];f.uniqueDefeated=true;
-   explore.collapse=0;explore.collapsed=false;explore.balanceScalePending=false;
+   explore.collapse=0;explore.collapsed=false;
    setNodeType(ctx.nodeId,'empty');
    droppedGear=addGearToInventory(createUniqueGearInstance(explore.floor,ctx.uniqueGearId||'glutton'),true);
    addLog(`二つ名装備「${gearDisplayName(droppedGear)}」を獲得！`,'system');
@@ -1485,7 +1490,7 @@ function generateFloor(floor){
 }
 function createExploreRun(){
  const floorData={};for(let f=1;f<=EXPLORE_CFG.floors;f++)floorData[f]={map:generateFloor(f),uniqueSpawned:false,uniqueDefeated:false};
- return {floor:1,steps:0,collapse:0,collapsed:false,balanceScalePending:false,current:floorData[1].map.start,floorData,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null}
+ return {floor:1,steps:0,collapse:0,collapsed:false,current:floorData[1].map.start,floorData,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null}
 }
 function currentMap(){return explore.floorData[explore.floor].map}
 function currentNode(){return currentMap().nodes[explore.current]}
@@ -1555,7 +1560,7 @@ function resolveExploreNode(){
  if(explore.lastMessage){const m=explore.lastMessage;explore.lastMessage=null;showEvent(m.title,m.text);return}
  if(n.type==='entrance'||n.type==='empty'){showEvent(n.type==='entrance'?'入口':'無のマス',n.type==='entrance'?'この階の入口。道の形は見えるが、離れたマスの中身はまだ分からない。':'何もない。だが移動すれば崩壊度は進む。');return}
  if(n.type==='item'){
-   if(!n.itemId)n.itemId=rand(ITEM_IDS);
+   if(!n.itemId)n.itemId=rollItemId();
    openItemPickup(n);return
  }
  if(n.type==='equipment'){
@@ -1572,7 +1577,7 @@ function resolveExploreNode(){
  if(n.type==='exit'){showEvent('次階への道',`${explore.floor+1}Fへ進める。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`,'次の階へ',advanceFloor);return}
  if(n.type==='boss'){showEvent('最奥','クラッシャーが待ち構えている。','ボス戦開始',()=>startExploreBattle(n.id,'crusher','boss'));return}
 }
-function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;const balanceReleased=!!(explore.balanceScalePending&&explore.collapsed&&explore.collapse<EXPLORE_CFG.collapseMax);if(balanceReleased)explore.collapsed=false;explore.balanceScalePending=false;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true;showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越したため、この階にもユニーク敵が出現した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。`)}else if(balanceReleased)showEvent(`${explore.floor}F 入口`,`均衡の天秤の効力で崩壊状態が解除された。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。`);toast(balanceReleased?'崩壊解除！':`${explore.floor}Fへ`,explore.collapsed);renderExplore()}
+function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true;showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越したため、この階にもユニーク敵が出現した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。`)}else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。`);toast(`${explore.floor}Fへ`,explore.collapsed);renderExplore()}
 function startExploreBattle(nodeId,enemyId,kind,uniqueGearId=null){
  state.battleNo++;state.turn=1;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0});startBattleResources();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');showBattle();render()
 }
@@ -1585,6 +1590,7 @@ function centerMapOnCurrent(smooth=false){
 }
 function rollInt(min,max){return min+Math.floor(Math.random()*(max-min+1))}
 function weightedPick(items){const total=items.reduce((sum,x)=>sum+(x.weight||1),0);let r=Math.random()*total;for(const x of items){r-=x.weight||1;if(r<=0)return x}return items[items.length-1]}
+function rollItemId(){return weightedPick(ITEM_DROP_TABLE).id}
 function rollGearAffix(slot){const d=weightedPick(GEAR_AFFIX_DEFS.filter(x=>x.slots.includes(slot))),value=rollInt(d.min,d.max);return {id:d.id,value,stats:{[d.stat]:value}}}
 function affixText(id,value){const d=GEAR_AFFIX_DEFS.find(x=>x.id===id);return d?`${d.label} +${value}${d.suffix}`:`${id} +${value}`}
 function createGearInstance(baseId,withAffix=false,affixCountOverride=null){
@@ -1666,7 +1672,7 @@ function itemResultMessage(itemId,targetUid=null){
    const living=state.party.filter(u=>!u.dead);living.forEach(u=>u.gauge=Math.min(100,u.gauge+20));return {title:d.name,text:`生存中の味方${living.length}人のスキルゲージを+20した。`,toast:'生存者 SKILL +20'}
  }
  if(itemId==='balance_scale'){
-   if(!explore||explore.collapse<=0)return null;const before=explore.collapse;explore.collapse=Math.max(0,explore.collapse-30);explore.balanceScalePending=true;const suffix=explore.collapsed?' 次のフロア移動時、崩壊度が最大値未満なら崩壊状態を解除する。':' 次のフロア移動時の崩壊解除判定が有効になった。';return {title:d.name,text:`崩壊度が${before} → ${explore.collapse}になった。${suffix}`,toast:`崩壊度 -${before-explore.collapse}`}
+   if(!explore||explore.collapse<=0)return null;const before=explore.collapse;explore.collapse=Math.max(0,explore.collapse-20);return {title:d.name,text:`崩壊度が${before} → ${explore.collapse}になった。`,toast:`崩壊度 -${before-explore.collapse}`}
  }
  return null
 }
@@ -1697,7 +1703,7 @@ function leaveCurrentItem(){
  const n=currentMap().nodes[itemPickupNodeId];const d=n?.itemId?itemDef(n.itemId):null;itemPickupNodeId=null;const dlg=$('#itemPickupDialog');if(dlg.open)dlg.close();if(n&&d)showEvent('アイテムを残した',`「${d.name}」はこのマスに残っている。後から戻って取得できる。`,'もう一度確認',()=>openItemPickup(n));renderExplore()
 }
 function openItemPickup(n){
- if(!n||n.type!=='item')return;if(!n.itemId)n.itemId=rand(ITEM_IDS);itemPickupNodeId=n.id;const d=itemDef(n.itemId),full=state.items.length>=ITEM_LIMIT;
+ if(!n||n.type!=='item')return;if(!n.itemId)n.itemId=rollItemId();itemPickupNodeId=n.id;const d=itemDef(n.itemId),full=state.items.length>=ITEM_LIMIT;
  $('#itemPickupIcon').textContent=d.icon;$('#itemPickupName').textContent=d.name;$('#itemPickupText').textContent=d.text;$('#itemPickupNote').textContent=full?`所持品 ${state.items.length}/${ITEM_LIMIT}。満杯です。今使うか、所持品を整理するか、この場に残せます。`:`所持品 ${state.items.length}/${ITEM_LIMIT}。拾わなければ、このマスに残ります。`;
  const actions=$('#itemPickupActions');actions.innerHTML='';
  const add=(label,cls,fn,disabled=false)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.className=cls;b.disabled=disabled;b.addEventListener('click',fn);actions.appendChild(b);return b};
@@ -1760,7 +1766,7 @@ function renderExploreParty(){
 }
 function renderExplore(){
  if(!explore)return;const map=currentMap();['goldChip','itemGoldChip','gearGoldChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`G ${state.gold}`});['ppChip','itemPpChip','gearPpChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`PP ${state.parallelPoints}`});const itemCount=$('#itemCountChip');if(itemCount)itemCount.textContent=`${state.items.length} / ${ITEM_LIMIT}`;$('#floorChip').textContent=`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=`迷宮 ${explore.floor}F`;mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
- const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?(explore.balanceScalePending?'天秤有効：次のフロア移動時、崩壊度が最大未満なら崩壊解除。':'崩壊中：休憩不可。移動時35%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。'):'移動するたび+1。階をまたいで持ち越します。テスト用上限40（本番はもっと高い想定）。';
+ const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?'崩壊中：休憩不可。移動時35%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。':'移動するたび+1。階をまたいで持ち越します。テスト用上限40（本番はもっと高い想定）。';
  mapLinesEl.innerHTML='';map.edges.forEach(k=>{const [a,b]=k.split('|'),na=map.nodes[a],nb=map.nodes[b],line=document.createElementNS('http://www.w3.org/2000/svg','line');const px=n=>8+n.x*(84/(EXPLORE_CFG.w-1)),py=n=>8+n.y*(84/(EXPLORE_CFG.h-1));line.setAttribute('x1',px(na));line.setAttribute('y1',py(na));line.setAttribute('x2',px(nb));line.setAttribute('y2',py(nb));line.setAttribute('class',`map-line ${(na.visited&&nb.visited)?'visited':''}`);mapLinesEl.appendChild(line)});
  mapNodesEl.innerHTML='';const reachable=new Set(neighborsOf(map,explore.current));const visitedIds=new Set(Object.values(map.nodes).filter(x=>x.visited).map(x=>x.id));
  const isRevealed=n=>n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
