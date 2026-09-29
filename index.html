@@ -140,7 +140,7 @@ button.chip{cursor:pointer}
 }
 .floating.damage{color:#ff9eae}
 .floating.heal{color:#a2efb5}
-.floating.info{color:#a9dcff;font-size:17px}
+.floating.info{color:#a9dcff;font-size:17px;white-space:nowrap;width:max-content;max-width:none}
 @keyframes floatUp{
   0%{opacity:0;transform:translate(-50%,-25%) scale(.84)}
   20%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}
@@ -799,7 +799,7 @@ const ENHANCE_EFFECTS=[
 const ITEM_LIMIT=12;
 const ITEM_CATALOG={
  potion:{id:'potion',name:'ポーション',icon:'🧪',text:'生存中の味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。',battleUsable:true},
- skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',text:'生存中の味方全員のスキルゲージ+20。戦闘不能者には効果がない。',battleUsable:false},
+ skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',text:'生存中の味方全員のスキルゲージ+20。戦闘不能者には効果がない。',battleUsable:true},
  balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',text:'崩壊度-20。崩壊度0では使用できない。',battleUsable:false},
  panacea:{id:'panacea',name:'万能薬',icon:'💊',text:'生存中の味方1人のデバフ・状態異常をすべて解除。戦闘不能者には使用できない。',battleUsable:true}
 };
@@ -1365,17 +1365,21 @@ async function playTurn(chain,jewel=null){
 function battleItemAlreadyUsed(){return state.battleItemUsedTurn===state.turn}
 function battleUsableItems(){return state.items.filter(inst=>itemDef(inst.itemId).battleUsable)}
 function closeBattleItemSheet(){battleItemSelectedUid=null;battleItemTargetUid=null;const dlg=$('#battleItemDialog');if(dlg?.open)dlg.close()}
-function battleItemTargetEligible(itemId,u){if(!u||u.dead)return false;if(itemId==='panacea')return removableAllyStatuses(u).length>0;return itemId==='potion'}
+function battleItemTargetEligible(itemId,u){if(!u||u.dead)return false;if(itemId==='panacea')return removableAllyStatuses(u).length>0;if(itemId==='skill_capsule')return true;return itemId==='potion'}
 function renderBattleItemList(){
  const title=$('#battleItemTitle'),lead=$('#battleItemLead'),body=$('#battleItemBody');if(!body)return;title.textContent='アイテム';lead.textContent=battleItemAlreadyUsed()?'このターンはすでにアイテムを使用しました。':'戦闘中は1ターンに1個まで。使用後も攻撃・スキルチェインを選べます。';body.innerHTML='';
  const list=document.createElement('div');list.className='battle-item-list';const items=battleUsableItems();
- if(!items.length){list.innerHTML='<div class="battle-item-empty">戦闘中に使用できるアイテムを所持していません。<br>現在使用可能：ポーション / 万能薬</div>';body.appendChild(list);return}
+ if(!items.length){list.innerHTML='<div class="battle-item-empty">戦闘中に使用できるアイテムを所持していません。<br>現在使用可能：ポーション / スキルカプセル / 万能薬</div>';body.appendChild(list);return}
  items.forEach(inst=>{const d=itemDef(inst.itemId),row=document.createElement('button');row.type='button';row.className='battle-item-row';const anyTarget=state.party.some(u=>battleItemTargetEligible(inst.itemId,u));row.disabled=battleItemAlreadyUsed()||!anyTarget;row.innerHTML=`<span class="battle-item-row-icon">${d.icon}</span><span class="battle-item-row-copy"><b>${d.name}</b><small>${d.text}${!anyTarget?' / 使用できる対象なし':''}</small></span><span class="battle-item-row-arrow">›</span>`;if(!row.disabled)row.addEventListener('click',()=>renderBattleItemTargets(inst.uid));list.appendChild(row)});body.appendChild(list)
 }
 function renderBattleItemTargets(uid){
  const inst=state.items.find(x=>x.uid===uid);if(!inst)return renderBattleItemList();const d=itemDef(inst.itemId);battleItemSelectedUid=uid;battleItemTargetUid=null;const title=$('#battleItemTitle'),lead=$('#battleItemLead'),body=$('#battleItemBody');title.textContent=d.name;lead.innerHTML='';body.innerHTML='';
  const back=document.createElement('button');back.type='button';back.className='battle-item-back';back.textContent='← アイテム一覧';back.addEventListener('click',renderBattleItemList);body.appendChild(back);
  const selected=document.createElement('div');selected.className='battle-item-selected';selected.innerHTML=`<div class="icon">${d.icon}</div><div><b>${d.name}</b><small>${d.text}</small></div>`;body.appendChild(selected);
+ if(inst.itemId==='skill_capsule'){
+   const living=state.party.filter(u=>!u.dead);const status=document.createElement('div');status.className='battle-item-status';status.textContent=`生存中の味方${living.length}人に使用します。戦闘不能者には効果がありません。`;body.appendChild(status);
+   const confirm=document.createElement('button');confirm.type='button';confirm.className='battle-item-confirm';confirm.disabled=!living.length;confirm.textContent=living.length?'全員に使う':'使用できる対象がいません';confirm.addEventListener('click',useSelectedBattleItem);body.appendChild(confirm);return
+ }
  const targets=document.createElement('div');targets.className='battle-item-targets';state.party.forEach(u=>{const eligible=battleItemTargetEligible(inst.itemId,u),removable=removableAllyStatuses(u),b=document.createElement('button');b.type='button';b.className='battle-item-target';b.dataset.uid=u.uid;b.disabled=!eligible;let note;if(u.dead)note='戦闘不能';else if(inst.itemId==='potion')note=`HP ${u.hp}/${u.maxHp}`;else note=removable.length?removable.map(s=>s.short||s.name).join('・'):'解除対象なし';b.innerHTML=`<img src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><small>${note}</small>`;if(eligible)b.addEventListener('click',()=>{battleItemTargetUid=u.uid;targets.querySelectorAll('.battle-item-target').forEach(x=>x.classList.toggle('selected',x.dataset.uid===u.uid));confirm.disabled=false;confirm.textContent=`${u.name}に使う`});targets.appendChild(b)});body.appendChild(targets);
  const confirm=document.createElement('button');confirm.type='button';confirm.className='battle-item-confirm';confirm.disabled=true;confirm.textContent='対象を選択してください';confirm.addEventListener('click',useSelectedBattleItem);body.appendChild(confirm)
 }
@@ -1383,6 +1387,9 @@ function openBattleItemSheet(){
  if(animating||state.battleOver||battleItemAlreadyUsed())return;battleItemSelectedUid=null;battleItemTargetUid=null;renderBattleItemList();const dlg=$('#battleItemDialog');if(!dlg.open)dlg.showModal()
 }
 function playBattleItemFeedback(result){
+ if(result?.effect==='gauge'){
+   (result.targetUids||[]).forEach(uid=>{const u=state.party.find(x=>x.uid===uid),el=unitEl(uid);if(!u||!el)return;pulseElement(el,'feedback-gauge');const gauge=document.querySelector(`[data-unit="${uid}"] [data-gauge-fill]`);pulseElement(gauge,'feedback-gauge');floatNumber(el,`+${result.amount||20}`,'info')});return
+ }
  const u=state.party.find(x=>x.uid===result?.targetUid);if(!u)return;const el=unitEl(u.uid);if(!el)return;
  pulseElement(el,'feedback-good');
  if(result.effect==='heal'){
@@ -1393,7 +1400,8 @@ function playBattleItemFeedback(result){
  }
 }
 function useSelectedBattleItem(){
- if(animating||state.battleOver||battleItemAlreadyUsed())return;const inst=state.items.find(x=>x.uid===battleItemSelectedUid);if(!inst||!battleItemTargetUid)return;const d=itemDef(inst.itemId);if(!d.battleUsable)return;const target=state.party.find(u=>u.uid===battleItemTargetUid);if(!battleItemTargetEligible(inst.itemId,target)){renderBattleItemTargets(inst.uid);return}
+ if(animating||state.battleOver||battleItemAlreadyUsed())return;const inst=state.items.find(x=>x.uid===battleItemSelectedUid);if(!inst)return;const d=itemDef(inst.itemId);if(!d.battleUsable)return;
+ if(inst.itemId!=='skill_capsule'){if(!battleItemTargetUid)return;const target=state.party.find(u=>u.uid===battleItemTargetUid);if(!battleItemTargetEligible(inst.itemId,target)){renderBattleItemTargets(inst.uid);return}}
  const result=itemResultMessage(inst.itemId,battleItemTargetUid);if(!result)return;removeItemInstance(inst.uid);state.battleItemUsedTurn=state.turn;if(state.stats&&state.stats.current&&inst.itemId==='potion'){const m=result.text.match(/HPが(\d+) → (\d+)/);if(m)state.stats.current.healing+=Math.max(0,Number(m[2])-Number(m[1]))}addLog(`アイテム【${d.name}】：${result.text}`,'system');showBanner(`${d.icon} ${d.name}`,result.toast);closeBattleItemSheet();render();requestAnimationFrame(()=>playBattleItemFeedback(result));toast(result.toast)
 }
 function battleRewardFor(kind){return REWARD_CFG[kind]||{gold:0,pp:0}}
@@ -1740,7 +1748,7 @@ function itemResultMessage(itemId,targetUid=null){
    const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const before=u.hp;u.hp=Math.min(u.maxHp,u.hp+ceil(u.maxHp*.30));return {title:d.name,text:`${u.name}のHPが${before} → ${u.hp}になった。`,toast:`${u.name} HP +${u.hp-before}`,targetUid:u.uid,effect:'heal',amount:u.hp-before}
  }
  if(itemId==='skill_capsule'){
-   const living=state.party.filter(u=>!u.dead);living.forEach(u=>u.gauge=Math.min(100,u.gauge+20));return {title:d.name,text:`生存中の味方${living.length}人のスキルゲージを+20した。`,toast:'生存者 SKILL +20'}
+   const living=state.party.filter(u=>!u.dead),before=new Map(living.map(u=>[u.uid,u.gauge]));living.forEach(u=>u.gauge=Math.min(100,u.gauge+20));return {title:d.name,text:`生存中の味方${living.length}人のスキルゲージを+20した。`,toast:'生存者 SKILL +20',effect:'gauge',targetUids:living.map(u=>u.uid),amount:20,actualGains:Object.fromEntries(living.map(u=>[u.uid,u.gauge-before.get(u.uid)]))}
  }
  if(itemId==='panacea'){
    const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const removed=removableAllyStatuses(u);if(!removed.length)return null;const removedNames=removed.map(s=>s.short||s.name);u.statuses=u.statuses.filter(s=>(s.kind||'debuff')==='buff');return {title:d.name,text:`${u.name}の不利効果をすべて解除した（${removedNames.join('・')}）。`,toast:`${u.name} 状態解除`,targetUid:u.uid,effect:'cleanse',removedCount:removed.length}
