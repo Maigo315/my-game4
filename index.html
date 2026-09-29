@@ -491,7 +491,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .tab-page-topbar{position:sticky;top:0;z-index:12;padding:7px 0 8px;background:linear-gradient(180deg,rgba(10,13,22,.98) 72%,rgba(10,13,22,0));backdrop-filter:blur(7px)}
 .tab-placeholder-card{margin-top:5px;padding:14px}.tab-placeholder-card h3{margin:0 0 6px;font-size:15px}.tab-placeholder-card p{margin:0 0 12px;color:var(--muted);font-size:9px;line-height:1.6}
 .gear-tab-page{padding-bottom:76px}.gear-tab-list{display:grid;gap:0;padding:2px 0 10px}.gear-tab-intro{padding:12px 13px;margin:4px 0 2px;border-radius:14px;background:#121824;border:1px solid #2e394f}.gear-tab-intro b{display:block;font-size:12px}.gear-tab-intro p{margin:4px 0 0;font-size:8.5px;line-height:1.55;color:#9da8bc}
-.gear-tab-page .gear-party-tabs{margin-top:10px}.gear-tab-page .gear-party-tab{padding:10px 6px}.gear-tab-page .gear-party-tab img{width:60px;height:60px}.gear-tab-page .gear-party-tab b{font-size:10px}.gear-tab-page .gear-slot-card{padding:13px 12px}.gear-tab-page .gear-slot-name{font-size:12px}.gear-tab-page .gear-slot-effects{font-size:9px}.gear-tab-page .gear-effect-line{font-size:9px;line-height:1.45}.gear-tab-page .gear-item-main b{font-size:12px}.gear-tab-page .gear-item-meta{font-size:8px}.gear-tab-page .gear-current-wrap{top:46px;padding-top:8px;background:linear-gradient(180deg,#0b0e18 86%,rgba(11,14,24,0))}.gear-tab-page .gear-current-card,.gear-tab-page .gear-item{padding:13px 12px}.gear-tab-page .gear-inventory{padding-bottom:10px}
+.gear-tab-page .gear-party-tabs{margin-top:10px}.gear-tab-page .gear-party-tab{padding:10px 6px}.gear-tab-page .gear-party-tab img{width:60px;height:60px}.gear-tab-page .gear-party-tab b{font-size:10px}.gear-tab-page .gear-slot-card{padding:13px 12px}.gear-tab-page .gear-slot-name{font-size:12px}.gear-tab-page .gear-slot-effects{font-size:9px}.gear-tab-page .gear-effect-line{font-size:9px;line-height:1.45}.gear-tab-page .gear-item-main b{font-size:12px}.gear-tab-page .gear-item-meta{font-size:8px}.gear-tab-page .gear-picker-head{top:46px}.gear-tab-page .gear-current-wrap{padding-top:8px}.gear-tab-page .gear-current-card,.gear-tab-page .gear-item{padding:13px 12px}.gear-tab-page .gear-inventory{padding-bottom:10px}
 .manage-dialog{padding:13px}
 .manage-dialog h3{margin:0 0 4px;font-size:15px}.manage-dialog p{margin:0;color:var(--muted);font-size:9px;line-height:1.5}
 .manage-list{display:grid;gap:6px;margin-top:10px}.manage-row{padding:8px;border-radius:10px;background:#101522;border:1px solid #2d374d;font-size:9px;line-height:1.5;color:#d7deec}.manage-row b{font-size:10px;color:#fff}
@@ -511,8 +511,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .gear-slot-card:hover{border-color:#4a5874}.gear-slot-card:active{transform:scale(.995)}
 .gear-slot-icon,.gear-item-icon{width:48px;height:48px;border-radius:11px;display:grid;place-items:center;background:#171d2b;border:1px solid #364158;font-size:24px;line-height:1}
 .gear-slot-copy{min-width:0}.gear-slot-label{font-size:7px;color:#8f9ab0;font-weight:900}.gear-slot-name{display:block;margin-top:2px;font-size:11px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gear-slot-effects{display:grid;gap:2px;margin-top:4px;font-size:8px;line-height:1.35;color:#b9c3d5}.gear-slot-arrow{font-size:18px;color:#78859d;text-align:right}
-.gear-picker-head{display:flex;align-items:center;gap:9px;margin-top:13px}.gear-back{min-height:32px;padding:0 10px;border-radius:9px;border:1px solid #3a455d;background:#202737;color:#dbe2ef;font-size:8px;font-weight:900;cursor:pointer}.gear-picker-head b{font-size:11px}.gear-picker-head span{margin-left:auto;font-size:7.5px;color:#8f9ab0}
-.gear-current-wrap{position:sticky;top:0;z-index:3;margin-top:9px;padding:7px 0 9px;background:linear-gradient(180deg,#111624 82%,rgba(17,22,36,0))}.gear-current-label{font-size:7.5px;color:#9aa6ba;margin:0 0 5px 2px}
+.gear-picker-head{position:sticky;top:46px;z-index:8;display:flex;align-items:center;gap:9px;margin-top:0;padding:9px 0 10px;background:linear-gradient(180deg,rgba(11,14,24,.99) 82%,rgba(11,14,24,.92));backdrop-filter:blur(7px);border-bottom:1px solid rgba(48,58,80,.65)}.gear-back{min-height:32px;padding:0 10px;border-radius:9px;border:1px solid #3a455d;background:#202737;color:#dbe2ef;font-size:8px;font-weight:900;cursor:pointer}.gear-picker-head b{font-size:11px}.gear-picker-head span{margin-left:auto;font-size:7.5px;color:#8f9ab0}
+.gear-current-wrap{position:relative;z-index:1;margin-top:9px;padding:7px 0 9px}.gear-current-label{font-size:7.5px;color:#9aa6ba;margin:0 0 5px 2px}
 .gear-current-card,.gear-item{display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:10px;align-items:start;padding:11px;border-radius:13px;background:#111724;border:1px solid #2d374d}.gear-current-card{border-color:#5a466d;background:linear-gradient(135deg,#1d1828,#121824)}
 .gear-item-main{min-width:0}.gear-item-main b{display:block;font-size:11px}.gear-item-meta{display:block;margin-top:2px;font-size:7.5px;color:#8f9ab0}.gear-item-meta.weapon-attr,.gear-pickup-meta.weapon-attr{font-size:8.5px;font-weight:950;letter-spacing:.01em}.gear-item-meta.attr-physical,.gear-pickup-meta.attr-physical{color:#e6d7c3}.gear-item-meta.attr-magic,.gear-pickup-meta.attr-magic{color:#c9c5ff}.gear-item-meta.attr-pleasure,.gear-pickup-meta.attr-pleasure{color:#f1bfdc}.gear-effect-list{display:grid;gap:3px;margin-top:6px}.gear-effect-line{font-size:8.5px;line-height:1.35;color:#cbd3e1}.gear-effect-line.affix{color:#dcc9ef}
 .gear-unique-effect{margin:4px 0 2px;padding:7px 8px;border-radius:9px;background:#241d2c;border:1px solid #6b547c;color:#eadcf3}.gear-unique-effect .gear-unique-head{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.gear-unique-effect .gear-unique-kicker{font-size:6.5px;font-weight:950;color:#bca5ca;letter-spacing:.04em}.gear-unique-effect b{font-size:8.5px;color:#f2cf88}.gear-unique-effect small{display:block;margin-top:3px;font-size:7.5px;line-height:1.45;color:#d7cde0}.gear-item.unique-gear,.gear-current-card.unique-gear{border-color:#80634c;box-shadow:inset 0 0 0 1px rgba(242,207,136,.08)}.gear-pickup-card.unique-gear{border-color:#a37a50;box-shadow:0 0 22px rgba(187,137,76,.16)}.gear-unique-badge{display:inline-flex;align-items:center;margin-left:5px;padding:2px 5px;border-radius:999px;background:#34281d;border:1px solid #765b39;color:#efcc8b;font-size:6px;font-weight:950;vertical-align:middle}
@@ -717,6 +717,7 @@ const partyGrid=$('#partyGrid'),stage=$('#stage'),enemyArt=$('#enemyArt'),eventB
 const exploreScreen=$('#exploreScreen'),battleScreen=$('#battleScreen'),mapBoard=$('#mapBoard'),mapViewport=$('#mapViewport'),mapNodesEl=$('#mapNodes'),mapLinesEl=$('#mapLines');
 let explore=null;
 const EXPLORE_CFG={floors:3,w:5,h:7,collapseMax:40,infectionChance:.35};
+const NORMAL_GEAR_DROP_RATE=.15;
 const REWARD_CFG={enemy:{gold:10,pp:1},unique:{gold:50,pp:10},boss:{gold:100,pp:10}};
 const ENHANCE_EFFECTS=[
  {id:'hp',name:'生命強化',text:'最大HP +5 / HP 5回復'},
@@ -1293,17 +1294,24 @@ async function finishBattle(){
  finalizeBattleStats(true);
  const ctx=state.battleContext;
  const reward=grantBattleReward(ctx?.kind);
+ let droppedGear=null;
  addLog(`${state.enemy.name}を撃破！`,'system');addLog(`報酬：${reward.gold}G / PP +${reward.pp}`,'system');showBanner('勝利！',state.enemy.name);renderBattleReward(reward);render();
  if(ctx?.kind==='unique'){
    const f=explore.floorData[explore.floor];f.uniqueDefeated=true;
    explore.collapse=0;explore.collapsed=false;
    setNodeType(ctx.nodeId,'empty');
-   const uniqueInst=createUniqueGearInstance(explore.floor,ctx.uniqueGearId||'glutton');state.inventory.push(uniqueInst);explore.pendingUniqueGearUid=uniqueInst.uid;
-   const ud=uniqueGearDef(uniqueInst);addLog(`二つ名装備「${gearDisplayName(uniqueInst)}」を獲得！`,'system');
-   queueExploreMessage('ユニーク撃破！',`崩壊度が0に戻った。${reward.gold}G / PP +${reward.pp}。二つ名装備「${gearDisplayName(uniqueInst)}」を獲得した。`,'good');
+   droppedGear=addGearToInventory(createUniqueGearInstance(explore.floor,ctx.uniqueGearId||'glutton'),true);
+   addLog(`二つ名装備「${gearDisplayName(droppedGear)}」を獲得！`,'system');
+   queueExploreMessage('ユニーク撃破！',`崩壊度が0に戻った。${reward.gold}G / PP +${reward.pp}。二つ名装備「${gearDisplayName(droppedGear)}」を獲得した。`,'good');
  }else if(ctx?.kind==='enemy'){
    setNodeType(ctx.nodeId,'empty');
-   queueExploreMessage('戦闘勝利',`${reward.gold}G / PP +${reward.pp} を獲得した。`,'good');
+   if(Math.random()<NORMAL_GEAR_DROP_RATE){
+     droppedGear=addGearToInventory(createRandomGearInstance(explore.floor),true);
+     addLog(`装備「${gearDisplayName(droppedGear)}」をドロップ！`,'system');
+     queueExploreMessage('戦闘勝利',`${reward.gold}G / PP +${reward.pp} を獲得。さらに「${gearDisplayName(droppedGear)}」をドロップした。`,'good');
+   }else{
+     queueExploreMessage('戦闘勝利',`${reward.gold}G / PP +${reward.pp} を獲得した。`,'good');
+   }
  }else if(ctx?.kind==='boss'){
    explore.cleared=true;state.runOver=true;state.stats.lastWin=true;recordCumulative(true);
  }
@@ -1314,7 +1322,9 @@ async function finishBattle(){
    $('#nextBattleBtn').textContent='探索を最初から';
  }else{
    $('#intermissionTitle').textContent='勝利';
-   $('#intermissionText').textContent=ctx?.kind==='unique'?`報酬 ${reward.gold}G / PP +${reward.pp} ＋ 二つ名装備。探索へ戻ると装備詳細を表示します。`:`報酬 ${reward.gold}G / PP +${reward.pp}。所持 ${state.gold}G / PP ${state.parallelPoints}。HP・スキルゲージを持ち越して探索へ戻ります。`;
+   if(ctx?.kind==='unique')$('#intermissionText').textContent=`報酬 ${reward.gold}G / PP +${reward.pp} ＋ 二つ名装備「${gearDisplayName(droppedGear)}」。探索へ戻ると装備詳細を表示します。`;
+   else if(droppedGear)$('#intermissionText').textContent=`報酬 ${reward.gold}G / PP +${reward.pp} ＋ 装備「${gearDisplayName(droppedGear)}」。探索へ戻ると装備詳細を表示します。`;
+   else $('#intermissionText').textContent=`報酬 ${reward.gold}G / PP +${reward.pp}。所持 ${state.gold}G / PP ${state.parallelPoints}。HP・スキルゲージを持ち越して探索へ戻ります。`;
    $('#nextBattleBtn').textContent='探索へ戻る';
  }
  intermission.classList.add('show');render();
@@ -1428,7 +1438,7 @@ function generateFloor(floor){
 }
 function createExploreRun(){
  const floorData={};for(let f=1;f<=EXPLORE_CFG.floors;f++)floorData[f]={map:generateFloor(f),uniqueSpawned:false,uniqueDefeated:false};
- return {floor:1,steps:0,collapse:0,collapsed:false,current:floorData[1].map.start,floorData,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null}
+ return {floor:1,steps:0,collapse:0,collapsed:false,current:floorData[1].map.start,floorData,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null}
 }
 function currentMap(){return explore.floorData[explore.floor].map}
 function currentNode(){return currentMap().nodes[explore.current]}
@@ -1501,7 +1511,7 @@ function resolveExploreNode(){
    state.party.filter(u=>!u.dead).forEach(u=>u.gauge=Math.min(100,u.gauge+20));n.type='empty';showEvent('アイテム','仮アイテム「魔力の雫」を入手。生存中の味方全員のスキルゲージ+20。使用済みマスは「無」になった。');toast('全員 SKILL +20');return
  }
  if(n.type==='equipment'){
-   const inst=createRandomGearInstance(explore.floor),g=gearBase(inst);state.inventory.push(inst);n.type='empty';
+   const inst=createRandomGearInstance(explore.floor),g=gearBase(inst);addGearToInventory(inst);n.type='empty';
    showEvent('装備入手',`「${gearDisplayName(inst)}」を入手した。所持品に追加され、使用済みマスは「無」になった。`);openGearPickup(inst);return
  }
  if(n.type==='enhance'){openEnhancement(n);return}
@@ -1518,7 +1528,7 @@ function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;explore.floo
 function startExploreBattle(nodeId,enemyId,kind,uniqueGearId=null){
  state.battleNo++;state.turn=1;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0});startBattleResources();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');showBattle();render()
 }
-function returnFromBattle(){if(state.runOver){resetRun();return}state.battleContext=null;state.enemy=null;intermission.classList.remove('show');showExplore();resolveExploreNode();renderExplore();if(explore.pendingUniqueGearUid){const uid=explore.pendingUniqueGearUid;explore.pendingUniqueGearUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst)setTimeout(()=>openGearPickup(inst),80)}}
+function returnFromBattle(){if(state.runOver){resetRun();return}state.battleContext=null;state.enemy=null;intermission.classList.remove('show');showExplore();resolveExploreNode();renderExplore();if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst)setTimeout(()=>openGearPickup(inst),80)}}
 function centerMapOnCurrent(smooth=false){
  if(!mapViewport)return;const node=mapNodesEl.querySelector('.map-node.current');if(!node)return;
  const left=Math.max(0,node.offsetLeft+node.offsetWidth/2-mapViewport.clientWidth/2);
@@ -1542,6 +1552,7 @@ function createUniqueGearInstance(depth=1,uniqueGearId='glutton'){
 function rollGearTier(depth){const center=Math.max(0,Math.min(6,(depth||1)-1)),r=Math.random();if(r<.20)return Math.max(0,center-1);if(r<.90)return center;return Math.min(6,center+1)}
 function rollGearCategory(){const r=Math.random();return r<.40?'weapon':r<.80?'armor':'accessory'}
 function createRandomGearInstance(depth=1){const category=rollGearCategory();if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
+function addGearToInventory(inst,deferPickup=false){state.inventory.push(inst);if(deferPickup&&explore)explore.pendingGearPickupUid=inst.uid;return inst}
 function gearBase(inst){return inst?GEAR_CATALOG[inst.baseId]:null}
 function uniqueGearDef(inst){return inst?.uniqueGearId?UNIQUE_GEAR_DEFS[inst.uniqueGearId]||null:null}
 function gearDisplayName(inst){const base=gearBase(inst),ud=uniqueGearDef(inst);return base?`${ud?.prefix||''}${base.name}`:''}
