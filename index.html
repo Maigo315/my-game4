@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.24.0 行動不能基盤</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.25.0 宝珠タブ基盤</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -492,8 +492,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .explore-unit b{font-size:9px;text-align:center}
 .explore-unit span{font-size:7px;margin-top:2px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .explore-mini{height:5px;margin-top:3px}
-.explore-dock{position:fixed;z-index:70;left:50%;bottom:max(8px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 18px),542px);display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:5px;border:1px solid #343d52;border-radius:15px;background:rgba(14,18,29,.94);box-shadow:0 12px 34px rgba(0,0,0,.48);backdrop-filter:blur(12px)}
-.explore-dock button{min-height:42px;border-radius:11px;border:1px solid #38435a;background:#1b2232;color:#dbe2ef;font-size:9px;font-weight:950;cursor:pointer}
+.explore-dock{position:fixed;z-index:70;left:50%;bottom:max(8px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 18px),542px);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:5px;border:1px solid #343d52;border-radius:15px;background:rgba(14,18,29,.94);box-shadow:0 12px 34px rgba(0,0,0,.48);backdrop-filter:blur(12px)}
+.explore-dock button{min-height:42px;border-radius:11px;border:1px solid #38435a;background:#1b2232;color:#dbe2ef;font-size:8.5px;font-weight:950;cursor:pointer}
 .explore-dock button.active{background:linear-gradient(135deg,#7449a7,#9a4da6);border-color:#a978c5;color:#fff}
 .explore-tab-page{min-height:calc(100vh - 18px);padding-bottom:64px;box-sizing:border-box}
 .tab-page-topbar{position:sticky;top:0;z-index:12;padding:7px 0 8px;background:linear-gradient(180deg,rgba(10,13,22,.98) 72%,rgba(10,13,22,0));backdrop-filter:blur(7px)}
@@ -554,6 +554,25 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .item-pickup-panel{padding:17px}.item-pickup-title{font-size:17px;font-weight:950;margin:0 0 12px;text-align:center}.item-pickup-card{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:center;padding:14px;border-radius:15px;background:linear-gradient(135deg,#18242a,#121824);border:1px solid #496a76}.item-pickup-icon{width:64px;height:64px;border-radius:14px;display:grid;place-items:center;background:#171d2b;border:1px solid #46516b;font-size:31px}.item-pickup-copy h4{margin:0;font-size:15px}.item-pickup-copy p{margin:5px 0 0;font-size:9px;line-height:1.5;color:#b9c5d6}.item-pickup-note{margin:10px 2px 0;font-size:8px;line-height:1.5;color:#9aa6ba}.item-pickup-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}.item-pickup-actions button{min-height:48px;border-radius:11px;font-size:14px;font-weight:950;cursor:pointer;letter-spacing:.02em}.item-pickup-actions .primary{border:1px solid #477b89;background:#1c3941;color:#eafcff}.item-pickup-actions .use{border:1px solid #74538f;background:#332742;color:#f4eff9}.item-pickup-actions .secondary{border:1px solid #3b465e;background:#202737;color:#dfe5f0}.item-pickup-actions button:disabled{opacity:.43;cursor:default}.item-pickup-actions .wide{grid-column:1/-1}
 .item-target-effect{margin-top:10px;padding:10px 11px;border-radius:11px;background:#18202d;border:1px solid #38465e;font-size:9px;line-height:1.45;color:#ccd5e4}
 
+
+/* ===== Jewel management v13.25.0 ===== */
+.jewel-tab-page{padding-bottom:76px}
+.jewel-tab-shell{display:grid;gap:10px;padding:3px 0 12px}
+.jewel-tab-intro{padding:12px 13px;border-radius:14px;background:#121824;border:1px solid #2e394f}
+.jewel-tab-intro-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.jewel-tab-intro b{font-size:12px}.jewel-tab-intro strong{font-size:11px;color:#e6c9ff}.jewel-tab-intro p{margin:4px 0 0;font-size:8.5px;line-height:1.55;color:#9da8bc}
+.jewel-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 2px 6px;font-size:10px;color:#dfe5f0}.jewel-section-title span{font-size:7.5px;color:#8f9ab0}
+.jewel-set-list,.jewel-owned-list{display:grid;gap:7px}
+.jewel-slot{appearance:none;width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px;border-radius:13px;background:linear-gradient(135deg,#1d1828,#121824);border:1px solid #5a466d;color:#eef2f8;text-align:left;cursor:pointer}
+.jewel-slot:active,.jewel-owned:active{transform:scale(.992)}
+.jewel-slot-icon,.jewel-owned-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#ffe6a2,#e2913a 48%,#74391c 78%);border:2px solid #efc06c;font-size:19px;font-weight:950}
+.jewel-slot-copy,.jewel-owned-copy{min-width:0}.jewel-slot-label{font-size:7px;color:#a796b8;font-weight:900}.jewel-slot-name,.jewel-owned-name{display:block;margin-top:2px;font-size:12px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jewel-slot-text,.jewel-owned-text{display:block;margin-top:4px;font-size:8px;line-height:1.4;color:#b9c3d5}
+.jewel-slot-change{padding:6px 8px;border-radius:8px;background:#30243f;border:1px solid #6a4e82;color:#eadff2;font-size:8px;font-weight:950}
+.jewel-owned{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 11px;border-radius:12px;background:#111724;border:1px solid #2d374d;color:#eef2f8;text-align:left}
+.jewel-owned-icon{width:44px;height:44px;font-size:17px}.jewel-owned-name{font-size:11px}.jewel-owned-text{font-size:7.5px}.jewel-equipped-badge{padding:4px 7px;border-radius:999px;background:#2e263a;border:1px solid #68527d;color:#e2c9f3;font-size:7px;font-weight:950;white-space:nowrap}.jewel-owned .jewel-not-equipped{color:#758096;border-color:#374156;background:#171d2b}
+.jewel-picker-list{display:grid;gap:7px;margin-top:10px}.jewel-picker-choice{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:9px;align-items:center;min-height:66px;padding:9px;border-radius:12px;border:1px solid #3b465e;background:#171d2b;color:#eef2f8;text-align:left;cursor:pointer}.jewel-picker-choice.current{border-color:#8b68a6;background:#261f33}.jewel-picker-choice b{display:block;font-size:11px}.jewel-picker-choice small{display:block;margin-top:3px;font-size:7.5px;line-height:1.4;color:#aeb8ca}.jewel-picker-mark{font-size:8px;font-weight:950;color:#d9c0ef;white-space:nowrap}
+.jewel-battle-empty{padding:16px 10px;border:1px dashed #4a4058;border-radius:11px;background:#121622;color:#9ea8bb;text-align:center;font-size:9px;line-height:1.5}
+@media(max-width:380px){.explore-dock button{font-size:8px}.jewel-slot{grid-template-columns:42px minmax(0,1fr) auto;padding:9px 8px}.jewel-slot-icon{width:42px;height:42px}.jewel-slot-text{font-size:7.2px}.jewel-slot-change{padding:5px 6px}}
 
 /* ===== Parallel Drive prototype v13.20.0 ===== */
 #shopDialog{width:min(94vw,520px);max-height:88vh;box-sizing:border-box;overflow:hidden}
@@ -718,7 +737,12 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
     <div id="gearTabList" class="gear-tab-list"></div>
   </section>
 
-  <nav class="explore-dock" aria-label="探索メニュー"><button id="exploreTabBtn" class="active" type="button">探索</button><button id="itemManageBtn" type="button">アイテム</button><button id="gearManageBtn" type="button">装備</button></nav>
+  <section id="jewelTabPage" class="explore-tab-page jewel-tab-page screen-hidden">
+    <header class="explore-topbar tab-page-topbar"><div class="explore-title">宝珠</div><div class="chip" id="jewelSetChip">3 / 3 セット</div><div class="chip" id="jewelOwnedChip">所持 3</div></header>
+    <div id="jewelTabList" class="jewel-tab-shell"></div>
+  </section>
+
+  <nav class="explore-dock" aria-label="探索メニュー"><button id="exploreTabBtn" class="active" type="button">探索</button><button id="itemManageBtn" type="button">アイテム</button><button id="gearManageBtn" type="button">装備</button><button id="jewelManageBtn" type="button">宝珠</button></nav>
 </section>
 <dialog id="exploreManageDialog"><div class="manage-dialog"><h3 id="manageTitle">管理</h3><p id="manageIntro"></p><div class="manage-list" id="manageList"></div><button class="manage-close" id="manageCloseBtn" type="button">閉じる</button></div></dialog>
 <dialog id="exploreCharacterDialog" class="character-sheet-dialog"><div class="character-sheet">
@@ -832,10 +856,14 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
 <dialog id="jewelDialog"><div class="jewel-dialog">
 <h3>宝珠を選択</h3>
 <p>SKILL ON・ゲージ100・封印されておらず、このターン行動可能な魔物娘が参加します。参加者はこのターン通常攻撃を行いません。</p>
-<button class="jewel-choice" type="button" id="attackJewelBtn"><span class="jewel-icon">剣</span><span><b>攻撃の宝珠</b><small>敵に攻撃力平均の物理ダメージ。その後、攻撃力平均×0.2×参加人数の物理ダメージ。</small></span></button>
-<button class="jewel-choice" type="button" id="defenseJewelBtn" style="margin-top:7px"><span class="jewel-icon">盾</span><span><b>防御の宝珠</b><small>敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。</small></span></button>
-<button class="jewel-choice" type="button" id="healJewelBtn" style="margin-top:7px"><span class="jewel-icon">＋</span><span><b>回復の宝珠</b><small>参加人数×10%だけ味方全員のHPを回復。戦闘不能者は回復しない。</small></span></button>
+<div id="battleJewelChoices"></div>
 <button class="jewel-cancel" type="button" id="jewelCancelBtn">キャンセル</button>
+</div></dialog>
+<dialog id="jewelSetDialog"><div class="jewel-dialog">
+<h3 id="jewelSetDialogTitle">宝珠をセット</h3>
+<p id="jewelSetDialogLead">このスロットにセットする宝珠を選択します。</p>
+<div class="jewel-picker-list" id="jewelSetPicker"></div>
+<button class="jewel-cancel" type="button" id="jewelSetCancelBtn">キャンセル</button>
 </div></dialog>
 <dialog id="bossDetailDialog"><div class="jewel-dialog">
 <h3 id="bossDetailTitle">ボス行動詳細</h3>
@@ -879,6 +907,19 @@ const ITEM_DROP_TABLE=[
  {id:'balance_scale',weight:20},
  {id:'panacea',weight:20}
 ];
+const JEWEL_CATALOG={
+ attack:{id:'attack',name:'攻撃の宝珠',icon:'剣',text:'敵に攻撃力平均の物理ダメージ。その後、攻撃力平均×0.2×参加人数の物理ダメージ。'},
+ defense:{id:'defense',name:'防御の宝珠',icon:'盾',text:'敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。'},
+ heal:{id:'heal',name:'回復の宝珠',icon:'＋',text:'参加人数×10%だけ味方全員のHPを回復。戦闘不能者は回復しない。'}
+};
+const INITIAL_JEWELS=['attack','defense','heal'];
+const JEWEL_SET_LIMIT=3;
+let jewelEditSlot=null;
+function jewelDef(id){return JEWEL_CATALOG[id]}
+function ownedJewelIds(){return state?.jewels||[]}
+function equippedJewelIds(){return state?.jewelSet||[]}
+function addOwnedJewel(id){if(!jewelDef(id)||state.jewels.includes(id))return false;state.jewels.push(id);return true}
+
 const SHOP_ITEM_GROUPS={
  normal:['potion','panacea','skill_capsule','balance_scale','imbalance_scale'],
  upper:['high_potion','ex_potion','skill_injection'],
@@ -1045,7 +1086,7 @@ let config={party:[{ally:'slime',dagger:false,cloth:false,ring:false},{ally:'dog
 const timing=()=>SPEEDS[speedIndex],delay=ms=>new Promise(r=>setTimeout(r,ms)),typeJP=t=>t==='physical'?'物理':t==='magic'?'魔導':t==='neutral'?'無属性':'快楽',typeBadge=t=>t==='physical'?'🗡️物理':t==='magic'?'🪄魔導':t==='neutral'?'▫️無属性':'🩷快楽';
 
 
-function configKey(){return JSON.stringify(config)}
+function configKey(){return JSON.stringify({config,jewelSet:[...(state?.jewelSet||[])].sort()})}
 function configLabel(){
   const allies=config.party.map(c=>ALLIES[c.ally].name).join("・");
   const enemies=config.enemies.map(id=>ENEMIES[id].name).join(" → ");
@@ -1228,10 +1269,10 @@ function startBattleResources(){
  const charm=living.reduce((sum,u)=>sum+gearStat(u,'startCharm'),0),charmUnique=living.reduce((sum,u)=>sum+equippedUniqueCountSlot(u,'charm_title','weapon')*5,0);state._turnOneCharmBonus=charmUnique;if(state.enemy&&(charm||charmUnique))state.enemy.charm=Math.min(10,(state.enemy.charm||0)+charm+charmUnique)
 }
 function resetRun(){
- gearSerial=0;itemSerial=0;state={battleNo:0,turn:1,reason:0,gold:0,parallelPoints:0,parallelUnlocks:{},enemyActionToken:0,inventory:[],items:[],party:makeParty(),enemy:null,partyBuffs:[],battleOver:true,runOver:false,battleContext:null,battleItemUsedTurn:0,stats:{battles:[],current:null,recorded:false,lastWin:null}};
+ gearSerial=0;itemSerial=0;state={battleNo:0,turn:1,reason:0,gold:0,parallelPoints:0,parallelUnlocks:{},enemyActionToken:0,inventory:[],items:[],jewels:[...INITIAL_JEWELS],jewelSet:[...INITIAL_JEWELS],party:makeParty(),enemy:null,partyBuffs:[],battleOver:true,runOver:false,battleContext:null,battleItemUsedTurn:0,stats:{battles:[],current:null,recorded:false,lastWin:null}};
  initializeEquippedInstances();gearPickerSlot=null;itemPickupNodeId=null;itemUseContext=null;itemTargetUid=null;itemDetailUid=null;battleItemSelectedUid=null;battleItemTargetUid=null;
  explore=createExploreRun();
- selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);if(jewelDialog.open)jewelDialog.close();const enhanceDlg=$('#enhanceDialog');if(enhanceDlg&&enhanceDlg.open)enhanceDlg.close();const itemPickupDlg=$('#itemPickupDialog');if(itemPickupDlg&&itemPickupDlg.open)itemPickupDlg.close();const itemTargetDlg=$('#itemTargetDialog');if(itemTargetDlg&&itemTargetDlg.open)itemTargetDlg.close();const itemDetailDlg=$('#itemDetailDialog');if(itemDetailDlg&&itemDetailDlg.open)itemDetailDlg.close();const battleItemDlg=$('#battleItemDialog');if(battleItemDlg&&battleItemDlg.open)battleItemDlg.close();const parallelDlg=$('#parallelDriveDialog');if(parallelDlg&&parallelDlg.open)parallelDlg.close();unlockParallelScroll();parallelDriveUid=null;parallelPendingId=null;logEl.innerHTML='';hideBanner();
+ selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);if(jewelDialog.open)jewelDialog.close();const jewelSetDlg=$('#jewelSetDialog');if(jewelSetDlg&&jewelSetDlg.open)jewelSetDlg.close();jewelEditSlot=null;const enhanceDlg=$('#enhanceDialog');if(enhanceDlg&&enhanceDlg.open)enhanceDlg.close();const itemPickupDlg=$('#itemPickupDialog');if(itemPickupDlg&&itemPickupDlg.open)itemPickupDlg.close();const itemTargetDlg=$('#itemTargetDialog');if(itemTargetDlg&&itemTargetDlg.open)itemTargetDlg.close();const itemDetailDlg=$('#itemDetailDialog');if(itemDetailDlg&&itemDetailDlg.open)itemDetailDlg.close();const battleItemDlg=$('#battleItemDialog');if(battleItemDlg&&battleItemDlg.open)battleItemDlg.close();const parallelDlg=$('#parallelDriveDialog');if(parallelDlg&&parallelDlg.open)parallelDlg.close();unlockParallelScroll();parallelDriveUid=null;parallelPendingId=null;logEl.innerHTML='';hideBanner();
  showExplore();renderExplore();
 }
 function addLog(t,c=''){const d=document.createElement('div');if(c)d.className=c;d.textContent=t;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight}
@@ -2112,11 +2153,48 @@ function renderItemTab(){
  const list=$('#itemTabList');if(!list)return;list.innerHTML='';const intro=document.createElement('div');intro.className='item-tab-intro';intro.innerHTML=`<div class="item-tab-intro-row"><b>所持アイテム</b><strong>${state.items.length} / ${ITEM_LIMIT}</strong></div><p>アイテムをタップすると効果確認・使用・破棄ができます。装備と戦闘用の宝珠はこの12枠に含みません。パラレルジュエルはアイテム枠を使用します。</p>`;list.appendChild(intro);
  const box=document.createElement('div');box.className='item-list';if(!state.items.length){box.innerHTML='<div class="item-empty">アイテムを所持していません。<br>アイテムマスで見つけた道具を拾うと、ここへ1個ずつ並びます。</div>'}else state.items.forEach(inst=>{const d=itemDef(inst.itemId),row=document.createElement('button');row.type='button';row.className='item-row';row.innerHTML=`<span class="item-row-icon">${d.icon}</span><span class="item-row-name">${d.name}</span><span class="item-row-arrow">›</span>`;row.addEventListener('click',()=>openItemDetail(inst.uid));box.appendChild(row)});list.appendChild(box)
 }
+function renderJewelTab(){
+ const setChip=$('#jewelSetChip'),ownedChip=$('#jewelOwnedChip');if(setChip)setChip.textContent=`${state.jewelSet.length} / ${JEWEL_SET_LIMIT} セット`;if(ownedChip)ownedChip.textContent=`所持 ${state.jewels.length}`;
+ const root=$('#jewelTabList');if(!root)return;root.innerHTML='';
+ const intro=document.createElement('div');intro.className='jewel-tab-intro';intro.innerHTML=`<div class="jewel-tab-intro-row"><b>戦闘用の宝珠</b><strong>${state.jewelSet.length} / ${JEWEL_SET_LIMIT}</strong></div><p>宝珠はアイテム12枠とは別管理。戦闘中に使えるのは、ここでセットした最大3種です。戦闘中は変更できません。</p>`;root.appendChild(intro);
+ const setTitle=document.createElement('div');setTitle.className='jewel-section-title';setTitle.innerHTML='<b>セット中</b><span>スロットをタップで変更</span>';root.appendChild(setTitle);
+ const setList=document.createElement('div');setList.className='jewel-set-list';
+ for(let i=0;i<JEWEL_SET_LIMIT;i++){
+   const id=state.jewelSet[i],d=id?jewelDef(id):null,b=document.createElement('button');b.type='button';b.className='jewel-slot';
+   if(d)b.innerHTML=`<span class="jewel-slot-icon">${d.icon}</span><span class="jewel-slot-copy"><span class="jewel-slot-label">SLOT ${i+1}</span><b class="jewel-slot-name">${d.name}</b><small class="jewel-slot-text">${d.text}</small></span><span class="jewel-slot-change">変更</span>`;
+   else b.innerHTML=`<span class="jewel-slot-icon">＋</span><span class="jewel-slot-copy"><span class="jewel-slot-label">SLOT ${i+1}</span><b class="jewel-slot-name">未セット</b><small class="jewel-slot-text">所持している宝珠からセットできます。</small></span><span class="jewel-slot-change">セット</span>`;
+   b.addEventListener('click',()=>openJewelSetPicker(i));setList.appendChild(b)
+ }
+ root.appendChild(setList);
+ const ownTitle=document.createElement('div');ownTitle.className='jewel-section-title';ownTitle.style.marginTop='4px';ownTitle.innerHTML='<b>所持宝珠</b><span>同名宝珠の重複なし</span>';root.appendChild(ownTitle);
+ const ownList=document.createElement('div');ownList.className='jewel-owned-list';
+ state.jewels.forEach(id=>{const d=jewelDef(id);if(!d)return;const equipped=state.jewelSet.includes(id),row=document.createElement('div');row.className='jewel-owned';row.innerHTML=`<span class="jewel-owned-icon">${d.icon}</span><span class="jewel-owned-copy"><b class="jewel-owned-name">${d.name}</b><small class="jewel-owned-text">${d.text}</small></span><span class="jewel-equipped-badge ${equipped?'':'jewel-not-equipped'}">${equipped?'セット中':'所持'}</span>`;ownList.appendChild(row)});
+ root.appendChild(ownList)
+}
+function openJewelSetPicker(slot){
+ if(!state||slot<0||slot>=JEWEL_SET_LIMIT)return;jewelEditSlot=slot;const dlg=$('#jewelSetDialog'),picker=$('#jewelSetPicker'),current=state.jewelSet[slot];$('#jewelSetDialogTitle').textContent=`宝珠スロット${slot+1}`;$('#jewelSetDialogLead').textContent='所持している宝珠から選択します。別スロットの宝珠を選ぶと位置を入れ替えます。';picker.innerHTML='';
+ state.jewels.forEach(id=>{const d=jewelDef(id);if(!d)return;const idx=state.jewelSet.indexOf(id),b=document.createElement('button');b.type='button';b.className=`jewel-picker-choice${id===current?' current':''}`;b.innerHTML=`<span class="jewel-owned-icon">${d.icon}</span><span><b>${d.name}</b><small>${d.text}</small></span><span class="jewel-picker-mark">${id===current?'現在':idx>=0?`SLOT ${idx+1}`:'セット'}</span>`;b.addEventListener('click',()=>setJewelToSlot(slot,id));picker.appendChild(b)});
+ if(!state.jewels.length)picker.innerHTML='<div class="jewel-battle-empty">所持している宝珠がありません。</div>';dlg.showModal()
+}
+function setJewelToSlot(slot,id){
+ if(!state.jewels.includes(id)||slot<0||slot>=JEWEL_SET_LIMIT)return;const old=state.jewelSet[slot],other=state.jewelSet.indexOf(id);
+ if(other===slot){$('#jewelSetDialog').close();jewelEditSlot=null;return}
+ if(other>=0){state.jewelSet[other]=old;state.jewelSet[slot]=id}else state.jewelSet[slot]=id;
+ state.jewelSet=state.jewelSet.filter(Boolean).slice(0,JEWEL_SET_LIMIT);$('#jewelSetDialog').close();jewelEditSlot=null;renderJewelTab();toast(`${jewelDef(id).name}をSLOT ${slot+1}にセット`)
+}
+function renderBattleJewelChoices(){
+ const root=$('#battleJewelChoices');if(!root)return;root.innerHTML='';const ids=state.jewelSet.filter(id=>state.jewels.includes(id)&&jewelDef(id));
+ if(!ids.length){root.innerHTML='<div class="jewel-battle-empty">戦闘用の宝珠がセットされていません。</div>';return}
+ ids.forEach((id,i)=>{const d=jewelDef(id),b=document.createElement('button');b.type='button';b.className='jewel-choice';if(i)b.style.marginTop='7px';b.innerHTML=`<span class="jewel-icon">${d.icon}</span><span><b>${d.name}</b><small>${d.text}</small></span>`;b.addEventListener('click',()=>{jewelDialog.close();playTurn(true,id)});root.appendChild(b)})
+}
+function openBattleJewelDialog(){if(animating||state.battleOver)return;renderBattleJewelChoices();jewelDialog.showModal()}
+
 function switchExploreTab(kind,resetGear=true){
- const pages={explore:$('#exploreTabPage'),item:$('#itemTabPage'),gear:$('#gearTabPage')};Object.entries(pages).forEach(([k,el])=>el&&el.classList.toggle('screen-hidden',k!==kind));
- const buttons={explore:$('#exploreTabBtn'),item:$('#itemManageBtn'),gear:$('#gearManageBtn')};Object.entries(buttons).forEach(([k,b])=>b&&b.classList.toggle('active',k===kind));
+ const pages={explore:$('#exploreTabPage'),item:$('#itemTabPage'),gear:$('#gearTabPage'),jewel:$('#jewelTabPage')};Object.entries(pages).forEach(([k,el])=>el&&el.classList.toggle('screen-hidden',k!==kind));
+ const buttons={explore:$('#exploreTabBtn'),item:$('#itemManageBtn'),gear:$('#gearManageBtn'),jewel:$('#jewelManageBtn')};Object.entries(buttons).forEach(([k,b])=>b&&b.classList.toggle('active',k===kind));
  if(kind==='gear'){if(!gearManageUid||!state.party.some(u=>u.uid===gearManageUid))gearManageUid=state.party[0].uid;if(resetGear){gearPickerSlot=null;gearFocusUid=null;}const g=$('#gearGoldChip'),p=$('#gearPpChip');if(g)g.textContent=`G ${state.gold}`;if(p)p.textContent=`PP ${state.parallelPoints}`;renderGearManager()}
  if(kind==='item')renderItemTab();
+ if(kind==='jewel')renderJewelTab();
  if(kind==='explore'){const n=currentNode();if(n?.type==='item'&&!$('#itemPickupDialog').open){const d=itemDef(n.itemId||ITEM_IDS[0]);showEvent('アイテム発見',`「${d.name}」がこのマスに残っている。`,'確認する',()=>openItemPickup(n))}else if(n?.type==='shop')showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。品揃えはこの店で固定。`,'商品を見る',()=>openShop(n))}
  window.scrollTo({top:0,behavior:'smooth'})
 }
@@ -2188,12 +2266,12 @@ function renderExplore(){
 function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力のリング</label></div>`;p.appendChild(b)})}
 function readExploreSetup(){document.querySelectorAll('[data-explore-party]').forEach(s=>config.party[+s.dataset.exploreParty].ally=s.value);document.querySelectorAll('[data-explore-gear]').forEach(c=>{const [i,k]=c.dataset.exploreGear.split(':');config.party[+i][k]=c.checked})}
 
-$('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').addEventListener('click',()=>{if(!animating&&!state.battleOver)jewelDialog.showModal()});$('#attackJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'attack')});$('#defenseJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'defense')});$('#healJewelBtn').addEventListener('click',()=>{jewelDialog.close();playTurn(true,'heal')});$('#jewelCancelBtn').addEventListener('click',()=>jewelDialog.close());$('#speedBtn').addEventListener('click',()=>{speedIndex=(speedIndex+1)%SPEEDS.length;render()});$('#nextBattleBtn').addEventListener('click',()=>state.runOver?resetRun():returnFromBattle());$('#detailClose').addEventListener('click',()=>{selectedDetailId=null;detailPanel.classList.remove('show')});$('#logToggle').addEventListener('click',()=>{const o=logEl.classList.toggle('show');$('#logToggleMark').textContent=o?'閉じる ▴':'開く ▾'});$('#resetBtn').addEventListener('click',resetRun);
+$('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').addEventListener('click',openBattleJewelDialog);$('#jewelCancelBtn').addEventListener('click',()=>jewelDialog.close());$('#jewelSetCancelBtn').addEventListener('click',()=>{jewelEditSlot=null;$('#jewelSetDialog').close()});$('#jewelSetDialog').addEventListener('cancel',e=>{e.preventDefault();jewelEditSlot=null;$('#jewelSetDialog').close()});$('#speedBtn').addEventListener('click',()=>{speedIndex=(speedIndex+1)%SPEEDS.length;render()});$('#nextBattleBtn').addEventListener('click',()=>state.runOver?resetRun():returnFromBattle());$('#detailClose').addEventListener('click',()=>{selectedDetailId=null;detailPanel.classList.remove('show')});$('#logToggle').addEventListener('click',()=>{const o=logEl.classList.toggle('show');$('#logToggleMark').textContent=o?'閉じる ▴':'開く ▾'});$('#resetBtn').addEventListener('click',resetRun);
 $('#battleItemBtn').addEventListener('click',openBattleItemSheet);$('#battleItemCloseBtn').addEventListener('click',closeBattleItemSheet);$('#battleItemDialog').addEventListener('cancel',e=>{e.preventDefault();closeBattleItemSheet()});
 $('#statsToggle').addEventListener('click',()=>{const b=$('#statsBody'),o=b.classList.toggle('show');$('#statsMark').textContent=o?'閉じる ▴':'開く ▾'});
 $('#resetCumulativeBtn').addEventListener('click',()=>{delete cumulativeByConfig[configKey()];renderStats()});
 $('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});$('#bossMechanic').addEventListener('click',openBossDetail);$('#bossDetailCloseBtn').addEventListener('click',()=>$('#bossDetailDialog').close());
-$('#gearPickupBackBtn').addEventListener('click',()=>{const mode=gearPickupReturnMode;$('#gearPickupDialog').close();gearPickupUid=null;gearPickupReturnMode='explore';if(mode==='shop')setTimeout(()=>openShop(currentNode()),40)});$('#gearPickupOpenBtn').addEventListener('click',openPickedGearTab);$('#itemDetailUseBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(inst)useItemFromSource(inst.itemId,{kind:'inventory',uid:inst.uid})});$('#itemDetailDropBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);$('#itemDetailDiscardText').textContent=`「${d.name}」を完全に捨てますか？`;$('#itemDetailDiscard').classList.remove('screen-hidden')});$('#itemDetailDiscardCancel').addEventListener('click',()=>$('#itemDetailDiscard').classList.add('screen-hidden'));$('#itemDetailDiscardConfirm').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);removeItemInstance(inst.uid);toast(`${d.name}を捨てた`);closeItemDetail();renderItemTab();renderExplore()});$('#itemDetailCloseBtn').addEventListener('click',closeItemDetail);$('#itemDetailDialog').addEventListener('cancel',e=>{e.preventDefault();closeItemDetail()});$('#itemTargetConfirmBtn').addEventListener('click',()=>{if(itemUseContext&&itemTargetUid)finishItemUse(itemUseContext.itemId,itemUseContext,itemTargetUid)});$('#itemTargetCancelBtn').addEventListener('click',cancelItemTarget);$('#itemTargetDialog').addEventListener('cancel',e=>{e.preventDefault();cancelItemTarget()});$('#enhanceConfirmBtn').addEventListener('click',()=>{if(enhanceSelection)applyEnhancement(enhanceSelection.nodeId,enhanceSelection.uid)});$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#exploreTabBtn').addEventListener('click',()=>switchExploreTab('explore'));$('#itemManageBtn').addEventListener('click',()=>switchExploreTab('item'));$('#gearManageBtn').addEventListener('click',()=>switchExploreTab('gear'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#shopBuyTab').addEventListener('click',()=>setShopMode('buy'));$('#shopSellTab').addEventListener('click',()=>setShopMode('sell'));$('#shopSellCancelBtn').addEventListener('click',closeShopSellConfirm);$('#shopSellConfirmBtn').addEventListener('click',confirmShopSell);$('#shopSellConfirmDialog').addEventListener('cancel',e=>{e.preventDefault();closeShopSellConfirm()});$('#shopCloseBtn').addEventListener('click',closeShop);$('#shopDialog').addEventListener('cancel',e=>{e.preventDefault();closeShop()});$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());$('#parallelDriveBtn').addEventListener('click',()=>{const uid=$('#parallelDriveBtn').dataset.uid;if(uid)openParallelDrive(uid)});$('#parallelBackBtn').addEventListener('click',()=>closeParallelDrive(true));$('#parallelCloseBtn').addEventListener('click',()=>closeParallelDrive(false));$('#parallelCancelBtn').addEventListener('click',()=>{parallelPendingId=null;$('#parallelConfirm').classList.add('screen-hidden')});$('#parallelExecuteBtn').addEventListener('click',applyParallelDrive);$('#parallelDriveDialog').addEventListener('cancel',e=>{e.preventDefault();closeParallelDrive(false)});
+$('#gearPickupBackBtn').addEventListener('click',()=>{const mode=gearPickupReturnMode;$('#gearPickupDialog').close();gearPickupUid=null;gearPickupReturnMode='explore';if(mode==='shop')setTimeout(()=>openShop(currentNode()),40)});$('#gearPickupOpenBtn').addEventListener('click',openPickedGearTab);$('#itemDetailUseBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(inst)useItemFromSource(inst.itemId,{kind:'inventory',uid:inst.uid})});$('#itemDetailDropBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);$('#itemDetailDiscardText').textContent=`「${d.name}」を完全に捨てますか？`;$('#itemDetailDiscard').classList.remove('screen-hidden')});$('#itemDetailDiscardCancel').addEventListener('click',()=>$('#itemDetailDiscard').classList.add('screen-hidden'));$('#itemDetailDiscardConfirm').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);removeItemInstance(inst.uid);toast(`${d.name}を捨てた`);closeItemDetail();renderItemTab();renderExplore()});$('#itemDetailCloseBtn').addEventListener('click',closeItemDetail);$('#itemDetailDialog').addEventListener('cancel',e=>{e.preventDefault();closeItemDetail()});$('#itemTargetConfirmBtn').addEventListener('click',()=>{if(itemUseContext&&itemTargetUid)finishItemUse(itemUseContext.itemId,itemUseContext,itemTargetUid)});$('#itemTargetCancelBtn').addEventListener('click',cancelItemTarget);$('#itemTargetDialog').addEventListener('cancel',e=>{e.preventDefault();cancelItemTarget()});$('#enhanceConfirmBtn').addEventListener('click',()=>{if(enhanceSelection)applyEnhancement(enhanceSelection.nodeId,enhanceSelection.uid)});$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#exploreTabBtn').addEventListener('click',()=>switchExploreTab('explore'));$('#itemManageBtn').addEventListener('click',()=>switchExploreTab('item'));$('#gearManageBtn').addEventListener('click',()=>switchExploreTab('gear'));$('#jewelManageBtn').addEventListener('click',()=>switchExploreTab('jewel'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#shopBuyTab').addEventListener('click',()=>setShopMode('buy'));$('#shopSellTab').addEventListener('click',()=>setShopMode('sell'));$('#shopSellCancelBtn').addEventListener('click',closeShopSellConfirm);$('#shopSellConfirmBtn').addEventListener('click',confirmShopSell);$('#shopSellConfirmDialog').addEventListener('cancel',e=>{e.preventDefault();closeShopSellConfirm()});$('#shopCloseBtn').addEventListener('click',closeShop);$('#shopDialog').addEventListener('cancel',e=>{e.preventDefault();closeShop()});$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());$('#parallelDriveBtn').addEventListener('click',()=>{const uid=$('#parallelDriveBtn').dataset.uid;if(uid)openParallelDrive(uid)});$('#parallelBackBtn').addEventListener('click',()=>closeParallelDrive(true));$('#parallelCloseBtn').addEventListener('click',()=>closeParallelDrive(false));$('#parallelCancelBtn').addEventListener('click',()=>{parallelPendingId=null;$('#parallelConfirm').classList.add('screen-hidden')});$('#parallelExecuteBtn').addEventListener('click',applyParallelDrive);$('#parallelDriveDialog').addEventListener('cancel',e=>{e.preventDefault();closeParallelDrive(false)});
 $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.current=f.map.start;showEvent('再生成','現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
