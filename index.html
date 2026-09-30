@@ -555,7 +555,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .item-target-effect{margin-top:10px;padding:10px 11px;border-radius:11px;background:#18202d;border:1px solid #38465e;font-size:9px;line-height:1.45;color:#ccd5e4}
 
 
-/* ===== Jewel management v13.25.0 ===== */
+/* ===== Jewel management v13.25.1 ===== */
 .jewel-tab-page{padding-bottom:76px}
 .jewel-tab-shell{display:grid;gap:10px;padding:3px 0 12px}
 .jewel-tab-intro{padding:12px 13px;border-radius:14px;background:#121824;border:1px solid #2e394f}
@@ -2156,7 +2156,6 @@ function renderItemTab(){
 function renderJewelTab(){
  const setChip=$('#jewelSetChip'),ownedChip=$('#jewelOwnedChip');if(setChip)setChip.textContent=`${state.jewelSet.length} / ${JEWEL_SET_LIMIT} セット`;if(ownedChip)ownedChip.textContent=`所持 ${state.jewels.length}`;
  const root=$('#jewelTabList');if(!root)return;root.innerHTML='';
- const intro=document.createElement('div');intro.className='jewel-tab-intro';intro.innerHTML=`<div class="jewel-tab-intro-row"><b>戦闘用の宝珠</b><strong>${state.jewelSet.length} / ${JEWEL_SET_LIMIT}</strong></div><p>宝珠はアイテム12枠とは別管理。戦闘中に使えるのは、ここでセットした最大3種です。戦闘中は変更できません。</p>`;root.appendChild(intro);
  const setTitle=document.createElement('div');setTitle.className='jewel-section-title';setTitle.innerHTML='<b>セット中</b><span>スロットをタップで変更</span>';root.appendChild(setTitle);
  const setList=document.createElement('div');setList.className='jewel-set-list';
  for(let i=0;i<JEWEL_SET_LIMIT;i++){
@@ -2166,9 +2165,11 @@ function renderJewelTab(){
    b.addEventListener('click',()=>openJewelSetPicker(i));setList.appendChild(b)
  }
  root.appendChild(setList);
- const ownTitle=document.createElement('div');ownTitle.className='jewel-section-title';ownTitle.style.marginTop='4px';ownTitle.innerHTML='<b>所持宝珠</b><span>同名宝珠の重複なし</span>';root.appendChild(ownTitle);
+ const ownTitle=document.createElement('div');ownTitle.className='jewel-section-title';ownTitle.style.marginTop='4px';ownTitle.innerHTML='<b>所持宝珠</b><span>未セットのみ表示</span>';root.appendChild(ownTitle);
  const ownList=document.createElement('div');ownList.className='jewel-owned-list';
- state.jewels.forEach(id=>{const d=jewelDef(id);if(!d)return;const equipped=state.jewelSet.includes(id),row=document.createElement('div');row.className='jewel-owned';row.innerHTML=`<span class="jewel-owned-icon">${d.icon}</span><span class="jewel-owned-copy"><b class="jewel-owned-name">${d.name}</b><small class="jewel-owned-text">${d.text}</small></span><span class="jewel-equipped-badge ${equipped?'':'jewel-not-equipped'}">${equipped?'セット中':'所持'}</span>`;ownList.appendChild(row)});
+ const unequipped=state.jewels.filter(id=>!state.jewelSet.includes(id));
+ if(!unequipped.length){ownList.innerHTML='<div class="jewel-battle-empty">未セットの宝珠はありません。</div>'}
+ else unequipped.forEach(id=>{const d=jewelDef(id);if(!d)return;const row=document.createElement('div');row.className='jewel-owned';row.innerHTML=`<span class="jewel-owned-icon">${d.icon}</span><span class="jewel-owned-copy"><b class="jewel-owned-name">${d.name}</b><small class="jewel-owned-text">${d.text}</small></span>`;ownList.appendChild(row)});
  root.appendChild(ownList)
 }
 function openJewelSetPicker(slot){
