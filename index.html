@@ -1835,7 +1835,7 @@ function moveToNode(id){
  const landed=map.nodes[id];
  renderExplore();
  if(landed.type==='enemy'){startExploreBattle(landed.id,rand(['slime','dog','arachne']),'enemy');return}
- if(landed.type==='unique'){startExploreBattle(landed.id,'gluttonDog','unique');return}
+ if(landed.type==='unique'){const uniqueId=landed.uniqueGearId||'glutton';startExploreBattle(landed.id,'gluttonDog','unique',uniqueId);return}
  resolveExploreNode();renderExplore()
 }
 function enhancementById(id){return ENHANCE_EFFECTS.find(x=>x.id===id)||ENHANCE_EFFECTS[0]}
