@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.23.0 二つ名装備拡張</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.24.0 行動不能基盤</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -165,6 +165,7 @@ button.chip{cursor:pointer}
   transition:border-color .16s ease,background .16s ease,transform .16s ease;
 }
 .unit.acting{border-color:#bb78ff;background:#241b32;transform:translateY(-2px)}
+.unit.action-disabled{border-color:#6b4a57;background:#21171d;filter:saturate(.68)}
 .unit.target{animation:unitHit .36s ease}
 @keyframes unitHit{
   0%,100%{transform:translateX(0)}
@@ -830,7 +831,7 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
 </div></dialog>
 <dialog id="jewelDialog"><div class="jewel-dialog">
 <h3>宝珠を選択</h3>
-<p>SKILL ON・ゲージ100・封印されていない魔物娘が参加します。参加者はこのターン通常攻撃を行いません。</p>
+<p>SKILL ON・ゲージ100・封印されておらず、このターン行動可能な魔物娘が参加します。参加者はこのターン通常攻撃を行いません。</p>
 <button class="jewel-choice" type="button" id="attackJewelBtn"><span class="jewel-icon">剣</span><span><b>攻撃の宝珠</b><small>敵に攻撃力平均の物理ダメージ。その後、攻撃力平均×0.2×参加人数の物理ダメージ。</small></span></button>
 <button class="jewel-choice" type="button" id="defenseJewelBtn" style="margin-top:7px"><span class="jewel-icon">盾</span><span><b>防御の宝珠</b><small>敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。</small></span></button>
 <button class="jewel-choice" type="button" id="healJewelBtn" style="margin-top:7px"><span class="jewel-icon">＋</span><span><b>回復の宝珠</b><small>参加人数×10%だけ味方全員のHPを回復。戦闘不能者は回復しない。</small></span></button>
@@ -1203,7 +1204,7 @@ function renderSetup(){
  const e=$('#enemySetup');e.innerHTML='';config.enemies.forEach((id,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>BATTLE ${i+1}</label><select data-enemy-select="${i}">${Object.values(ENEMIES).map(x=>`<option value="${x.id}" ${x.id===id?'selected':''}>${x.name}</option>`).join('')}</select>`;e.appendChild(b)});
 }
 function readSetup(){document.querySelectorAll('[data-party-select]').forEach(s=>config.party[+s.dataset.partySelect].ally=s.value);document.querySelectorAll('[data-enemy-select]').forEach(s=>config.enemies[+s.dataset.enemySelect]=s.value);document.querySelectorAll('[data-gear]').forEach(c=>{const [i,k]=c.dataset.gear.split(':');config.party[+i][k]=c.checked})}
-function makeParty(){const hasSlime=config.party.some(c=>c.ally==='slime');return config.party.map((c,i)=>{const t=ALLIES[c.ally],form=parallelForm(t.id),formBaseHp=form?.baseHp??t.baseHp,formBaseAtk=form?.atk??t.atk,blueBonus=hasSlime?ceil(formBaseHp*1.05)-formBaseHp:0,maxHp=formBaseHp+blueBonus;return {...t,uid:`u${i}`,maxHp,hp:maxHp,atk:formBaseAtk,gauge:0,dead:false,statuses:[],skillOn:true,wisdom:0,gear:{...c},parallelFamily:form?.family||null,formBaseHp,formBaseAtk,enhanceHp:0,enhanceAtk:0,_blueGelBonus:blueBonus}})}
+function makeParty(){const hasSlime=config.party.some(c=>c.ally==='slime');return config.party.map((c,i)=>{const t=ALLIES[c.ally],form=parallelForm(t.id),formBaseHp=form?.baseHp??t.baseHp,formBaseAtk=form?.atk??t.atk,blueBonus=hasSlime?ceil(formBaseHp*1.05)-formBaseHp:0,maxHp=formBaseHp+blueBonus;return {...t,uid:`u${i}`,maxHp,hp:maxHp,atk:formBaseAtk,gauge:0,dead:false,statuses:[],skillOn:true,wisdom:0,gear:{...c},parallelFamily:form?.family||null,formBaseHp,formBaseAtk,enhanceHp:0,enhanceAtk:0,_blueGelBonus:blueBonus,_actionDisabledTurn:0,_actionDisabledBy:null}})}
 function freshEnemy(idOverride=null){
  const id=idOverride||config.enemies[Math.max(0,state.battleNo-1)%config.enemies.length];
  const t=ENEMIES[id];
@@ -1217,7 +1218,7 @@ function startBattleResources(){
  state._turnOneReasonBonus=reasonUnique;state.reason=Math.min(10,rings+reasonUnique);
  const magic=living.filter(u=>u.type==='magic').length;
  state.party.forEach(u=>{
-   u.statuses=[];u._mountBlockedActionToken=null;u._obsessionStacks=0;u._obsessionLastTurn=0;u._gritUsed=false;u._sanzuUsed=false;u._turnOneWisdomBonus=0;
+   u.statuses=[];u._mountBlockedActionToken=null;u._obsessionStacks=0;u._obsessionLastTurn=0;u._gritUsed=false;u._sanzuUsed=false;u._turnOneWisdomBonus=0;u._actionDisabledTurn=0;u._actionDisabledBy=null;
    const baseWisdom=u.id==='demon'&&!u.dead?magic+gearStat(u,'startWisdom'):u.id==='poison_slime'&&!u.dead?gearStat(u,'startWisdom'):0;
    const wisdomUnique=!u.dead?equippedUniqueCountSlot(u,'wisdom_title','weapon')*5:0;u._turnOneWisdomBonus=wisdomUnique;u.wisdom=baseWisdom+wisdomUnique;
    const startGauge=gearStat(u,'startGauge');if(startGauge&&!u.dead)u.gauge=Math.min(skillMax(u),u.gauge+startGauge);
@@ -1289,7 +1290,27 @@ function hasPartyForm(id,aliveOnly=false){return state.party.some(u=>u.id===id&&
 function partyCounterBuff(){return state.partyBuffs.reduce((s,b)=>s+(b.counterRate||0),0)}
 function counterRate(u){let r=gearStat(u,'counterRate');if(u.id==='slime_bes')r+=25;if(hasPartyForm('slime_bes'))r+=5;if(hasPartyForm('crystal_slime',true))r+=30;r+=partyCounterBuff();return Math.max(0,r)}
 function multiHitRate(u){let r=gearStat(u,'multiHitRate');if(hasPartyForm('crystal_slime',true))r+=30;return Math.max(0,r)}
-const STATUS_AILMENT_NAMES=new Set(['毒','炎上','ショック','封印']);
+const STATUS_AILMENT_NAMES=new Set(['毒','炎上','ショック','眠気','封印']);
+const ACTION_DISABLE_STATUS_NAMES=new Set(['ショック','眠気']);
+function allyActionDisabled(u){return !!u&&!u.dead&&u._actionDisabledTurn===state.turn}
+function clearAllyActionDisable(u){if(!u)return;u._actionDisabledTurn=0;u._actionDisabledBy=null}
+async function prepareAllyTurnActions(){
+ for(const u of state.party){
+   clearAllyActionDisable(u);
+   if(u.dead)continue;
+   const stops=(u.statuses||[]).filter(s=>ACTION_DISABLE_STATUS_NAMES.has(s.name)&&s.x>0);
+   for(const st of stops){
+     if(Math.random()<Math.max(0,Math.min(100,st.x))/100){
+       u._actionDisabledTurn=state.turn;u._actionDisabledBy=st.name;
+       addLog(`【${st.name}${st.x}】：${u.name}はこのターン行動できない！`,'system');
+       showBanner(`${st.name}${st.x}`,`${u.name} 行動不能`);render();
+       pulseElement(unitEl(u.uid),'feedback-pulse');
+       await delay(Math.round(timing().ability*.45));
+       break
+     }
+   }
+ }
+}
 function enemyHasStatusAilment(){return !!state.enemy?.statuses?.some(s=>STATUS_AILMENT_NAMES.has(s.name))}
 function conditionalDamageBonusPct(u){const hp=u.maxHp>0?u.hp/u.maxHp:0;let bonus=0,full=gearStat(u,'fullPower'),last=gearStat(u,'lastStand');if(full>0&&hp>.5)bonus+=full*10*Math.pow((hp-.5)/.5,1.5);if(last>0&&hp<.5)bonus+=last*12*Math.pow((.5-hp)/.5,1.5);if(enemyHasStatusAilment())bonus+=gearStat(u,'statusSpecialPct');return bonus}
 function playerStatusChance(u,baseChance=100){return Math.max(0,Math.min(100,baseChance+gearStat(u,'statusSuccessPct')-(state.enemy?.statusResistPct||0)))}
@@ -1371,11 +1392,12 @@ async function damageAlly(u,base,source,type='physical',crit=false){
  const rate=counterRate(u);if(rate>0&&!state.enemy.dead&&Math.random()<rate/100)await performCounter(u);
  return {hit:true,actual,ko:false}
 }
-function addEnemyStatus(st){const o=state.enemy.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else state.enemy.statuses.push({...st});if((st.kind||'debuff')==='debuff')markBossDebuffApplied()}
-function addAllyStatus(u,st){const o=u.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else u.statuses.push({...st})}
+function normalizeStatus(st){const out={...st};if(ACTION_DISABLE_STATUS_NAMES.has(out.name)&&out.decay===undefined)out.decay=10;return out}
+function addEnemyStatus(st){st=normalizeStatus(st);const o=state.enemy.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else state.enemy.statuses.push({...st});if((st.kind||'debuff')==='debuff')markBossDebuffApplied()}
+function addAllyStatus(u,st){st=normalizeStatus(st);const o=u.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else u.statuses.push({...st})}
 function mountStatus(u){return u?.statuses?.find(s=>s.name==='マウント'&&s.x>0)}
 async function tryEnemyNegativeEffect(u,st,{baseChance=100,isStatus=false}={}){if(!u||u.dead)return false;if(isStatus&&Math.random()>=enemyStatusChance(u,baseChance)/100)return false;const token=state.enemyActionToken||0;if(u._mountBlockedActionToken===token)return false;const mount=mountStatus(u);if(mount){mount.x=Math.max(0,mount.x-1);u._mountBlockedActionToken=token;if(mount.x<=0)u.statuses=u.statuses.filter(s=>s!==mount);addLog(`【マウント】：${u.name}は敵の不利効果を無効化。`,'system');showBanner('マウント',`${u.name} 不利効果無効`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().ability*.45));return false}addAllyStatus(u,st);return true}
-async function normalAttack(u){if(u.dead||state.enemy.dead)return;if(equippedUniqueCountSlot(u,'obsession','weapon')&&u._obsessionLastTurn!==state.turn){u._obsessionLastTurn=state.turn;u._obsessionStacks=(u._obsessionStacks||0)+1;addLog(`【執念の】：${u.name}の攻撃力+${u._obsessionStacks*10}%。`,'system')}await actFlash(u);await damageEnemy(u,effectiveAtk(u),'通常攻撃',u.type,true);if(state.enemy.dead){clearActing();return}if(u.id==='dog'&&state.turn%3===0){state.enemy.timedAmp.push({value:10,turns:2});markBossDebuffApplied();state.reason=Math.min(10,state.reason+1);addLog(`噛みつき：敵の被ダメージ+10%（2T） / 理力+1（${state.reason}）`,'system');showBanner('噛みつき発動','被ダメ+10% / 理力+1');render();feedbackEnemyStatus('+10%');feedbackReason('+1');await delay(timing().ability)}if(u.id==='slug'){state.enemy.permanentAmp=Math.min(30,state.enemy.permanentAmp+2);markBossDebuffApplied();addLog(`ぬめぬめ：敵の被ダメージ+2%（累積${state.enemy.permanentAmp}%）`,'system');showBanner('ぬめぬめ','敵の被ダメ+2%');render();feedbackEnemyStatus('+2%');await delay(timing().ability)}if(u.id==='demon'){const burn=enemyStatus('炎上');if(burn){u.wisdom+=2;addLog(`ファイア：炎上中なので叡智+2（${u.wisdom}）`,'system');showBanner('ファイア','叡智+2');render();popNear(unitEl(u.uid),'+2叡智');await delay(timing().ability)}else if(Math.random()<playerStatusChance(u,40)/100){addEnemyStatus({name:'炎上',x:3,decay:1,kind:'debuff',short:'炎上'});addLog('ファイア：敵に【炎上3】を付与。','system');showBanner('ファイア','炎上3');render();feedbackEnemyStatus('炎上3');await delay(timing().ability)}else{}}
+async function normalAttack(u){if(u.dead||state.enemy.dead||allyActionDisabled(u))return;if(equippedUniqueCountSlot(u,'obsession','weapon')&&u._obsessionLastTurn!==state.turn){u._obsessionLastTurn=state.turn;u._obsessionStacks=(u._obsessionStacks||0)+1;addLog(`【執念の】：${u.name}の攻撃力+${u._obsessionStacks*10}%。`,'system')}await actFlash(u);await damageEnemy(u,effectiveAtk(u),'通常攻撃',u.type,true);if(state.enemy.dead){clearActing();return}if(u.id==='dog'&&state.turn%3===0){state.enemy.timedAmp.push({value:10,turns:2});markBossDebuffApplied();state.reason=Math.min(10,state.reason+1);addLog(`噛みつき：敵の被ダメージ+10%（2T） / 理力+1（${state.reason}）`,'system');showBanner('噛みつき発動','被ダメ+10% / 理力+1');render();feedbackEnemyStatus('+10%');feedbackReason('+1');await delay(timing().ability)}if(u.id==='slug'){state.enemy.permanentAmp=Math.min(30,state.enemy.permanentAmp+2);markBossDebuffApplied();addLog(`ぬめぬめ：敵の被ダメージ+2%（累積${state.enemy.permanentAmp}%）`,'system');showBanner('ぬめぬめ','敵の被ダメ+2%');render();feedbackEnemyStatus('+2%');await delay(timing().ability)}if(u.id==='demon'){const burn=enemyStatus('炎上');if(burn){u.wisdom+=2;addLog(`ファイア：炎上中なので叡智+2（${u.wisdom}）`,'system');showBanner('ファイア','叡智+2');render();popNear(unitEl(u.uid),'+2叡智');await delay(timing().ability)}else if(Math.random()<playerStatusChance(u,40)/100){addEnemyStatus({name:'炎上',x:3,decay:1,kind:'debuff',short:'炎上'});addLog('ファイア：敵に【炎上3】を付与。','system');showBanner('ファイア','炎上3');render();feedbackEnemyStatus('炎上3');await delay(timing().ability)}else{}}
  if(!state.enemy.dead){const rate=multiHitRate(u);if(rate>0&&Math.random()<rate/100){addLog(`${u.name}の連撃！`,'system');showBanner('連撃！',u.name);await delay(Math.round(timing().ability*.45));await damageEnemy(u,effectiveAtk(u),'連撃',u.type,true)}}clearActing()}
 async function gluttonDogNormalAction(){
  const e=state.enemy,idx=e.actionIndex;
@@ -1457,10 +1479,12 @@ async function enemyAction(){
  if(state.stats&&state.stats.current)state.stats.current.enemyTurns++;
  const e=state.enemy,cycles={slime:3,dog:3,arachne:3,golem:4},cycle=cycles[e.id]||1,idx=e.actionIndex;
  if(e.id!=='crusher'&&e.id!=='gluttonDog')e.actionIndex=(e.actionIndex+1)%cycle;
- const shock=enemyStatus('ショック');
- if(shock&&Math.random()<shock.x/100){
+ const stopStatuses=(e.statuses||[]).filter(s=>ACTION_DISABLE_STATUS_NAMES.has(s.name)&&s.x>0);
+ let stoppedBy=null;
+ for(const st of stopStatuses){if(Math.random()<Math.max(0,Math.min(100,st.x))/100){stoppedBy=st;break}}
+ if(stoppedBy){
    if(state.stats&&state.stats.current)state.stats.current.enemyNoAction++;
-   addLog(`【ショック${shock.x}】：敵は行動できない！`,'system');showBanner(`ショック${shock.x}`,'行動不能');await delay(timing().ability);
+   addLog(`【${stoppedBy.name}${stoppedBy.x}】：敵は行動できない！`,'system');showBanner(`${stoppedBy.name}${stoppedBy.x}`,'行動不能');await delay(timing().ability);
    if(e.id==='crusher'){
      if(e.activeOmen==='rock')e.charge=0;else e.charge=Math.min(e.chargeMax,e.charge+1);
      e.activeOmen=null;e.omenBroken=false
@@ -1566,7 +1590,7 @@ async function activateHealJewel(n){
 }
 async function playTurn(chain,jewel=null){
  if(animating||state.battleOver)return;
- const sel=chain?state.party.filter(u=>!u.dead&&u.gauge>=skillMax(u)&&u.skillOn&&!hasAllyStatus(u,'封印')):[];
+ const sel=chain?state.party.filter(u=>!u.dead&&!allyActionDisabled(u)&&u.gauge>=skillMax(u)&&u.skillOn&&!hasAllyStatus(u,'封印')):[];
  if(chain&&!sel.length)return;
  if(state.stats&&state.stats.current){state.stats.current.turns++;if(sel.length){state.stats.current.chains++;state.stats.current.chainParticipants+=sel.length}}
  const chainIds=new Set(sel.map(u=>u.uid));
@@ -1594,7 +1618,7 @@ async function playTurn(chain,jewel=null){
  expireTurnOneUniqueBonuses();
  if(state.enemy.dead){render();await delay(timing().ability);await finishBattle();animating=false;render();return}
  prepareBossHpTrigger();
- state.turn++;hideBanner();render();await delay(timing().pause);animating=false;render()
+ state.turn++;hideBanner();render();await prepareAllyTurnActions();await delay(timing().pause);animating=false;render()
 }
 function battleItemAlreadyUsed(){return state.battleItemUsedTurn===state.turn}
 function battleUsableItems(){return state.items.filter(inst=>itemDef(inst.itemId).battleUsable)}
@@ -1703,13 +1727,13 @@ function finishRun(win){
  $('#intermissionText').textContent=win?'迷宮を踏破した。':'探索の途中でパーティが全滅しました。';
  $('#nextBattleBtn').textContent='探索を最初から';intermission.classList.add('show');showBanner(win?'探索クリア！':'パーティは全滅した……');render();
 }
-function statusSummary(u){const a=[];u.statuses.forEach(s=>a.push({text:`${s.short||s.name}${s.x}`,kind:s.kind||'debuff',full:`${s.name}${s.x}`}));state.partyBuffs.forEach(b=>a.push({text:`${b.short} ${b.turns}T`,kind:'buff',full:`${b.name}：残り${b.turns}T`}));return a}
+function statusSummary(u){const a=[];u.statuses.forEach(s=>a.push({text:`${s.short||s.name}${s.x}`,kind:s.kind||'debuff',full:`${s.name}${s.x}`}));if(allyActionDisabled(u))a.push({text:'行動不能',kind:'debuff',full:`${u._actionDisabledBy||'状態異常'}：このターン行動不能`});state.partyBuffs.forEach(b=>a.push({text:`${b.short} ${b.turns}T`,kind:'buff',full:`${b.name}：残り${b.turns}T`}));return a}
 function openDetail(uid){selectedDetailId=uid;const u=state.party.find(x=>x.uid===uid);if(!u)return;const gear=gearNames(u).join(' / ')||'装備なし';$('#detailName').textContent=u.name;$('#detailBody').innerHTML=`ATK ${effectiveAtk(u)} / HP ${u.hp}/${u.maxHp} / SKILL ${u.gauge}/${skillMax(u)}${['demon','poison_slime'].includes(u.id)?` / 叡智 ${u.wisdom}`:''}<br>通常攻撃：${typeJP(u.type)}<br>スキル：${u.skill}｜${u.skillShort}<br>装備：${gear}`;const box=$('#detailStatuses');box.innerHTML='';const items=statusSummary(u);if(!items.length){const s=document.createElement('span');s.className='status-pill';s.textContent='バフ・デバフなし';box.appendChild(s)}else items.forEach(it=>{const s=document.createElement('span');s.className=`status-pill ${it.kind}`;s.textContent=it.full;box.appendChild(s)});detailPanel.classList.add('show')}
 function render(){
  $('#battleChip').textContent=`戦闘${state.battleNo}`;$('#turnChip').textContent=`T${state.turn}`;$('#speedBtn').textContent=timing().label;$('#enemyName').textContent=state.enemy.name;$('#enemyImg').src=state.enemy.img;$('#enemyHpText').textContent=`${state.enemy.hp} / ${state.enemy.maxHp}`;$('#enemyHpFill').style.width=`${Math.max(0,state.enemy.hp/state.enemy.maxHp*100)}%`;
  const es=$('#enemyStatus');es.innerHTML='';const amp=totalEnemyAmp();if(amp){const p=document.createElement('span');p.className='status-pill debuff';p.textContent=`被ダメ+${amp}%`;es.appendChild(p)}if(state.enemy.charm>0){const p=document.createElement('span');p.className='status-pill stack';p.textContent=`魅了${state.enemy.charm}/10`;es.appendChild(p)}state.enemy.statuses.forEach(s=>{const p=document.createElement('span');p.className=`status-pill ${s.kind||'debuff'}`;p.textContent=`${s.name}${s.x}`;es.appendChild(p)});if(!es.children.length){const p=document.createElement('span');p.className='status-pill';p.textContent='効果なし';es.appendChild(p)}renderBossMechanic();
- partyGrid.innerHTML='';state.party.forEach(u=>{const c=document.createElement('article');c.className='card unit';c.dataset.unit=u.uid;const hpPct=Math.max(0,u.hp/u.maxHp*100),ready=!u.dead&&u.gauge>=skillMax(u),items=statusSummary(u),vis=items.slice(0,3),extra=Math.max(0,items.length-vis.length);c.innerHTML=`<div class="unit-img"><img src="${u.img}" alt="${u.name}"></div><div class="unit-name">${u.name}</div><div class="atkline" data-atkline>ATK ${effectiveAtk(u)}${['demon','poison_slime'].includes(u.id)?` / 叡智${u.wisdom}`:''}</div><div class="mini-label"><span>HP</span><span>${u.hp}/${u.maxHp}</span></div><div class="bar mini-bar"><div class="fill hp-fill" data-hp-fill style="width:${hpPct}%"></div></div><div class="mini-label"><span>SKILL</span><span>${u.gauge}/${skillMax(u)}</span></div><div class="bar mini-bar"><div class="fill gauge-fill ${ready?'ready':''}" data-gauge-fill style="width:${Math.min(100,u.gauge/skillMax(u)*100)}%"></div></div><div class="status-row">${vis.map(x=>`<span class="status-mini ${x.kind}">${x.text}</span>`).join('')}${extra?`<span class="status-mini more">+${extra}</span>`:''}${!items.length?'<span class="status-mini">効果なし</span>':''}</div><button class="skill-toggle ${u.skillOn?'on':''} ${ready&&u.skillOn?'ready':''}" type="button" data-skill-toggle="${u.uid}" ${u.dead||animating||state.battleOver?'disabled':''}>${u.skillOn?'SKILL ON':'SKILL OFF'}</button>`;c.addEventListener('click',e=>{if(!e.target.closest('[data-skill-toggle]'))openDetail(u.uid)});partyGrid.appendChild(c)});
- document.querySelectorAll('[data-skill-toggle]').forEach(b=>b.addEventListener('click',()=>{if(animating||state.battleOver)return;const u=state.party.find(x=>x.uid===b.dataset.skillToggle);u.skillOn=!u.skillOn;render()}));const buff=totalAttackBuffPct();$('#reasonText').textContent=buff?`理力 ${state.reason}/10 ｜ 攻撃力+${buff}%`:`理力 ${state.reason}/10`;const readyOn=state.party.filter(u=>!u.dead&&u.gauge>=skillMax(u)&&u.skillOn&&!hasAllyStatus(u,'封印')).length;$('#attackBtn').disabled=animating||state.battleOver;$('#chainBtn').disabled=animating||state.battleOver||readyOn===0;const itemBtn=$('#battleItemBtn'),itemUsed=battleItemAlreadyUsed(),hasBattleItem=battleUsableItems().length>0;if(itemBtn){itemBtn.disabled=animating||state.battleOver||itemUsed||!hasBattleItem;itemBtn.classList.toggle('used',itemUsed);itemBtn.setAttribute('aria-label',itemUsed?'アイテム使用済み':'アイテム');itemBtn.title=itemUsed?'このターンは使用済み':hasBattleItem?'アイテム':'戦闘中に使えるアイテムなし'}if(selectedDetailId&&detailPanel.classList.contains('show'))openDetail(selectedDetailId);renderStats()
+ partyGrid.innerHTML='';state.party.forEach(u=>{const c=document.createElement('article');c.className='card unit';c.dataset.unit=u.uid;const hpPct=Math.max(0,u.hp/u.maxHp*100),ready=!u.dead&&u.gauge>=skillMax(u),items=statusSummary(u),vis=items.slice(0,3),extra=Math.max(0,items.length-vis.length);if(allyActionDisabled(u))c.classList.add('action-disabled');c.innerHTML=`<div class="unit-img"><img src="${u.img}" alt="${u.name}"></div><div class="unit-name">${u.name}</div><div class="atkline" data-atkline>ATK ${effectiveAtk(u)}${['demon','poison_slime'].includes(u.id)?` / 叡智${u.wisdom}`:''}</div><div class="mini-label"><span>HP</span><span>${u.hp}/${u.maxHp}</span></div><div class="bar mini-bar"><div class="fill hp-fill" data-hp-fill style="width:${hpPct}%"></div></div><div class="mini-label"><span>SKILL</span><span>${u.gauge}/${skillMax(u)}</span></div><div class="bar mini-bar"><div class="fill gauge-fill ${ready?'ready':''}" data-gauge-fill style="width:${Math.min(100,u.gauge/skillMax(u)*100)}%"></div></div><div class="status-row">${vis.map(x=>`<span class="status-mini ${x.kind}">${x.text}</span>`).join('')}${extra?`<span class="status-mini more">+${extra}</span>`:''}${!items.length?'<span class="status-mini">効果なし</span>':''}</div><button class="skill-toggle ${u.skillOn?'on':''} ${ready&&u.skillOn?'ready':''}" type="button" data-skill-toggle="${u.uid}" ${u.dead||animating||state.battleOver?'disabled':''}>${u.skillOn?'SKILL ON':'SKILL OFF'}</button>`;c.addEventListener('click',e=>{if(!e.target.closest('[data-skill-toggle]'))openDetail(u.uid)});partyGrid.appendChild(c)});
+ document.querySelectorAll('[data-skill-toggle]').forEach(b=>b.addEventListener('click',()=>{if(animating||state.battleOver)return;const u=state.party.find(x=>x.uid===b.dataset.skillToggle);u.skillOn=!u.skillOn;render()}));const buff=totalAttackBuffPct();$('#reasonText').textContent=buff?`理力 ${state.reason}/10 ｜ 攻撃力+${buff}%`:`理力 ${state.reason}/10`;const readyOn=state.party.filter(u=>!u.dead&&!allyActionDisabled(u)&&u.gauge>=skillMax(u)&&u.skillOn&&!hasAllyStatus(u,'封印')).length;$('#attackBtn').disabled=animating||state.battleOver;$('#chainBtn').disabled=animating||state.battleOver||readyOn===0;const itemBtn=$('#battleItemBtn'),itemUsed=battleItemAlreadyUsed(),hasBattleItem=battleUsableItems().length>0;if(itemBtn){itemBtn.disabled=animating||state.battleOver||itemUsed||!hasBattleItem;itemBtn.classList.toggle('used',itemUsed);itemBtn.setAttribute('aria-label',itemUsed?'アイテム使用済み':'アイテム');itemBtn.title=itemUsed?'このターンは使用済み':hasBattleItem?'アイテム':'戦闘中に使えるアイテムなし'}if(selectedDetailId&&detailPanel.classList.contains('show'))openDetail(selectedDetailId);renderStats()
 }
 
 function recoveryBlocked(){return false}
@@ -1917,7 +1941,7 @@ function resolveExploreNode(){
 }
 function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true;showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越したため、この階にもユニーク敵が出現した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。`)}else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。`);toast(`${explore.floor}Fへ`,explore.collapsed);renderExplore()}
 function startExploreBattle(nodeId,enemyId,kind,uniqueGearId=null){
- state.battleNo++;state.turn=1;state.battleItemUsedTurn=0;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0});startBattleResources();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');showBattle();render()
+ state.battleNo++;state.turn=1;state.battleItemUsedTurn=0;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0;clearAllyActionDisable(u)});startBattleResources();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');showBattle();render()
 }
 function returnFromBattle(){if(state.runOver){resetRun();return}state.battleContext=null;state.enemy=null;intermission.classList.remove('show');showExplore();resolveExploreNode();renderExplore();if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst)setTimeout(()=>openGearPickup(inst),80)}}
 function centerMapOnCurrent(smooth=false){
@@ -2026,7 +2050,7 @@ function itemResultMessage(itemId,targetUid=null){
    const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const before=u.gauge;u.gauge=Math.min(skillMax(u),u.gauge+100);return {title:d.name,text:`${u.name}のSKILLが${before} → ${u.gauge}になった。`,toast:`${u.name} SKILL +${u.gauge-before}`,targetUid:u.uid,effect:'gaugeSingle',amount:u.gauge-before}
  }
  if(itemId==='panacea'){
-   const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const removed=removableAllyStatuses(u);if(!removed.length)return null;const removedNames=removed.map(s=>s.short||s.name);u.statuses=u.statuses.filter(s=>(s.kind||'debuff')==='buff');return {title:d.name,text:`${u.name}の不利効果をすべて解除した（${removedNames.join('・')}）。`,toast:`${u.name} 状態解除`,targetUid:u.uid,effect:'cleanse',removedCount:removed.length}
+   const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const removed=removableAllyStatuses(u);if(!removed.length)return null;const removedNames=removed.map(s=>s.short||s.name);u.statuses=u.statuses.filter(s=>(s.kind||'debuff')==='buff');clearAllyActionDisable(u);return {title:d.name,text:`${u.name}の不利効果をすべて解除した（${removedNames.join('・')}）。`,toast:`${u.name} 状態解除`,targetUid:u.uid,effect:'cleanse',removedCount:removed.length}
  }
  if(itemId==='balance_scale'){
    if(!explore||explore.collapse<=0)return null;const before=explore.collapse;explore.collapse=Math.max(0,explore.collapse-20);return {title:d.name,text:`崩壊度が${before} → ${explore.collapse}になった。`,toast:`崩壊度 -${before-explore.collapse}`}
