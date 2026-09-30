@@ -1762,7 +1762,7 @@ function maybeInfect(){
 }
 function moveToNode(id){
  if(state.runOver||battleScreen.classList.contains('screen-hidden')===false)return;const map=currentMap();if(!neighborsOf(map,explore.current).includes(id))return;
- explore.current=id;map.nodes[id].visited=true;explore.steps++;const wasCollapsed=explore.collapsed;addCollapse(1);if(wasCollapsed)maybeInfect();
+ explore.current=id;map.nodes[id].visited=true;explore.steps++;const wasCollapsed=explore.collapsed;addCollapse(1);const collapsedThisMove=!wasCollapsed&&explore.collapsed;if(collapsedThisMove&&explore.lastMessage?.title==='崩壊発生')explore.lastMessage=null;if(wasCollapsed)maybeInfect();
  const landed=map.nodes[id];
  renderExplore();
  if(landed.type==='enemy'){startExploreBattle(landed.id,rand(['slime','dog','arachne']),'enemy');return}
