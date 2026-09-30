@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.25.0 宝珠タブ基盤</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.26.0 宝箱・通常宝珠</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -567,10 +567,13 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .jewel-slot:active,.jewel-owned:active{transform:scale(.992)}
 .jewel-slot-icon,.jewel-owned-icon,.jewel-icon{border-radius:50%;display:grid;place-items:center;font-weight:950;text-shadow:0 1px 2px rgba(0,0,0,.45)}
 .jewel-slot-icon{width:54px;height:54px;font-size:22px}.jewel-owned-icon{width:48px;height:48px;font-size:20px}
-.jewel-icon.jewel-attack,.jewel-slot-icon.jewel-attack,.jewel-owned-icon.jewel-attack{background:radial-gradient(circle at 34% 28%,#ffd0d5 0,#ef6e79 34%,#a92f43 63%,#561523 100%);border:2px solid #ff9aa5;color:#fff2f3;box-shadow:inset 0 0 10px rgba(255,255,255,.18),0 0 10px rgba(218,66,87,.18)}
-.jewel-icon.jewel-defense,.jewel-slot-icon.jewel-defense,.jewel-owned-icon.jewel-defense{background:radial-gradient(circle at 34% 28%,#d8efff 0,#68a9e8 34%,#3165a8 63%,#16325f 100%);border:2px solid #9bd0ff;color:#f3f9ff;box-shadow:inset 0 0 10px rgba(255,255,255,.18),0 0 10px rgba(80,145,219,.18)}
-.jewel-icon.jewel-heal,.jewel-slot-icon.jewel-heal,.jewel-owned-icon.jewel-heal{background:radial-gradient(circle at 34% 28%,#efffe9 0,#a8e7a6 36%,#5fae72 65%,#285c3b 100%);border:2px solid #c5f2c4;color:#f7fff5;box-shadow:inset 0 0 10px rgba(255,255,255,.22),0 0 10px rgba(96,186,116,.16)}
-.jewel-slot-icon:not(.jewel-attack):not(.jewel-defense):not(.jewel-heal),.jewel-owned-icon:not(.jewel-attack):not(.jewel-defense):not(.jewel-heal),.jewel-icon:not(.jewel-attack):not(.jewel-defense):not(.jewel-heal){background:radial-gradient(circle at 35% 30%,#ffe6a2,#e2913a 48%,#74391c 78%);border:2px solid #efc06c;color:#fff7df}
+.jewel-icon.jewel-red,.jewel-slot-icon.jewel-red,.jewel-owned-icon.jewel-red{background:radial-gradient(circle at 34% 28%,#ffd0d5 0,#ef6e79 34%,#a92f43 63%,#561523 100%);border:2px solid #ff9aa5;color:#fff2f3;box-shadow:inset 0 0 10px rgba(255,255,255,.18),0 0 10px rgba(218,66,87,.18)}
+.jewel-icon.jewel-blue,.jewel-slot-icon.jewel-blue,.jewel-owned-icon.jewel-blue{background:radial-gradient(circle at 34% 28%,#d8efff 0,#68a9e8 34%,#3165a8 63%,#16325f 100%);border:2px solid #9bd0ff;color:#f3f9ff;box-shadow:inset 0 0 10px rgba(255,255,255,.18),0 0 10px rgba(80,145,219,.18)}
+.jewel-icon.jewel-green,.jewel-slot-icon.jewel-green,.jewel-owned-icon.jewel-green{background:radial-gradient(circle at 34% 28%,#efffe9 0,#a8e7a6 36%,#5fae72 65%,#285c3b 100%);border:2px solid #c5f2c4;color:#f7fff5;box-shadow:inset 0 0 10px rgba(255,255,255,.22),0 0 10px rgba(96,186,116,.16)}
+.jewel-icon.jewel-purple,.jewel-slot-icon.jewel-purple,.jewel-owned-icon.jewel-purple{background:radial-gradient(circle at 34% 28%,#f2d8ff 0,#b66ce1 35%,#713ca2 64%,#35194f 100%);border:2px solid #d8a2f4;color:#fff6ff;box-shadow:inset 0 0 10px rgba(255,255,255,.18),0 0 10px rgba(159,84,207,.18)}
+.jewel-icon.jewel-pink,.jewel-slot-icon.jewel-pink,.jewel-owned-icon.jewel-pink{background:radial-gradient(circle at 34% 28%,#ffe2f1 0,#ef83b7 36%,#b6457b 65%,#60203f 100%);border:2px solid #ffacd2;color:#fff5fa;box-shadow:inset 0 0 10px rgba(255,255,255,.20),0 0 10px rgba(224,84,151,.18)}
+.jewel-icon.jewel-silver,.jewel-slot-icon.jewel-silver,.jewel-owned-icon.jewel-silver{background:radial-gradient(circle at 34% 28%,#fff 0,#cdd3dd 35%,#858e9d 65%,#3b424e 100%);border:2px solid #e7eaf0;color:#151922;text-shadow:none;box-shadow:inset 0 0 10px rgba(255,255,255,.35),0 0 10px rgba(210,220,235,.14)}
+.jewel-slot-icon:not(.jewel-red):not(.jewel-blue):not(.jewel-green):not(.jewel-purple):not(.jewel-pink):not(.jewel-silver),.jewel-owned-icon:not(.jewel-red):not(.jewel-blue):not(.jewel-green):not(.jewel-purple):not(.jewel-pink):not(.jewel-silver),.jewel-icon:not(.jewel-red):not(.jewel-blue):not(.jewel-green):not(.jewel-purple):not(.jewel-pink):not(.jewel-silver){background:radial-gradient(circle at 35% 30%,#ffe6a2,#e2913a 48%,#74391c 78%);border:2px solid #efc06c;color:#fff7df}
 .jewel-slot-copy,.jewel-owned-copy{min-width:0}.jewel-slot-copy{align-self:start;padding-top:0}.jewel-slot-label{display:block;margin-top:-4px;margin-bottom:1px;font-size:9px;line-height:1.1;color:#b8a7c9;font-weight:950;letter-spacing:.04em}.jewel-slot-name,.jewel-owned-name{display:block;margin-top:1px;font-size:14px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jewel-slot-text,.jewel-owned-text{display:block;margin-top:5px;font-size:10px;line-height:1.45;color:#c3ccdc}
 .jewel-slot-change{padding:7px 10px;border-radius:9px;background:#30243f;border:1px solid #6a4e82;color:#f0e5f6;font-size:10px;font-weight:950}
 .jewel-owned{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px 12px;border-radius:13px;background:#111724;border:1px solid #2d374d;color:#eef2f8;text-align:left}
@@ -599,6 +602,19 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .shop-close{width:100%;min-height:42px;margin-top:10px;border-radius:11px;border:1px solid #3b465e;background:#202737;color:#dfe5f0;font-size:9px;font-weight:950;cursor:pointer;flex:0 0 auto}
 #shopSellConfirmDialog{width:min(90vw,390px)}.shop-sell-confirm{padding:16px}.shop-sell-confirm h3{margin:0 0 5px;font-size:16px}.shop-sell-confirm p{margin:0;font-size:9px;line-height:1.55;color:var(--muted)}.shop-sell-confirm-price{margin-top:12px;padding:10px 11px;border-radius:11px;border:1px solid #554b34;background:#262115;color:#ffe09a;font-size:13px;font-weight:950;text-align:center}.shop-sell-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.shop-sell-confirm-actions button{min-height:42px;border-radius:10px;font-size:9px;font-weight:950;cursor:pointer}.shop-sell-cancel{border:1px solid #3b465e;background:#202737;color:#dfe5f0}.shop-sell-confirm-btn{border:1px solid #55765d;background:#203529;color:#d8f0df}
 @media(max-width:380px){.shop-panel{padding:12px}.shop-product{grid-template-columns:42px minmax(0,1fr) auto;padding:8px}.shop-icon{width:42px;height:42px;font-size:22px}.shop-side{min-width:64px}.shop-buy,.shop-sell{min-width:62px;padding:0 6px}}
+
+
+/* Treasure chest */
+.map-node.type-treasure{background:#392c12;border-color:#c69b43;box-shadow:0 0 15px rgba(226,181,72,.22)}
+.treasure-dialog{width:min(94vw,520px);max-height:88vh;padding:0;border:1px solid #655330;border-radius:18px;background:#111624;color:var(--text);overflow:hidden}
+.treasure-dialog::backdrop{background:rgba(3,5,10,.76);backdrop-filter:blur(4px)}
+.treasure-panel{max-height:88vh;overflow:auto;padding:15px}
+.treasure-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.treasure-head h3{margin:0;font-size:19px}.treasure-head p{margin:4px 0 0;font-size:9px;line-height:1.5;color:#b5ad9a}
+.treasure-list{display:grid;gap:9px;margin-top:12px}.treasure-choice{appearance:none;width:100%;display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px;border-radius:14px;border:1px solid #4b4434;background:linear-gradient(135deg,#1d1b16,#141923);color:#eef2f8;text-align:left;cursor:pointer}.treasure-choice:active{transform:scale(.993)}.treasure-choice:disabled{opacity:.45;cursor:default}
+.treasure-icon{width:54px;height:54px;border-radius:12px;display:grid;place-items:center;background:#211d14;border:1px solid #655330;font-size:28px}.treasure-icon .jewel-owned-icon{width:50px;height:50px;font-size:20px}
+.treasure-copy{min-width:0}.treasure-kind{display:block;font-size:8px;font-weight:950;color:#c9a85d;letter-spacing:.04em}.treasure-copy b{display:block;margin-top:2px;font-size:13px}.treasure-copy small{display:block;margin-top:4px;font-size:9px;line-height:1.45;color:#b8c1d1}.treasure-effects{display:grid;gap:2px;margin-top:4px}.treasure-effect{font-size:8.5px;line-height:1.4;color:#d4dbe8}.treasure-effect.affix{color:#d8bdf0}.treasure-effect.unique{color:#ffe3a2}
+.treasure-take{min-width:58px;min-height:34px;padding:0 8px;border-radius:9px;border:1px solid #8a6b30;background:#392c12;color:#ffe3a2;font-size:9px;font-weight:950}.treasure-close{width:100%;min-height:40px;margin-top:11px;border-radius:10px;border:1px solid #3b465e;background:#202737;color:#dfe5f0;font-size:9px;font-weight:900;cursor:pointer}
+@media(max-width:380px){.treasure-choice{grid-template-columns:48px minmax(0,1fr) auto;gap:8px;padding:9px}.treasure-icon{width:48px;height:48px;font-size:24px}.treasure-icon .jewel-owned-icon{width:44px;height:44px;font-size:18px}.treasure-copy b{font-size:12px}.treasure-copy small,.treasure-effect{font-size:8px}.treasure-take{min-width:52px;padding:0 6px}}
 
 /* Battle item bottom sheet */
 .battle-item-dialog{
@@ -725,11 +741,11 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
   <section class="card map-card">
     <div class="map-head"><b id="mapTitle">迷宮 1F</b><div class="map-tools"><span>ドラッグで地図を移動</span><button class="map-center-btn" id="centerMapBtn" type="button" aria-label="現在地へ戻る">◎</button></div></div>
     <div class="map-viewport" id="mapViewport"><div class="map-board" id="mapBoard"><svg class="map-lines" id="mapLines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="mapNodes"></div></div></div>
-    <div class="explore-legend"><span>⚔ 敵</span><span>✦ アイテム</span><span>¤ 店</span><span>◇ 装備</span><span>✚ 強化</span><span>♥ 休憩</span><span>⇢ 次階</span><span>☠ ユニーク</span></div>
+    <div class="explore-legend"><span>⚔ 敵</span><span>▣ 宝箱</span><span>✦ アイテム</span><span>¤ 店</span><span>◇ 装備</span><span>✚ 強化</span><span>♥ 休憩</span><span>⇢ 次階</span><span>☠ ユニーク</span></div>
   </section>
   <section class="card explore-event" id="exploreEvent"><h3 id="exploreEventTitle">入口</h3><p id="exploreEventText">迷宮へ踏み込んだ。</p><button class="explore-action screen-hidden" id="exploreActionBtn" type="button"></button></section>
   <section class="card explore-party-card"><div class="explore-party-head"><b>探索パーティ</b><span>HP・SKILL 持ち越し</span></div><div class="explore-party" id="exploreParty"></div></section>
-  <section class="card setup" style="margin-top:7px"><button class="setup-toggle" type="button" id="exploreSetupToggle"><span><span class="prototype-note">探索テスト設定</span></span><span id="exploreSetupMark">開く ▾</span></button><div class="setup-body" id="exploreSetupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="explorePartySetup"></div><button class="apply-setup" type="button" id="exploreApplySetup">設定を反映して探索をやり直す</button><div class="explore-debug"><button id="collapsePlusBtn" type="button">崩壊度 +5</button><button id="collapseNearBtn" type="button">崩壊直前へ</button><button id="regenMapBtn" type="button">現在階を再生成</button><button id="goldPlusBtn" type="button">G +500</button><button id="ppPlusBtn" type="button">PP +50</button><button id="parallelJewelPlusBtn" type="button">パラレルジュエル +1</button></div><button class="reset" type="button" id="exploreResetBtn">探索を最初からやり直す</button></div></section>
+  <section class="card setup" style="margin-top:7px"><button class="setup-toggle" type="button" id="exploreSetupToggle"><span><span class="prototype-note">探索テスト設定</span></span><span id="exploreSetupMark">開く ▾</span></button><div class="setup-body" id="exploreSetupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="explorePartySetup"></div><button class="apply-setup" type="button" id="exploreApplySetup">設定を反映して探索をやり直す</button><div class="explore-debug"><button id="collapsePlusBtn" type="button">崩壊度 +5</button><button id="collapseNearBtn" type="button">崩壊直前へ</button><button id="regenMapBtn" type="button">現在階を再生成</button><button id="treasurePlusBtn" type="button">宝箱を追加</button><button id="goldPlusBtn" type="button">G +500</button><button id="ppPlusBtn" type="button">PP +50</button><button id="parallelJewelPlusBtn" type="button">パラレルジュエル +1</button></div><button class="reset" type="button" id="exploreResetBtn">探索を最初からやり直す</button></div></section>
   </div>
 
   <section id="itemTabPage" class="explore-tab-page item-tab-page screen-hidden">
@@ -778,6 +794,11 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
   </div>
   <div class="gear-pickup-note" id="gearPickupNote">所持品に追加されました。</div>
   <div class="gear-pickup-actions"><button class="gear-pickup-back" id="gearPickupBackBtn" type="button">探索へ戻る</button><button class="gear-pickup-open" id="gearPickupOpenBtn" type="button">装備画面へ</button></div>
+</div></dialog>
+<dialog id="treasureDialog" class="treasure-dialog"><div class="treasure-panel">
+  <div class="treasure-head"><div><h3>宝箱</h3><p id="treasureLead">3つの報酬から1つだけ選べます。選ばなければ中身はこのまま残ります。</p></div></div>
+  <div class="treasure-list" id="treasureChoices"></div>
+  <button class="treasure-close" id="treasureCloseBtn" type="button">あとで選ぶ</button>
 </div></dialog>
 <dialog id="itemPickupDialog"><div class="item-pickup-panel">
   <div class="item-pickup-title">アイテムを発見</div>
@@ -882,6 +903,9 @@ const exploreScreen=$('#exploreScreen'),battleScreen=$('#battleScreen'),mapBoard
 let explore=null;
 const EXPLORE_CFG={floors:3,w:5,h:7,collapseMax:40,infectionChance:.35};
 const NORMAL_GEAR_DROP_RATE=.20;
+const TREASURE_RUN_CHANCE=.75;
+const TREASURE_UNIQUE_WEAPON_RATE=.03;
+const TREASURE_ITEM_IDS=['ex_potion','elixir','skill_injection','skill_capsule_omega','salvation_scale','disaster_scale'];
 const REWARD_CFG={enemy:{gold:50,pp:1},unique:{gold:250,pp:10},boss:{gold:500,pp:10}};
 const ENHANCE_EFFECTS=[
  {id:'hp',name:'生命強化',text:'最大HP +5 / HP 5回復'},
@@ -913,10 +937,32 @@ const ITEM_DROP_TABLE=[
  {id:'panacea',weight:20}
 ];
 const JEWEL_CATALOG={
- attack:{id:'attack',name:'攻撃の宝珠',icon:'攻',tone:'attack',text:'敵に攻撃力平均の物理ダメージ。その後、攻撃力平均×0.2×参加人数の物理ダメージ。'},
- defense:{id:'defense',name:'防御の宝珠',icon:'防',tone:'defense',text:'敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。'},
- heal:{id:'heal',name:'回復の宝珠',icon:'回',tone:'heal',text:'参加人数×10%だけ味方全員のHPを回復。戦闘不能者は回復しない。'}
+ attack:{id:'attack',name:'攻撃の宝珠',icon:'攻',tone:'red',text:'敵に攻撃力平均の物理ダメージ。その後、攻撃力平均×0.2×参加人数の物理ダメージ。'},
+ defense:{id:'defense',name:'防御の宝珠',icon:'防',tone:'blue',text:'敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。'},
+ heal:{id:'heal',name:'回復の宝珠',icon:'回',tone:'green',text:'参加人数×10%だけ味方全員のHPを回復。戦闘不能者は回復しない。'},
+ assault:{id:'assault',name:'猛攻の宝珠',icon:'猛',tone:'red',text:'敵に攻撃力平均の物理ダメージ。3ターン、参加人数×20%だけ味方全員の攻撃力アップ。'},
+ flurry:{id:'flurry',name:'連撃の宝珠',icon:'連',tone:'red',text:'敵に攻撃力平均の物理ダメージ。4ターン、参加人数×10%だけ味方全員の連撃率アップ。'},
+ critical:{id:'critical',name:'会心の宝珠',icon:'会',tone:'red',text:'敵に攻撃力平均の物理ダメージ。4ターン、参加人数×10%だけ味方全員の会心率・会心ダメージ倍率アップ。'},
+ rebellion:{id:'rebellion',name:'反抗の宝珠',icon:'反',tone:'red',text:'敵に攻撃力平均の物理ダメージ。3ターン、参加人数×20%だけ味方全員の反撃率アップ。'},
+ destruction:{id:'destruction',name:'破壊の宝珠',icon:'破',tone:'red',text:'敵に攻撃力平均の物理ダメージ。参加人数分、敵のバフを解除する。'},
+ reason:{id:'reason',name:'理力の宝珠',icon:'理',tone:'red',text:'敵に攻撃力平均の物理ダメージ。参加人数分の理力獲得。発動前に理力5以上なら、3ターン味方全員のスキルゲージ上昇量+30%。'},
+ sturdy:{id:'sturdy',name:'堅牢の宝珠',icon:'堅',tone:'blue',text:'敵に攻撃力平均×0.5の魔導ダメージ。1ターン、参加人数×30%だけ味方全員の被ダメージ減少。'},
+ sky:{id:'sky',name:'天空の宝珠',icon:'天',tone:'blue',text:'敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×15%だけ味方全員の回避率アップ。'},
+ thirty:{id:'thirty',name:'三十の宝珠',icon:'三',tone:'blue',text:'敵に攻撃力平均×0.5の魔導ダメージ。1ターン、チェイン参加者が受ける1回の被ダメージ最大値を30にする。'},
+ curse:{id:'curse',name:'呪詛の宝珠',icon:'呪',tone:'purple',text:'敵に攻撃力平均の魔導ダメージ。敵に【呪いX】を付与。X=参加人数×10+10。'},
+ poison_fang:{id:'poison_fang',name:'毒牙の宝珠',icon:'毒',tone:'purple',text:'敵に攻撃力平均の魔導ダメージ。敵に【毒X】を付与。X=参加人数+1。'},
+ scorching:{id:'scorching',name:'灼熱の宝珠',icon:'灼',tone:'purple',text:'敵に攻撃力平均の魔導ダメージ。敵に【炎上X】を付与。X=参加人数+1。'},
+ pressure:{id:'pressure',name:'重圧の宝珠',icon:'重',tone:'purple',text:'敵に攻撃力平均×0.5の魔導ダメージ。敵に【重圧X】を付与。X=参加人数+1。重圧中はCHARGE最大値+1。'},
+ restraint:{id:'restraint',name:'牽制の宝珠',icon:'牽',tone:'purple',text:'敵に攻撃力平均の魔導ダメージ。参加人数×45%の確率で敵のCHARGE-1。'},
+ wisdom:{id:'wisdom',name:'叡智の宝珠',icon:'叡',tone:'purple',text:'敵に攻撃力平均の魔導ダメージ。魔導キャラ全員が参加人数分の叡智を獲得。'},
+ charm:{id:'charm',name:'魅了の宝珠',icon:'魅',tone:'pink',text:'敵に攻撃力平均の快楽ダメージ。参加人数分、敵に魅了を付与。'},
+ succubus:{id:'succubus',name:'淫魔の宝珠',icon:'淫',tone:'pink',text:'敵に攻撃力平均の快楽ダメージ。参加者を敵の魅了×4%回復。魅了10なら10消費して敵の予兆を解除。'},
+ regen:{id:'regen',name:'再生の宝珠',icon:'再',tone:'green',text:'味方全員に【再生X】を付与。X=参加人数+2。ターン終了時にHP8%回復してX-1。'},
+ restore:{id:'restore',name:'復元の宝珠',icon:'復',tone:'green',text:'最もダメージを受けている味方1人のHPを参加人数×25%回復。'},
+ cure:{id:'cure',name:'治癒の宝珠',icon:'治',tone:'green',text:'味方全員のデバフ・状態異常をランダムに参加人数個ずつ解除。'},
+ revive:{id:'revive',name:'蘇生の宝珠',icon:'蘇',tone:'green',text:'ランダムな戦闘不能の味方1人を復活させ、HPを参加人数×40%回復。'}
 };
+const NORMAL_JEWEL_IDS=['assault','flurry','critical','rebellion','destruction','reason','sturdy','sky','thirty','curse','poison_fang','scorching','pressure','restraint','wisdom','charm','succubus','regen','restore','cure','revive'];
 const INITIAL_JEWELS=['attack','defense','heal'];
 const JEWEL_SET_LIMIT=3;
 let jewelEditSlot=null;
@@ -1277,20 +1323,21 @@ function resetRun(){
  gearSerial=0;itemSerial=0;state={battleNo:0,turn:1,reason:0,gold:0,parallelPoints:0,parallelUnlocks:{},enemyActionToken:0,inventory:[],items:[],jewels:[...INITIAL_JEWELS],jewelSet:[...INITIAL_JEWELS],party:makeParty(),enemy:null,partyBuffs:[],battleOver:true,runOver:false,battleContext:null,battleItemUsedTurn:0,stats:{battles:[],current:null,recorded:false,lastWin:null}};
  initializeEquippedInstances();gearPickerSlot=null;itemPickupNodeId=null;itemUseContext=null;itemTargetUid=null;itemDetailUid=null;battleItemSelectedUid=null;battleItemTargetUid=null;
  explore=createExploreRun();
- selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);if(jewelDialog.open)jewelDialog.close();const jewelSetDlg=$('#jewelSetDialog');if(jewelSetDlg&&jewelSetDlg.open)jewelSetDlg.close();jewelEditSlot=null;const enhanceDlg=$('#enhanceDialog');if(enhanceDlg&&enhanceDlg.open)enhanceDlg.close();const itemPickupDlg=$('#itemPickupDialog');if(itemPickupDlg&&itemPickupDlg.open)itemPickupDlg.close();const itemTargetDlg=$('#itemTargetDialog');if(itemTargetDlg&&itemTargetDlg.open)itemTargetDlg.close();const itemDetailDlg=$('#itemDetailDialog');if(itemDetailDlg&&itemDetailDlg.open)itemDetailDlg.close();const battleItemDlg=$('#battleItemDialog');if(battleItemDlg&&battleItemDlg.open)battleItemDlg.close();const parallelDlg=$('#parallelDriveDialog');if(parallelDlg&&parallelDlg.open)parallelDlg.close();unlockParallelScroll();parallelDriveUid=null;parallelPendingId=null;logEl.innerHTML='';hideBanner();
+ selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);if(jewelDialog.open)jewelDialog.close();const jewelSetDlg=$('#jewelSetDialog');if(jewelSetDlg&&jewelSetDlg.open)jewelSetDlg.close();jewelEditSlot=null;const enhanceDlg=$('#enhanceDialog');if(enhanceDlg&&enhanceDlg.open)enhanceDlg.close();const treasureDlg=$('#treasureDialog');if(treasureDlg&&treasureDlg.open)treasureDlg.close();const itemPickupDlg=$('#itemPickupDialog');if(itemPickupDlg&&itemPickupDlg.open)itemPickupDlg.close();const itemTargetDlg=$('#itemTargetDialog');if(itemTargetDlg&&itemTargetDlg.open)itemTargetDlg.close();const itemDetailDlg=$('#itemDetailDialog');if(itemDetailDlg&&itemDetailDlg.open)itemDetailDlg.close();const battleItemDlg=$('#battleItemDialog');if(battleItemDlg&&battleItemDlg.open)battleItemDlg.close();const parallelDlg=$('#parallelDriveDialog');if(parallelDlg&&parallelDlg.open)parallelDlg.close();unlockParallelScroll();parallelDriveUid=null;parallelPendingId=null;logEl.innerHTML='';hideBanner();
  showExplore();renderExplore();
 }
 function addLog(t,c=''){const d=document.createElement('div');if(c)d.className=c;d.textContent=t;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight}
 function showBanner(t,e=''){eventBanner.innerHTML=e?`${t} <strong>${e}</strong>`:t;eventBanner.classList.add('show')}function hideBanner(){eventBanner.classList.remove('show')}
 function aliveParty(){return state.party.filter(u=>!u.dead)}function randomAlive(ex=[]){const a=aliveParty().filter(u=>!ex.includes(u.uid));return a.length?a[Math.floor(Math.random()*a.length)]:null}
+function enemyChargeMax(e=state.enemy){return e?.chargeMax?(e.chargeMax+(enemyStatus('重圧')?1:0)):0}
 function chargeOmenKind(e=state.enemy){
  if(!e||!e.chargeMax)return null;
  if(e.activeOmen)return e.activeOmen;
  if(e.id==='crusher'){
    if(e.hpTriggerPending)return 'crash';
-   if(e.charge>=e.chargeMax)return 'rock';
+   if(e.charge>=enemyChargeMax(e))return 'rock';
  }
- if(e.id==='gluttonDog'&&e.charge>=e.chargeMax)return 'parallelBurst';
+ if(e.id==='gluttonDog'&&e.charge>=enemyChargeMax(e))return 'parallelBurst';
  return null
 }
 function chargeOmenInfo(kind){
@@ -1307,12 +1354,12 @@ function showOmenBreak(title){
 }
 function markBossDebuffApplied(){const e=state.enemy;if(!e||e.id!=='crusher'||e.activeOmen!=='crash'||e.omenBroken)return;e.omenBroken=true;addLog('予兆解除条件達成：クラッシュを解除！','system');render();showOmenBreak('クラッシュ')}
 function prepareBossHpTrigger(){const e=state.enemy;if(!e||e.id!=='crusher'||e.dead||e.hpTriggerUsed)return;if(e.hp<=e.maxHp*.5){e.hpTriggerUsed=true;e.hpTriggerPending=true;addLog('クラッシャーのHP50%トリガー：次ターン【クラッシュ】予兆。','system')}}
-function renderBossMechanic(){const box=$('#bossMechanic'),e=state.enemy;if(!box)return;const hasCharge=!!e&&!!e.chargeMax;stage.classList.toggle('boss-stage',hasCharge);if(!hasCharge){box.className='boss-mechanic';box.innerHTML='';return}const filled=Math.max(0,Math.min(e.chargeMax,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(e.chargeMax-filled),kind=e.omenBroken?null:chargeOmenKind(e),info=chargeOmenInfo(kind);box.className=`boss-mechanic show${kind?' omen':''}`;let html=`<div class="boss-charge-row"><span>CHARGE</span><span class="boss-charge">${dots}</span></div>`;if(info)html+=`<div class="boss-omen-title">⚠ ${info.title}</div>`;box.innerHTML=html}
+function renderBossMechanic(){const box=$('#bossMechanic'),e=state.enemy;if(!box)return;const hasCharge=!!e&&!!e.chargeMax;stage.classList.toggle('boss-stage',hasCharge);if(!hasCharge){box.className='boss-mechanic';box.innerHTML='';return}const max=enemyChargeMax(e),filled=Math.max(0,Math.min(max,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(Math.max(0,max-filled)),kind=e.omenBroken?null:chargeOmenKind(e),info=chargeOmenInfo(kind);box.className=`boss-mechanic show${kind?' omen':''}`;let html=`<div class="boss-charge-row"><span>CHARGE</span><span class="boss-charge">${dots}</span></div>`;if(info)html+=`<div class="boss-omen-title">⚠ ${info.title}</div>`;box.innerHTML=html}
 function openBossDetail(){
  const e=state.enemy;if(!e||!e.chargeMax)return;
- const filled=Math.max(0,Math.min(e.chargeMax,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(e.chargeMax-filled),kind=e.omenBroken?null:chargeOmenKind(e),info=chargeOmenInfo(kind);
+ const max=enemyChargeMax(e),filled=Math.max(0,Math.min(max,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(Math.max(0,max-filled)),kind=e.omenBroken?null:chargeOmenKind(e),info=chargeOmenInfo(kind);
  $('#bossDetailTitle').textContent=e.name;
- $('#bossDetailLead').textContent=`CHARGE ${dots}（${filled}/${e.chargeMax}）${info?' / 予兆：'+info.title:''}`;
+ $('#bossDetailLead').textContent=`CHARGE ${dots}（${filled}/${max}）${info?' / 予兆：'+info.title:''}`;
  if(e.id==='gluttonDog'){
    $('#bossDetailBody').innerHTML=`<div class="boss-detail-item"><b>二つ名付き</b>通常の犬娘を基準に、HP約2倍・与ダメージ約1.5倍で調整したユニーク敵テストです。</div><div class="boss-detail-item"><b>CHARGE</b>通常行動後に1段階上昇。3まで溜まると、次のターンに「パラレルバースト」を予兆します。発動後は0に戻ります。</div><div class="boss-detail-item"><b>パラレルバースト</b>味方全員に30無属性ダメージ。解除条件なし。防御の宝珠などの被ダメージ軽減は有効ですが、物理専用の軽減は適用されません。<br>※30はテスト値。本番では階層に応じたダメージを想定。</div>`;
  }else{
@@ -1325,6 +1372,11 @@ function enemyStatus(n){return state.enemy.statuses.find(s=>s.name===n)}function
 function enemyPoisonAmp(){return enemyStatus('毒')?20:0}
 function totalEnemyAmp(){return state.enemy.permanentAmp+state.enemy.timedAmp.reduce((s,x)=>s+x.value,0)+enemyPoisonAmp()}
 function totalAttackBuffPct(){return state.partyBuffs.reduce((s,x)=>s+(x.valuePct||0),0)}function totalPartyDamageReductionPct(){return state.partyBuffs.reduce((s,x)=>s+(x.damageReductionPct||0),0)}
+function totalPartyMultiHitBuff(){return state.partyBuffs.reduce((s,x)=>s+(x.multiHitRate||0),0)}
+function totalPartyCritRateBuff(){return state.partyBuffs.reduce((s,x)=>s+(x.critRate||0),0)}
+function totalPartyCritDamageBuff(){return state.partyBuffs.reduce((s,x)=>s+(x.critDamagePct||0),0)}
+function totalPartyEvasionBuff(){return state.partyBuffs.reduce((s,x)=>s+(x.evasionRate||0),0)}
+function totalPartySkillGainBuff(){return state.partyBuffs.reduce((s,x)=>s+(x.skillGainPct||0),0)}
 function allyHasStatusAilment(u){return !!u?.statuses?.some(s=>STATUS_AILMENT_NAMES.has(s.name))}
 function otherAlliesDead(u){return state.party.filter(x=>x.uid!==u.uid).every(x=>x.dead)}
 function floorKillCount(){return explore?.floorData?.[explore.floor]?.kills||0}
@@ -1335,8 +1387,8 @@ function incomingAmp(u){let v=u.statuses.reduce((s,x)=>s+(x.damageTakenAmp||0),0
 function hasPartyForm(id,aliveOnly=false){return state.party.some(u=>u.id===id&&(!aliveOnly||!u.dead))}
 function partyCounterBuff(){return state.partyBuffs.reduce((s,b)=>s+(b.counterRate||0),0)}
 function counterRate(u){let r=gearStat(u,'counterRate');if(u.id==='slime_bes')r+=25;if(hasPartyForm('slime_bes'))r+=5;if(hasPartyForm('crystal_slime',true))r+=30;r+=partyCounterBuff();return Math.max(0,r)}
-function multiHitRate(u){let r=gearStat(u,'multiHitRate');if(hasPartyForm('crystal_slime',true))r+=30;return Math.max(0,r)}
-const STATUS_AILMENT_NAMES=new Set(['毒','炎上','ショック','眠気','封印']);
+function multiHitRate(u){let r=gearStat(u,'multiHitRate')+totalPartyMultiHitBuff();if(hasPartyForm('crystal_slime',true))r+=30;return Math.max(0,r)}
+const STATUS_AILMENT_NAMES=new Set(['毒','炎上','ショック','眠気','封印','呪い']);
 const ACTION_DISABLE_STATUS_NAMES=new Set(['ショック','眠気']);
 function allyActionDisabled(u){return !!u&&!u.dead&&u._actionDisabledTurn===state.turn}
 function clearAllyActionDisable(u){if(!u)return;u._actionDisabledTurn=0;u._actionDisabledBy=null}
@@ -1378,7 +1430,7 @@ async function damageEnemy(u,base,source,type='physical',gauge=false,finishOnKil
  const normalStrike=['通常攻撃','連撃','反撃'].includes(source),gambler=normalStrike&&equippedUniqueCountSlot(u,'gambler','weapon')>0;
  let gambleMult=1;
  if(gambler){if(Math.random()<.5){gambleMult=2;addLog(`【博打の】：${u.name}の${source}は大当たり！`,'system')}else{const gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`【博打の】：${u.name}の${source}は攻撃失敗！`,'system');showBanner('博打の','攻撃失敗');render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await delay(Math.round(timing().action*.65));return {hit:false,actual:0,gambleFail:true}}}
- const crit=Math.random()<gearStat(u,'critRate')/100,bonus=conditionalDamageBonusPct(u);let raw=base*gambleMult*(crit?1.5:1)*(1+bonus/100)*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100);const dmg=Math.max(0,ceil(raw)),before=state.enemy.hp;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const actual=before-state.enemy.hp,gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}${gambler?'【博打成功】':''}${crit?'【会心】':''}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');showBanner(`${u.name}の${source}${crit?'【会心】':''}！`,`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);const steal=gearStat(u,'lifeStealPct');if(steal>0&&actual>0&&!u.dead){const {actual:healed}=applyHealing(u,u,actual*steal/100);if(healed>0){if(state.stats&&state.stats.current)state.stats.current.healing+=healed;addLog(`HP吸収：${u.name}が${healed}回復。`,'heal');render();feedbackHp(u,`+${healed}`)}}await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){state.enemy.dead=true;if(finishOnKill)await finishBattle()}return {hit:true,actual,dmg,crit}
+ const crit=Math.random()<Math.max(0,gearStat(u,'critRate')+totalPartyCritRateBuff())/100,bonus=conditionalDamageBonusPct(u),critMult=1.5+totalPartyCritDamageBuff()/100;let raw=base*gambleMult*(crit?critMult:1)*(1+bonus/100)*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100);const dmg=Math.max(0,ceil(raw)),before=state.enemy.hp;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const actual=before-state.enemy.hp,gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}${gambler?'【博打成功】':''}${crit?'【会心】':''}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');showBanner(`${u.name}の${source}${crit?'【会心】':''}！`,`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);const steal=gearStat(u,'lifeStealPct');if(steal>0&&actual>0&&!u.dead){const {actual:healed}=applyHealing(u,u,actual*steal/100);if(healed>0){if(state.stats&&state.stats.current)state.stats.current.healing+=healed;addLog(`HP吸収：${u.name}が${healed}回復。`,'heal');render();feedbackHp(u,`+${healed}`)}}await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){state.enemy.dead=true;if(finishOnKill)await finishBattle()}return {hit:true,actual,dmg,crit}
 }
 async function performCounter(u){
  if(!u||u.dead||state.enemy?.dead)return;
@@ -1415,7 +1467,7 @@ async function resolveCombatDeath(u,source='ダメージ'){
 }
 async function damageAlly(u,base,source,type='physical',crit=false){
  if(!u||u.dead||state.enemy?.dead)return {hit:false,actual:0,blocked:'invalid'};
- const evade=Math.max(0,Math.min(100,gearStat(u,'evasionRate')));if(evade>0&&Math.random()<evade/100){addLog(`${source} → ${u.name}は回避した！`,'system');showBanner('回避！',u.name);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.55));return {hit:false,actual:0,blocked:'evade'}}
+ const evade=Math.max(0,Math.min(100,gearStat(u,'evasionRate')+totalPartyEvasionBuff()));if(evade>0&&Math.random()<evade/100){addLog(`${source} → ${u.name}は回避した！`,'system');showBanner('回避！',u.name);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.55));return {hit:false,actual:0,blocked:'evade'}}
  const guard=Math.max(0,Math.min(100,gearStat(u,'critGuardRate')));if(crit&&guard>0&&Math.random()<guard/100){addLog(`${source}【会心】 → ${u.name}の会心ガード！ ダメージを無効化。`,'system');showBanner('会心ガード！',`${u.name} ダメージ0`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.55));return {hit:false,actual:0,blocked:'critGuard'}}
  let dmg=base*(state.enemy?.damageMult||1)*(crit?1.5:1)*(1+incomingAmp(u)/100);
  if(enemyStatus('炎上'))dmg*=.8;
@@ -1428,6 +1480,7 @@ async function damageAlly(u,base,source,type='physical',crit=false){
  if(redKey){const red=gearStat(u,redKey);if(red)dmg=Math.max(0,dmg-red)}
  if(u.id==='crystal_slime'&&!crit&&dmg<100)dmg=Math.max(0,ceil(dmg*.2));
  if(equippedUniqueCountSlot(u,'gambler','armor')){if(Math.random()<.5){dmg=ceil(dmg*2);addLog(`【博打の】：${u.name}への被ダメージが2倍！`,'system')}else{addLog(`【博打の】：${u.name}はダメージを無効化！`,'system');showBanner('博打の','被ダメージ無効');render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.55));return {hit:false,actual:0,blocked:'gambler'}}}
+ const damageCap=(u.statuses||[]).reduce((cap,st)=>st.damageCap?Math.min(cap,st.damageCap):cap,Infinity);if(Number.isFinite(damageCap))dmg=Math.min(dmg,damageCap);
  let grit=false;if(equippedUniqueCountSlot(u,'grit','armor')&&!u._gritUsed&&dmg>=u.hp){u._gritUsed=true;dmg=Math.max(0,u.hp-1);grit=true}
  const beforeHp=u.hp;u.hp=Math.max(0,u.hp-dmg);const actual=beforeHp-u.hp;
  if(state.stats&&state.stats.current)state.stats.current.damageTaken+=actual;
@@ -1467,15 +1520,20 @@ async function gluttonDogNormalAction(){
 async function gluttonDogAction(){
  const e=state.enemy;
  if(e.activeOmen==='parallelBurst'){
-   addLog('食いしん坊の犬娘の予兆行動【パラレルバースト】！ 味方全員に30無属性ダメージ。','damage');
-   showBanner('パラレルバースト','味方全員 30無属性');render();await delay(timing().ability);
-   const targets=[...aliveParty()];
-   for(const t of targets){if(t&&!t.dead)await damageAlly(t,30,'パラレルバースト','neutral')}
+   if(e.omenBroken){
+     addLog('【パラレルバースト】は解除されているため、食いしん坊の犬娘は通常行動へ移行。','system');
+     await gluttonDogNormalAction()
+   }else{
+     addLog('食いしん坊の犬娘の予兆行動【パラレルバースト】！ 味方全員に30無属性ダメージ。','damage');
+     showBanner('パラレルバースト','味方全員 30無属性');render();await delay(timing().ability);
+     const targets=[...aliveParty()];
+     for(const t of targets){if(t&&!t.dead)await damageAlly(t,30,'パラレルバースト','neutral')}
+   }
    e.charge=0;
    return
  }
  await gluttonDogNormalAction();
- e.charge=Math.min(e.chargeMax,e.charge+1)
+ e.charge=Math.min(enemyChargeMax(e),e.charge+1)
 }
 async function crusherNormalAction(){
  const e=state.enemy;
@@ -1513,11 +1571,11 @@ async function crusherAction(){
      addLog('クラッシャーのHP50%予兆行動【クラッシュ】！','damage');
      await damageAlly(randomAlive(),24,'クラッシュ','physical',true)
    }
-   e.charge=Math.min(e.chargeMax,e.charge+1);
+   e.charge=Math.min(enemyChargeMax(e),e.charge+1);
    return
  }
  await crusherNormalAction();
- e.charge=Math.min(e.chargeMax,e.charge+1)
+ e.charge=Math.min(enemyChargeMax(e),e.charge+1)
 }
 async function enemyAction(){
  if(state.enemy.dead||!aliveParty().length)return;
@@ -1532,11 +1590,11 @@ async function enemyAction(){
    if(state.stats&&state.stats.current)state.stats.current.enemyNoAction++;
    addLog(`【${stoppedBy.name}${stoppedBy.x}】：敵は行動できない！`,'system');showBanner(`${stoppedBy.name}${stoppedBy.x}`,'行動不能');await delay(timing().ability);
    if(e.id==='crusher'){
-     if(e.activeOmen==='rock')e.charge=0;else e.charge=Math.min(e.chargeMax,e.charge+1);
+     if(e.activeOmen==='rock')e.charge=0;else e.charge=Math.min(enemyChargeMax(e),e.charge+1);
      e.activeOmen=null;e.omenBroken=false
    }
    if(e.id==='gluttonDog'){
-     if(e.activeOmen==='parallelBurst')e.charge=0;else e.charge=Math.min(e.chargeMax,e.charge+1);
+     if(e.activeOmen==='parallelBurst')e.charge=0;else e.charge=Math.min(enemyChargeMax(e),e.charge+1);
      e.activeOmen=null;e.omenBroken=false
    }
    return
@@ -1557,8 +1615,9 @@ function expireTurnOneUniqueBonuses(){if(state.turn!==1)return;const r=state._tu
 async function tickStatuses(){
  const burn=enemyStatus('炎上');if(burn&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*burn.x/100*enemyDotMultiplier());if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【炎上${burn.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`炎上${burn.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
  const poison=enemyStatus('毒');if(poison&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*poison.x/100*enemyDotMultiplier());if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【毒${poison.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`毒${poison.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
- for(const u of state.party){const ap=(u.statuses||[]).find(x=>x.name==='毒');if(!ap||u.dead)continue;const amount=ceil(u.maxHp*ap.x/100);if(u.id==='poison_slime'){const {actual}=applyHealing(u,u,u.maxHp*ap.x/100);if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`ポイズンジェル：【毒${ap.x}】が反転し、${u.name}が${actual}回復。`,'heal');showBanner(`毒${ap.x}反転`,`${u.name} HP+${actual}`);render();feedbackHp(u,`+${actual}`)}else{const before=u.hp,g=applyGritToRawDamage(u,amount),dmg=g.dmg;u.hp=Math.max(0,u.hp-dmg);const actual=before-u.hp;if(state.stats&&state.stats.current)state.stats.current.damageTaken+=actual;addLog(`【毒${ap.x}】：${u.name}に${actual}ダメージ。`,'damage');if(g.grit)addLog(`【気合の】：${u.name}は毒ダメージをHP1で耐えた！`,'system');showBanner(g.grit?'気合で耐えた！':`毒${ap.x}`,g.grit?`${u.name} HP1`:`${u.name} -${actual}`);render();await allyHitFeedback(u,actual);if(u.hp<=0)await resolveCombatDeath(u,'毒')}await delay(Math.round(timing().ability*.55))}
- state.party.forEach(u=>{u.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));u.statuses=u.statuses.filter(s=>s.x>0)});state.enemy.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));state.enemy.statuses=state.enemy.statuses.filter(s=>s.x>0);state.enemy.timedAmp.forEach(s=>s.turns--);state.enemy.timedAmp=state.enemy.timedAmp.filter(s=>s.turns>0);state.partyBuffs.forEach(b=>b.turns--);state.partyBuffs=state.partyBuffs.filter(b=>b.turns>0);if(state.enemy.hp<=0)state.enemy.dead=true
+ for(const u of state.party){const ap=(u.statuses||[]).find(x=>x.name==='毒');if(!ap||u.dead)continue;const amount=ceil(u.maxHp*ap.x/100);if(u.id==='poison_slime'){const {actual}=applyHealing(u,u,u.maxHp*ap.x/100);if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`ポイズンジェル：【毒${ap.x}】が反転し、${u.name}が${actual}回復。`,'heal');showBanner(`毒${ap.x}反転`,`${u.name} HP+${actual}`);render();feedbackHp(u,`+${actual}`)}else{const before=u.hp,cap=(u.statuses||[]).reduce((m,st)=>st.damageCap?Math.min(m,st.damageCap):m,Infinity),capped=Number.isFinite(cap)?Math.min(amount,cap):amount,g=applyGritToRawDamage(u,capped),dmg=g.dmg;u.hp=Math.max(0,u.hp-dmg);const actual=before-u.hp;if(state.stats&&state.stats.current)state.stats.current.damageTaken+=actual;addLog(`【毒${ap.x}】：${u.name}に${actual}ダメージ。`,'damage');if(g.grit)addLog(`【気合の】：${u.name}は毒ダメージをHP1で耐えた！`,'system');showBanner(g.grit?'気合で耐えた！':`毒${ap.x}`,g.grit?`${u.name} HP1`:`${u.name} -${actual}`);render();await allyHitFeedback(u,actual);if(u.hp<=0)await resolveCombatDeath(u,'毒')}await delay(Math.round(timing().ability*.55))}
+ for(const u of state.party){const rg=(u.statuses||[]).find(s=>s.name==='再生'&&s.x>0);if(rg&&!u.dead&&!recoveryBlocked()){const {actual}=applyHealing(null,u,u.maxHp*.08,{sourceBoost:false});if(actual>0){if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`【再生${rg.x}】：${u.name}が${actual}回復。`,'heal');render();feedbackHp(u,`+${actual}`);await delay(Math.round(timing().ability*.35))}}}
+ state.party.forEach(u=>{u.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));u.statuses=u.statuses.filter(s=>s.x>0)});state.enemy.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));state.enemy.statuses=state.enemy.statuses.filter(s=>s.x>0);if(state.enemy?.chargeMax)state.enemy.charge=Math.min(state.enemy.charge,enemyChargeMax(state.enemy));state.enemy.timedAmp.forEach(s=>s.turns--);state.enemy.timedAmp=state.enemy.timedAmp.filter(s=>s.turns>0);state.partyBuffs.forEach(b=>b.turns--);state.partyBuffs=state.partyBuffs.filter(b=>b.turns>0);if(state.enemy.hp<=0)state.enemy.dead=true
 }
 function skillDamageMultiplier(u){return 1+gearStat(u,'skillDamagePct')/100}
 async function runChain(sel){addLog(`スキルチェイン：${sel.map(u=>u.name).join('、')}`,'system');showBanner('スキルチェイン！',`${sel.length}人参加`);await delay(timing().ability);for(const u of sel){if(state.enemy.dead)break;u.gauge=0;if(u._obsessionStacks){addLog(`【執念の】：${u.name}がスキルを使用し、攻撃力上昇を解除。`,'system');u._obsessionStacks=0;u._obsessionLastTurn=0}await actFlash(u);const atk=effectiveAtk(u);
@@ -1634,6 +1693,38 @@ async function activateHealJewel(n){
  });
  await delay(timing().ability)
 }
+
+function recordJewelUse(){if(state.stats&&state.stats.current)state.stats.current.jewels++}
+async function basicJewelHit(name,mult=1,type='physical'){recordJewelUse();const dmg=calcJewelEnemyDamage(averageLivingAttack()*mult);return jewelEnemyHit(name,dmg,type)}
+async function activateAssaultJewel(n){if(await basicJewelHit('猛攻の宝珠',1,'physical'))return;const pct=n*20;refreshPartyBuff('猛攻の宝珠',{valuePct:pct,turns:3,name:`攻撃力+${pct}%`,kind:'buff',short:`攻↑${pct}`});addLog(`猛攻の宝珠：3ターン、味方全員の攻撃力+${pct}%。`,'system');showBanner('猛攻の宝珠',`攻撃力+${pct}% / 3T`);render();feedbackPartyAtk(`+${pct}%`);await delay(timing().ability)}
+async function activateFlurryJewel(n){if(await basicJewelHit('連撃の宝珠',1,'physical'))return;const pct=n*10;refreshPartyBuff('連撃の宝珠',{multiHitRate:pct,turns:4,name:`連撃率+${pct}%`,kind:'buff',short:`連撃↑${pct}`});addLog(`連撃の宝珠：4ターン、味方全員の連撃率+${pct}%。`,'system');showBanner('連撃の宝珠',`連撃率+${pct}% / 4T`);render();await delay(timing().ability)}
+async function activateCriticalJewel(n){if(await basicJewelHit('会心の宝珠',1,'physical'))return;const pct=n*10;refreshPartyBuff('会心の宝珠',{critRate:pct,critDamagePct:pct,turns:4,name:`会心率・会心倍率+${pct}%`,kind:'buff',short:`会心↑${pct}`});addLog(`会心の宝珠：4ターン、味方全員の会心率・会心ダメージ倍率+${pct}%。`,'system');showBanner('会心の宝珠',`会心+${pct}% / 4T`);render();await delay(timing().ability)}
+async function activateRebellionJewel(n){if(await basicJewelHit('反抗の宝珠',1,'physical'))return;const pct=n*20;refreshPartyBuff('反抗の宝珠',{counterRate:pct,turns:3,name:`反撃率+${pct}%`,kind:'buff',short:`反撃↑${pct}`});addLog(`反抗の宝珠：3ターン、味方全員の反撃率+${pct}%。`,'system');showBanner('反抗の宝珠',`反撃率+${pct}% / 3T`);render();await delay(timing().ability)}
+async function activateDestructionJewel(n){if(await basicJewelHit('破壊の宝珠',1,'physical'))return;const buffs=shuffle(state.enemy.statuses.filter(x=>(x.kind||'debuff')==='buff')).slice(0,n);if(buffs.length)state.enemy.statuses=state.enemy.statuses.filter(x=>!buffs.includes(x));addLog(`破壊の宝珠：敵のバフを${buffs.length}個解除。`,'system');showBanner('破壊の宝珠',buffs.length?`バフ${buffs.length}個解除`:'解除対象なし');render();await delay(timing().ability)}
+async function activateReasonJewel(n){const empowered=state.reason>=5;if(await basicJewelHit('理力の宝珠',1,'physical'))return;const before=state.reason;state.reason=Math.min(10,state.reason+n);if(empowered)refreshPartyBuff('理力の宝珠',{skillGainPct:30,turns:3,name:'スキルゲージ上昇量+30%',kind:'buff',short:'SKILL↑30'});addLog(`理力の宝珠：理力+${state.reason-before}（${state.reason}/10）${empowered?'。発動前に理力5以上のため、3ターンSKILL上昇量+30%。':''}`,'system');showBanner('理力の宝珠',empowered?`理力+${state.reason-before} / SKILL↑30%`:`理力+${state.reason-before}`);render();feedbackReason(`+${state.reason-before}`);await delay(timing().ability)}
+async function activateSturdyJewel(n){if(await basicJewelHit('堅牢の宝珠',.5,'magic'))return;const pct=n*30;refreshPartyBuff('堅牢の宝珠',{damageReductionPct:pct,turns:1,name:`被ダメージ-${pct}%`,kind:'buff',short:`被↓${pct}`});addLog(`堅牢の宝珠：1ターン、味方全員の被ダメージ-${pct}%。`,'system');showBanner('堅牢の宝珠',`被ダメージ-${pct}% / 1T`);render();await delay(timing().ability)}
+async function activateSkyJewel(n){if(await basicJewelHit('天空の宝珠',.5,'magic'))return;const pct=n*15;refreshPartyBuff('天空の宝珠',{evasionRate:pct,turns:3,name:`回避率+${pct}%`,kind:'buff',short:`回避↑${pct}`});addLog(`天空の宝珠：3ターン、味方全員の回避率+${pct}%。`,'system');showBanner('天空の宝珠',`回避率+${pct}% / 3T`);render();await delay(timing().ability)}
+async function activateThirtyJewel(n,sel){if(await basicJewelHit('三十の宝珠',.5,'magic'))return;sel.forEach(u=>addAllyStatus(u,{name:'被ダメ上限30',x:1,decay:1,damageCap:30,kind:'buff',short:'上限30'}));addLog('三十の宝珠：1ターン、チェイン参加者が受ける1回の被ダメージ最大値を30にした。','system');showBanner('三十の宝珠','参加者：被ダメ上限30 / 1T');render();await delay(timing().ability)}
+async function activateCurseJewel(n){if(await basicJewelHit('呪詛の宝珠',1,'magic'))return;const x=n*10+10;addEnemyStatus({name:'呪い',x,decay:1,kind:'debuff',short:'呪い'});addLog(`呪詛の宝珠：敵に【呪い${x}】。`,'system');showBanner('呪詛の宝珠',`呪い${x}`);render();await delay(timing().ability)}
+async function activatePoisonFangJewel(n){if(await basicJewelHit('毒牙の宝珠',1,'magic'))return;const x=n+1;addEnemyStatus({name:'毒',x,decay:1,kind:'debuff',short:'毒'});addLog(`毒牙の宝珠：敵に【毒${x}】。`,'system');showBanner('毒牙の宝珠',`毒${x}`);render();await delay(timing().ability)}
+async function activateScorchingJewel(n){if(await basicJewelHit('灼熱の宝珠',1,'magic'))return;const x=n+1;addEnemyStatus({name:'炎上',x,decay:1,kind:'debuff',short:'炎上'});addLog(`灼熱の宝珠：敵に【炎上${x}】。`,'system');showBanner('灼熱の宝珠',`炎上${x}`);render();await delay(timing().ability)}
+async function activatePressureJewel(n){if(await basicJewelHit('重圧の宝珠',.5,'magic'))return;const x=n+1;addEnemyStatus({name:'重圧',x,decay:1,kind:'debuff',short:'重圧'});addLog(`重圧の宝珠：敵に【重圧${x}】。持続中CHARGE最大値+1。`,'system');showBanner('重圧の宝珠',`重圧${x} / CHARGE最大+1`);render();await delay(timing().ability)}
+async function activateRestraintJewel(n){if(await basicJewelHit('牽制の宝珠',1,'magic'))return;const chance=Math.min(100,n*45),e=state.enemy;if(e.chargeMax&&Math.random()<chance/100){const before=e.charge||0;e.charge=Math.max(0,before-1);if((e.activeOmen==='rock'||e.activeOmen==='parallelBurst')&&e.charge<enemyChargeMax(e))e.omenBroken=true;addLog(`牽制の宝珠：判定成功（${chance}%）。CHARGE ${before} → ${e.charge}。`,'system');showBanner('牽制の宝珠',`CHARGE -${before-e.charge}`)}else{addLog(`牽制の宝珠：CHARGE減少判定${e.chargeMax?'失敗':'対象なし'}（${chance}%）。`,'system');showBanner('牽制の宝珠',e.chargeMax?'CHARGE減少失敗':'CHARGEなし')}render();await delay(timing().ability)}
+async function activateWisdomJewel(n){if(await basicJewelHit('叡智の宝珠',1,'magic'))return;const targets=state.party.filter(u=>!u.dead&&u.type==='magic');targets.forEach(u=>u.wisdom=(u.wisdom||0)+n);addLog(`叡智の宝珠：魔導キャラ${targets.length}人が叡智+${n}。`,'system');showBanner('叡智の宝珠',targets.length?`魔導キャラ 叡智+${n}`:'対象なし');render();targets.forEach(u=>popNear(unitEl(u.uid),`+${n}叡智`));await delay(timing().ability)}
+async function activateCharmJewel(n){if(await basicJewelHit('魅了の宝珠',1,'pleasure'))return;const gain=addCharm(n);addLog(`魅了の宝珠：敵の魅了+${gain}（${state.enemy.charm}/10）。`,'system');showBanner('魅了の宝珠',`魅了 ${state.enemy.charm}/10`);render();await delay(timing().ability)}
+async function activateSuccubusJewel(n,sel){if(await basicJewelHit('淫魔の宝珠',1,'pleasure'))return;const charm=state.enemy.charm||0,pct=charm*4;let total=0;for(const u of sel){if(u.dead)continue;const {actual}=applyHealing(null,u,u.maxHp*pct/100,{sourceBoost:false});total+=actual;if(actual>0&&state.stats&&state.stats.current)state.stats.current.healing+=actual}let broke=false;if(charm>=10){state.enemy.charm=Math.max(0,state.enemy.charm-10);if(state.enemy.activeOmen){state.enemy.omenBroken=true;broke=true;showOmenBreak(chargeOmenInfo(state.enemy.activeOmen)?.title||'予兆')}}addLog(`淫魔の宝珠：参加者を魅了${charm}×4%=${pct}%回復（実回復${total}）${broke?'。魅了10消費で予兆解除。':''}`,'heal');showBanner('淫魔の宝珠',broke?`HP ${pct}%回復 / 予兆解除`:`参加者 HP ${pct}%回復`);render();await delay(timing().ability)}
+async function activateRegenJewel(n){recordJewelUse();const x=n+2;state.party.forEach(u=>{if(!u.dead)addAllyStatus(u,{name:'再生',x,decay:1,kind:'buff',short:'再生'})});addLog(`再生の宝珠：味方全員に【再生${x}】。`,'system');showBanner('再生の宝珠',`再生${x}`);render();await delay(timing().ability)}
+async function activateRestoreJewel(n){recordJewelUse();if(recoveryBlocked()){addLog('回復不可のため復元の宝珠は発動しなかった。','system');showBanner('回復不可');await delay(timing().ability);return}const targets=state.party.filter(u=>!u.dead).sort((a,b)=>(a.hp/a.maxHp)-(b.hp/b.maxHp));const u=targets[0];if(!u){showBanner('復元の宝珠','対象なし');await delay(timing().ability);return}const pct=n*25,{actual}=applyHealing(null,u,u.maxHp*pct/100,{sourceBoost:false});if(actual>0&&state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`復元の宝珠：${u.name}のHPを${pct}%回復（実回復${actual}）。`,'heal');showBanner('復元の宝珠',`${u.name} HP+${actual}`);render();feedbackHp(u,`+${actual}`);await delay(timing().ability)}
+async function activateCureJewel(n){recordJewelUse();let total=0;state.party.forEach(u=>{const pool=shuffle(removableAllyStatuses(u));const chosen=pool.slice(0,n);if(chosen.length){u.statuses=u.statuses.filter(s=>!chosen.includes(s));if(chosen.some(s=>ACTION_DISABLE_STATUS_NAMES.has(s.name)))clearAllyActionDisable(u);total+=chosen.length}});addLog(`治癒の宝珠：味方全員から不利効果を合計${total}個解除。`,'system');showBanner('治癒の宝珠',total?`不利効果 ${total}個解除`:'解除対象なし');render();await delay(timing().ability)}
+async function activateReviveJewel(n){recordJewelUse();const dead=state.party.filter(u=>u.dead);if(!dead.length){addLog('蘇生の宝珠：戦闘不能者がいないため不発。','system');showBanner('蘇生の宝珠','対象なし');await delay(timing().ability);return}const u=rand(dead),pct=n*40;u.dead=false;u.hp=0;const {actual}=applyHealing(null,u,u.maxHp*pct/100,{sourceBoost:false});clearAllyActionDisable(u);addLog(`蘇生の宝珠：${u.name}が復活し、HPを${pct}%回復（${actual}）。`,'heal');showBanner('蘇生の宝珠',`${u.name} 復活 / HP ${actual}`);render();feedbackHp(u,`+${actual}`);await delay(timing().ability)}
+async function activateJewel(id,n,sel){
+ if(id==='attack')return activateAttackJewel(n);if(id==='defense')return activateDefenseJewel(n);if(id==='heal')return activateHealJewel(n);
+ if(id==='assault')return activateAssaultJewel(n);if(id==='flurry')return activateFlurryJewel(n);if(id==='critical')return activateCriticalJewel(n);if(id==='rebellion')return activateRebellionJewel(n);if(id==='destruction')return activateDestructionJewel(n);if(id==='reason')return activateReasonJewel(n);
+ if(id==='sturdy')return activateSturdyJewel(n);if(id==='sky')return activateSkyJewel(n);if(id==='thirty')return activateThirtyJewel(n,sel);
+ if(id==='curse')return activateCurseJewel(n);if(id==='poison_fang')return activatePoisonFangJewel(n);if(id==='scorching')return activateScorchingJewel(n);if(id==='pressure')return activatePressureJewel(n);if(id==='restraint')return activateRestraintJewel(n);if(id==='wisdom')return activateWisdomJewel(n);
+ if(id==='charm')return activateCharmJewel(n);if(id==='succubus')return activateSuccubusJewel(n,sel);
+ if(id==='regen')return activateRegenJewel(n);if(id==='restore')return activateRestoreJewel(n);if(id==='cure')return activateCureJewel(n);if(id==='revive')return activateReviveJewel(n)
+}
 async function playTurn(chain,jewel=null){
  if(animating||state.battleOver)return;
  const sel=chain?state.party.filter(u=>!u.dead&&!allyActionDisabled(u)&&u.gauge>=skillMax(u)&&u.skillOn&&!hasAllyStatus(u,'封印')):[];
@@ -1651,9 +1742,7 @@ async function playTurn(chain,jewel=null){
    await runChain(sel);
    if(state.battleOver||state.runOver){animating=false;render();return}
    if(state.enemy.id==='crusher'&&state.enemy.activeOmen==='rock'&&sel.length===3&&!state.enemy.dead){state.enemy.omenBroken=true;addLog('予兆解除条件達成：3人スキルチェインで【岩石落とし】を解除！','system');render();showOmenBreak('岩石落とし');await delay(Math.round(timing().ability*.85))}
-   if(jewel==='attack')await activateAttackJewel(sel.length);
-   if(jewel==='defense')await activateDefenseJewel(sel.length);
-   if(jewel==='heal')await activateHealJewel(sel.length);
+   if(jewel)await activateJewel(jewel,sel.length,sel);
    if(state.battleOver||state.runOver){animating=false;render();return}
  }
  for(const u of state.party){if(state.battleOver||state.runOver||state.enemy.dead)break;if(chain&&chainIds.has(u.uid))continue;await normalAttack(u)}
@@ -1828,7 +1917,7 @@ function chooseDestination(map,floor){
  if(!pool.length)pool=entries;
  return rand(pool)[0]
 }
-function generateFloor(floor,hasShop=false){
+function generateFloor(floor,hasShop=false,hasTreasure=false){
  const W=EXPLORE_CFG.w,H=EXPLORE_CFG.h,map={nodes:{},edges:[],start:null,end:null};
  // 迷宮全体が縦方向にも広がるよう、まず上端まで届く「幹」を作る。出口そのものは後で別途抽選する。
  let x=2,y=H-1;let cur=newNode(x,y,'entrance');map.nodes[cur.id]=cur;map.start=cur.id;
@@ -1867,20 +1956,21 @@ function generateFloor(floor,hasShop=false){
  const freeAny=shuffle(candidates.filter(n=>n.type==='empty'));
  const takeFree=()=>{let n=null;while(deadEnds.length){n=deadEnds.pop();if(n.type==='empty')return n}while(freeSide.length){n=freeSide.pop();if(n.type==='empty')return n}while(freeAny.length){n=freeAny.pop();if(n.type==='empty')return n}return null};
  const itemCount=2+Math.floor(Math.random()*2);
- const rewards=[...(hasShop?['shop']:[]),...Array(itemCount).fill('item'),'equipment','equipment','enhance','rest'];
+ const rewards=[...(hasShop?['shop']:[]),...(hasTreasure?['treasure']:[]),...Array(itemCount).fill('item'),'equipment','equipment','enhance','rest'];
  rewards.forEach(type=>{const n=takeFree();if(n)n.type=type});
 
  map.nodes[map.start].visited=true;return map
 }
+function treasureFloorSet(total){const set=new Set();if(total<=0||Math.random()>=TREASURE_RUN_CHANCE)return set;let floor=rollInt(1,total);set.add(floor);for(let f=floor+rollInt(3,5);f<=total;f+=rollInt(3,5))if(Math.random()<.75)set.add(f);return set}
 function createExploreRun(){
- const floorData={},shopFloors=shopFloorSet(EXPLORE_CFG.floors);for(let f=1;f<=EXPLORE_CFG.floors;f++){const hasShop=shopFloors.has(f);floorData[f]={map:generateFloor(f,hasShop),hasShop,uniqueSpawned:false,uniqueDefeated:false,kills:0}}
+ const floorData={},shopFloors=shopFloorSet(EXPLORE_CFG.floors),treasureFloors=treasureFloorSet(EXPLORE_CFG.floors);for(let f=1;f<=EXPLORE_CFG.floors;f++){const hasShop=shopFloors.has(f),hasTreasure=treasureFloors.has(f);floorData[f]={map:generateFloor(f,hasShop,hasTreasure),hasShop,hasTreasure,uniqueSpawned:false,uniqueDefeated:false,kills:0}}
  return {floor:1,steps:0,collapse:0,collapsed:false,current:floorData[1].map.start,floorData,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null}
 }
 function currentMap(){return explore.floorData[explore.floor].map}
 function currentNode(){return currentMap().nodes[explore.current]}
 function setNodeType(id,type){const n=currentMap().nodes[id];if(n)n.type=type}
-function nodeLabel(type){return {entrance:'入口',empty:'無',enemy:'敵',unique:'ユニーク',item:'アイテム',shop:'店',equipment:'装備',enhance:'強化',rest:'休憩',exit:'次階',boss:'ボス'}[type]||type}
-function nodeIcon(type){return {entrance:'◎',empty:'·',enemy:'⚔',unique:'☠',item:'✦',shop:'¤',equipment:'◇',enhance:'✚',rest:'♥',exit:'⇢',boss:'♛'}[type]||'·'}
+function nodeLabel(type){return {entrance:'入口',empty:'無',enemy:'敵',unique:'ユニーク',item:'アイテム',treasure:'宝箱',shop:'店',equipment:'装備',enhance:'強化',rest:'休憩',exit:'次階',boss:'ボス'}[type]||type}
+function nodeIcon(type){return {entrance:'◎',empty:'·',enemy:'⚔',unique:'☠',item:'✦',treasure:'▣',shop:'¤',equipment:'◇',enhance:'✚',rest:'♥',exit:'⇢',boss:'♛'}[type]||'·'}
 function toast(msg,danger=false){const el=$('#exploreToast');el.textContent=msg;el.className=`explore-toast show${danger?' danger':''}`;clearTimeout(toast._t);toast._t=setTimeout(()=>el.className='explore-toast',1200)}
 function queueExploreMessage(title,text,kind=''){explore.lastMessage={title,text,kind}}
 function showEvent(title,text,actionLabel=null,action=null){$('#exploreEventTitle').textContent=title;$('#exploreEventText').textContent=text;const b=$('#exploreActionBtn');if(actionLabel){b.textContent=actionLabel;b.classList.remove('screen-hidden');b.onclick=action}else{b.classList.add('screen-hidden');b.onclick=null}}
@@ -1970,6 +2060,7 @@ function resolveExploreNode(){
    if(!n.itemId)n.itemId=rollItemId();
    openItemPickup(n);return
  }
+ if(n.type==='treasure'){openTreasure(n);return}
  if(n.type==='shop'){ensureShopStock(n);showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。品揃えはこの店で固定。`,'商品を見る',()=>openShop(n));return}
  if(n.type==='equipment'){
    const inst=createRandomGearInstance(explore.floor),g=gearBase(inst);addGearToInventory(inst);n.type='empty';
@@ -2014,6 +2105,24 @@ function createUniqueGearInstance(depth=1,uniqueGearId='glutton'){
 function rollGearTier(depth){const center=Math.max(0,Math.min(6,(depth||1)-1)),r=Math.random();if(r<.20)return Math.max(0,center-1);if(r<.90)return center;return Math.min(6,center+1)}
 function rollGearCategory(){const r=Math.random();return r<.40?'weapon':r<.80?'armor':'accessory'}
 function createRandomGearInstance(depth=1){const category=rollGearCategory();if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
+function createTreasureGearInstance(depth=1){
+ const category=rollGearCategory();
+ if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);
+ const attr=rand(['physical','magic','pleasure']),tier=rollGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);
+ if(category==='weapon'&&Math.random()<TREASURE_UNIQUE_WEAPON_RATE){const ids=UNIQUE_GEAR_IDS.filter(id=>UNIQUE_GEAR_DEFS[id]?.slots?.includes('weapon')),uniqueId=rand(ids),ud=UNIQUE_GEAR_DEFS[uniqueId],inst=createGearInstance(baseId,true,ud?.affixCount??2);inst.uniqueGearId=uniqueId;return inst}
+ return createGearInstance(baseId,true,2)
+}
+function unownedNormalJewels(exclude=[]){const ex=new Set(exclude);return NORMAL_JEWEL_IDS.filter(id=>!state.jewels.includes(id)&&!ex.has(id))}
+function makeTreasureJewel(exclude=[]){const pool=unownedNormalJewels(exclude);return pool.length?{kind:'jewel',jewelId:rand(pool)}:null}
+function makeTreasureFallback(){return Math.random()<40/75?{kind:'gear',gear:createTreasureGearInstance(explore.floor)}:{kind:'item',itemId:rand(TREASURE_ITEM_IDS)}}
+function makeTreasureExtra(exclude=[]){const pool=unownedNormalJewels(exclude);const options=pool.length?[{kind:'gear',weight:40},{kind:'item',weight:35},{kind:'jewel',weight:25}]:[{kind:'gear',weight:40},{kind:'item',weight:35}],k=weightedPick(options).kind;if(k==='gear')return {kind:'gear',gear:createTreasureGearInstance(explore.floor)};if(k==='item')return {kind:'item',itemId:rand(TREASURE_ITEM_IDS)};return makeTreasureJewel(exclude)||makeTreasureFallback()}
+function generateTreasureRewards(){const rewards=[],used=[];const first=makeTreasureJewel();if(first){rewards.push(first);used.push(first.jewelId)}else rewards.push(makeTreasureFallback());for(let i=1;i<3;i++){const r=makeTreasureExtra(used);rewards.push(r);if(r.kind==='jewel')used.push(r.jewelId)}return rewards}
+function ensureTreasureRewards(n){if(!n.treasureRewards)n.treasureRewards=generateTreasureRewards();return n.treasureRewards}
+function treasureRewardName(r){if(r.kind==='jewel')return jewelDef(r.jewelId)?.name||r.jewelId;if(r.kind==='item')return itemDef(r.itemId)?.name||r.itemId;return gearDisplayName(r.gear)}
+function treasureRewardHtml(r){if(r.kind==='jewel'){const d=jewelDef(r.jewelId);return `<div class="treasure-icon"><span class="jewel-owned-icon jewel-${d.tone||d.id}">${d.icon}</span></div><span class="treasure-copy"><span class="treasure-kind">宝珠</span><b>${d.name}</b><small>${d.text}</small></span><span class="treasure-take">選ぶ</span>`}if(r.kind==='item'){const d=itemDef(r.itemId);return `<div class="treasure-icon">${d.icon}</div><span class="treasure-copy"><span class="treasure-kind">上質アイテム</span><b>${d.name}</b><small>${d.text}</small></span><span class="treasure-take">選ぶ</span>`}const inst=r.gear,g=gearBase(inst),ud=uniqueGearDef(inst),effects=[...(g?.effects||[]),...(ud?[`【${ud.prefix}】${uniqueDescription(inst)}`]:[]),...gearAffixLines(inst)];return `<div class="treasure-icon">${g?.icon||'◇'}</div><span class="treasure-copy"><span class="treasure-kind">${ud?'ユニーク武器':'上質装備'} / ${gearMeta(inst)}</span><b>${gearDisplayName(inst)}</b><span class="treasure-effects">${effects.map((x,i)=>`<span class="treasure-effect ${ud&&i===(g?.effects||[]).length?'unique':i>=(g?.effects||[]).length+(ud?1:0)?'affix':''}">${x}</span>`).join('')}</span></span><span class="treasure-take">選ぶ</span>`}
+function openTreasure(n){if(!n||n.type!=='treasure')return;const rewards=ensureTreasureRewards(n),box=$('#treasureChoices');box.innerHTML='';rewards.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='treasure-choice';b.innerHTML=treasureRewardHtml(r);if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){b.disabled=true;b.querySelector('.treasure-take').textContent='所持上限'}else b.addEventListener('click',()=>takeTreasureReward(n,i));box.appendChild(b)});$('#treasureLead').textContent=`3つから1つだけ選択。宝珠は未所持のみ。アイテム所持 ${state.items.length}/${ITEM_LIMIT}。中身は離れても変わりません。`;showEvent('宝箱','宝箱を発見した。3つの報酬から1つだけ選べる。','宝箱を開く',()=>openTreasure(n));const dlg=$('#treasureDialog');if(!dlg.open)dlg.showModal()}
+function takeTreasureReward(n,index){if(!n||n.type!=='treasure')return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);openTreasure(n);return}const name=treasureRewardName(r);if(r.kind==='jewel')addOwnedJewel(r.jewelId);else if(r.kind==='item')state.items.push(createItemInstance(r.itemId));else addGearToInventory(r.gear);n.type='empty';delete n.treasureRewards;const dlg=$('#treasureDialog');if(dlg.open)dlg.close();renderExplore();renderItemTab();renderJewelTab();if(r.kind==='jewel'){showEvent('宝珠入手',`「${name}」を入手した。宝珠タブからセットを変更できる。`,'宝珠を見る',()=>switchExploreTab('jewel'));toast(`${name}を入手`)}else if(r.kind==='gear'){showEvent('装備入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);openGearPickup(r.gear)}else{showEvent('アイテム入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`)}}
+
 function rollShopItemId(){const group=weightedPick([{id:'normal',weight:70},{id:'upper',weight:25},{id:'rare',weight:5}]).id;return rand(SHOP_ITEM_GROUPS[group])}
 function rollShopGearTier(depth=1){const center=Math.max(0,Math.min(6,(depth||1)-1));return weightedPick(Array.from({length:7},(_,tier)=>({tier,weight:[55,22,9,4,2,1,.5][Math.abs(tier-center)]||.25}))).tier}
 function createShopGearInstance(depth=1){const category=rollGearCategory();if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollShopGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
@@ -2201,7 +2310,7 @@ function switchExploreTab(kind,resetGear=true){
  if(kind==='gear'){if(!gearManageUid||!state.party.some(u=>u.uid===gearManageUid))gearManageUid=state.party[0].uid;if(resetGear){gearPickerSlot=null;gearFocusUid=null;}const g=$('#gearGoldChip'),p=$('#gearPpChip');if(g)g.textContent=`G ${state.gold}`;if(p)p.textContent=`PP ${state.parallelPoints}`;renderGearManager()}
  if(kind==='item')renderItemTab();
  if(kind==='jewel')renderJewelTab();
- if(kind==='explore'){const n=currentNode();if(n?.type==='item'&&!$('#itemPickupDialog').open){const d=itemDef(n.itemId||ITEM_IDS[0]);showEvent('アイテム発見',`「${d.name}」がこのマスに残っている。`,'確認する',()=>openItemPickup(n))}else if(n?.type==='shop')showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。品揃えはこの店で固定。`,'商品を見る',()=>openShop(n))}
+ if(kind==='explore'){const n=currentNode();if(n?.type==='treasure'){showEvent('宝箱','3つの報酬から1つだけ選べる。中身はこのマスに固定されている。','宝箱を開く',()=>openTreasure(n))}else if(n?.type==='item'&&!$('#itemPickupDialog').open){const d=itemDef(n.itemId||ITEM_IDS[0]);showEvent('アイテム発見',`「${d.name}」がこのマスに残っている。`,'確認する',()=>openItemPickup(n))}else if(n?.type==='shop')showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。品揃えはこの店で固定。`,'商品を見る',()=>openShop(n))}
  window.scrollTo({top:0,behavior:'smooth'})
 }
 function openExploreManager(kind){
@@ -2277,7 +2386,7 @@ $('#battleItemBtn').addEventListener('click',openBattleItemSheet);$('#battleItem
 $('#statsToggle').addEventListener('click',()=>{const b=$('#statsBody'),o=b.classList.toggle('show');$('#statsMark').textContent=o?'閉じる ▴':'開く ▾'});
 $('#resetCumulativeBtn').addEventListener('click',()=>{delete cumulativeByConfig[configKey()];renderStats()});
 $('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});$('#bossMechanic').addEventListener('click',openBossDetail);$('#bossDetailCloseBtn').addEventListener('click',()=>$('#bossDetailDialog').close());
-$('#gearPickupBackBtn').addEventListener('click',()=>{const mode=gearPickupReturnMode;$('#gearPickupDialog').close();gearPickupUid=null;gearPickupReturnMode='explore';if(mode==='shop')setTimeout(()=>openShop(currentNode()),40)});$('#gearPickupOpenBtn').addEventListener('click',openPickedGearTab);$('#itemDetailUseBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(inst)useItemFromSource(inst.itemId,{kind:'inventory',uid:inst.uid})});$('#itemDetailDropBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);$('#itemDetailDiscardText').textContent=`「${d.name}」を完全に捨てますか？`;$('#itemDetailDiscard').classList.remove('screen-hidden')});$('#itemDetailDiscardCancel').addEventListener('click',()=>$('#itemDetailDiscard').classList.add('screen-hidden'));$('#itemDetailDiscardConfirm').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);removeItemInstance(inst.uid);toast(`${d.name}を捨てた`);closeItemDetail();renderItemTab();renderExplore()});$('#itemDetailCloseBtn').addEventListener('click',closeItemDetail);$('#itemDetailDialog').addEventListener('cancel',e=>{e.preventDefault();closeItemDetail()});$('#itemTargetConfirmBtn').addEventListener('click',()=>{if(itemUseContext&&itemTargetUid)finishItemUse(itemUseContext.itemId,itemUseContext,itemTargetUid)});$('#itemTargetCancelBtn').addEventListener('click',cancelItemTarget);$('#itemTargetDialog').addEventListener('cancel',e=>{e.preventDefault();cancelItemTarget()});$('#enhanceConfirmBtn').addEventListener('click',()=>{if(enhanceSelection)applyEnhancement(enhanceSelection.nodeId,enhanceSelection.uid)});$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#exploreTabBtn').addEventListener('click',()=>switchExploreTab('explore'));$('#itemManageBtn').addEventListener('click',()=>switchExploreTab('item'));$('#gearManageBtn').addEventListener('click',()=>switchExploreTab('gear'));$('#jewelManageBtn').addEventListener('click',()=>switchExploreTab('jewel'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#shopBuyTab').addEventListener('click',()=>setShopMode('buy'));$('#shopSellTab').addEventListener('click',()=>setShopMode('sell'));$('#shopSellCancelBtn').addEventListener('click',closeShopSellConfirm);$('#shopSellConfirmBtn').addEventListener('click',confirmShopSell);$('#shopSellConfirmDialog').addEventListener('cancel',e=>{e.preventDefault();closeShopSellConfirm()});$('#shopCloseBtn').addEventListener('click',closeShop);$('#shopDialog').addEventListener('cancel',e=>{e.preventDefault();closeShop()});$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());$('#parallelDriveBtn').addEventListener('click',()=>{const uid=$('#parallelDriveBtn').dataset.uid;if(uid)openParallelDrive(uid)});$('#parallelBackBtn').addEventListener('click',()=>closeParallelDrive(true));$('#parallelCloseBtn').addEventListener('click',()=>closeParallelDrive(false));$('#parallelCancelBtn').addEventListener('click',()=>{parallelPendingId=null;$('#parallelConfirm').classList.add('screen-hidden')});$('#parallelExecuteBtn').addEventListener('click',applyParallelDrive);$('#parallelDriveDialog').addEventListener('cancel',e=>{e.preventDefault();closeParallelDrive(false)});
-$('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.current=f.map.start;showEvent('再生成','現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
+$('#treasureCloseBtn').addEventListener('click',()=>{const dlg=$('#treasureDialog');if(dlg.open)dlg.close();const n=currentNode();if(n?.type==='treasure')showEvent('宝箱','中身はこのマスに残っている。','宝箱を開く',()=>openTreasure(n))});$('#treasureDialog').addEventListener('cancel',e=>{e.preventDefault();$('#treasureCloseBtn').click()});$('#gearPickupBackBtn').addEventListener('click',()=>{const mode=gearPickupReturnMode;$('#gearPickupDialog').close();gearPickupUid=null;gearPickupReturnMode='explore';if(mode==='shop')setTimeout(()=>openShop(currentNode()),40)});$('#gearPickupOpenBtn').addEventListener('click',openPickedGearTab);$('#itemDetailUseBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(inst)useItemFromSource(inst.itemId,{kind:'inventory',uid:inst.uid})});$('#itemDetailDropBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);$('#itemDetailDiscardText').textContent=`「${d.name}」を完全に捨てますか？`;$('#itemDetailDiscard').classList.remove('screen-hidden')});$('#itemDetailDiscardCancel').addEventListener('click',()=>$('#itemDetailDiscard').classList.add('screen-hidden'));$('#itemDetailDiscardConfirm').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);removeItemInstance(inst.uid);toast(`${d.name}を捨てた`);closeItemDetail();renderItemTab();renderExplore()});$('#itemDetailCloseBtn').addEventListener('click',closeItemDetail);$('#itemDetailDialog').addEventListener('cancel',e=>{e.preventDefault();closeItemDetail()});$('#itemTargetConfirmBtn').addEventListener('click',()=>{if(itemUseContext&&itemTargetUid)finishItemUse(itemUseContext.itemId,itemUseContext,itemTargetUid)});$('#itemTargetCancelBtn').addEventListener('click',cancelItemTarget);$('#itemTargetDialog').addEventListener('cancel',e=>{e.preventDefault();cancelItemTarget()});$('#enhanceConfirmBtn').addEventListener('click',()=>{if(enhanceSelection)applyEnhancement(enhanceSelection.nodeId,enhanceSelection.uid)});$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#exploreTabBtn').addEventListener('click',()=>switchExploreTab('explore'));$('#itemManageBtn').addEventListener('click',()=>switchExploreTab('item'));$('#gearManageBtn').addEventListener('click',()=>switchExploreTab('gear'));$('#jewelManageBtn').addEventListener('click',()=>switchExploreTab('jewel'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#shopBuyTab').addEventListener('click',()=>setShopMode('buy'));$('#shopSellTab').addEventListener('click',()=>setShopMode('sell'));$('#shopSellCancelBtn').addEventListener('click',closeShopSellConfirm);$('#shopSellConfirmBtn').addEventListener('click',confirmShopSell);$('#shopSellConfirmDialog').addEventListener('cancel',e=>{e.preventDefault();closeShopSellConfirm()});$('#shopCloseBtn').addEventListener('click',closeShop);$('#shopDialog').addEventListener('cancel',e=>{e.preventDefault();closeShop()});$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());$('#parallelDriveBtn').addEventListener('click',()=>{const uid=$('#parallelDriveBtn').dataset.uid;if(uid)openParallelDrive(uid)});$('#parallelBackBtn').addEventListener('click',()=>closeParallelDrive(true));$('#parallelCloseBtn').addEventListener('click',()=>closeParallelDrive(false));$('#parallelCancelBtn').addEventListener('click',()=>{parallelPendingId=null;$('#parallelConfirm').classList.add('screen-hidden')});$('#parallelExecuteBtn').addEventListener('click',applyParallelDrive);$('#parallelDriveDialog').addEventListener('cancel',e=>{e.preventDefault();closeParallelDrive(false)});
+$('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#treasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),c=Object.values(map.nodes).filter(n=>n.type==='empty'&&n.id!==explore.current);if(!c.length){toast('宝箱に変えられる無マスがありません',true);return}const n=rand(c);n.type='treasure';n.infected=true;renderExplore();toast('テスト用：宝箱を追加')});$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.current=f.map.start;showEvent('再生成','現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
