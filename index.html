@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.22.0 武器・防具付加効果拡張</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.23.0 二つ名装備拡張</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -964,12 +964,29 @@ const GEAR_AFFIX_DEFS=[
  {id:'startCharm',slots:['armor'],min:1,max:1,stat:'startCharm',label:'戦闘開始時 敵に「魅了」',suffix:''}
 ];
 const UNIQUE_GEAR_DEFS={
- glutton:{id:'glutton',prefix:'大喰らいの',enemyName:'食いしん坊の犬娘',slots:['weapon','armor'],description:'戦闘勝利時、装備者のHPを最大HPの10%回復。'},
+ glutton:{id:'glutton',prefix:'大喰らいの',enemyName:'食いしん坊な犬娘',slots:['weapon','armor'],description:'戦闘勝利時、装備者のHPを最大HPの10%回復。'},
  big:{id:'big',prefix:'大きな',enemyName:'ビッグな犬娘',slots:['weapon','armor'],description:'通常の付加効果が確定で3個付与される。',affixCount:3},
+ giant:{id:'giant',prefix:'巨大な',enemyName:'ジャイアントな犬娘',slots:['weapon','armor'],description:'通常の付加効果が確定で4個付与される。',affixCount:4},
  ferocious:{id:'ferocious',prefix:'凶暴な',enemyName:'凶暴な犬娘',slots:['weapon'],description:'攻撃力+30%。被ダメージ+20%。',stats:{atkPct:30,damageTakenPct:20}},
- ironwall:{id:'ironwall',prefix:'鉄壁の',enemyName:'頑丈な犬娘',slots:['armor'],description:'攻撃力-20%。被ダメージ-30%。',stats:{atkPct:-20,damageReductionPct:30}}
+ obsession:{id:'obsession',prefix:'執念の',enemyName:'しつこい犬娘',slots:['weapon'],description:'通常攻撃時、1ターンに1度だけ攻撃力+10%。スキル使用・戦闘終了で解除。'},
+ transcender:{id:'transcender',prefix:'超越者の',enemyName:'次元を越える犬娘',slots:['weapon'],description:'崩壊度の30%だけ攻撃力アップ（上限+30%）。'},
+ indomitable:{id:'indomitable',prefix:'不屈の',enemyName:'不屈の犬娘',slots:['weapon','armor'],descriptions:{weapon:'状態異常時、攻撃力+30%。',armor:'状態異常時、被ダメージ-30%。'}},
+ gambler:{id:'gambler',prefix:'博打の',enemyName:'ギャンブラーな犬娘',slots:['weapon','armor'],descriptions:{weapon:'通常攻撃1回ごとに独立判定。50%で攻撃力2倍、50%で攻撃失敗。',armor:'被ダメージ時、50%で被ダメージ2倍、50%で被ダメージ無効。'}},
+ brave:{id:'brave',prefix:'勇者の',enemyName:'勇敢な犬娘',slots:['weapon'],description:'このフロアで倒した魔物娘の数×8%攻撃力アップ（上限+40%）。'},
+ lone:{id:'lone',prefix:'孤高の',enemyName:'孤高の犬娘',slots:['weapon','armor'],descriptions:{weapon:'他の味方全員が戦闘不能の場合、攻撃力+40%。',armor:'他の味方全員が戦闘不能の場合、被ダメージ-40%。'}},
+ alchemist:{id:'alchemist',prefix:'錬金術師の',enemyName:'錬金術師の犬娘',slots:['weapon'],description:'敵が受ける状態異常による継続ダメージを2倍にする。'},
+ reason_title:{id:'reason_title',prefix:'理力の',enemyName:'理を司る犬娘',slots:['weapon','armor'],descriptions:{weapon:'戦闘開始時、「理力」+5。1ターン目終了時、「理力」-5。',armor:'被ダメージ時、30%の確率で「理力」1獲得。'}},
+ wisdom_title:{id:'wisdom_title',prefix:'叡智の',enemyName:'賢そうな犬娘',slots:['weapon','armor'],descriptions:{weapon:'戦闘開始時、「叡智」+5。1ターン目終了時、「叡智」-5。',armor:'被ダメージ時、50%の確率で「叡智」2獲得。'}},
+ charm_title:{id:'charm_title',prefix:'魅了の',enemyName:'誘惑的な犬娘',slots:['weapon','armor'],descriptions:{weapon:'戦闘開始時、敵に「魅了」+5。1ターン目終了時、敵の「魅了」-5。',armor:'被ダメージ時、50%の確率で敵に「魅了」1付与。'}},
+ breakthrough:{id:'breakthrough',prefix:'一点突破の',enemyName:'猛進する犬娘',slots:['weapon'],description:'戦闘開始時、スキルゲージ最大。スキルゲージ上昇量-50%。'},
+ ironwall:{id:'ironwall',prefix:'鉄壁の',enemyName:'頑丈な犬娘',slots:['armor'],description:'攻撃力-20%。被ダメージ-30%。',stats:{atkPct:-20,damageReductionPct:30}},
+ holy:{id:'holy',prefix:'聖なる',enemyName:'神聖な犬娘',slots:['armor'],description:'【呪い】無効化。アイテムが呪われない。※呪いシステム実装待ち。',rollable:false,placeholder:true},
+ grit:{id:'grit',prefix:'気合の',enemyName:'ど根性の犬娘',slots:['armor'],description:'1戦闘に1度、現在HP以上のダメージを受ける時、HP1で耐える。'},
+ rebirth:{id:'rebirth',prefix:'再臨の',enemyName:'再臨の犬娘',slots:['armor'],description:'戦闘不能になった時、HP最大で復活する。その後、この装備は消滅する。'},
+ sanzu:{id:'sanzu',prefix:'三途の',enemyName:'死の淵に立つ犬娘',slots:['armor'],description:'1戦闘に1度、戦闘不能になった時、5000G消費してHP最大で復活する。'},
+ cleaner:{id:'cleaner',prefix:'掃除屋の',enemyName:'掃除屋の犬娘',slots:['armor'],description:'地雷系の罠による味方全員へのダメージを無効化する。※罠システム実装待ち。',rollable:false,placeholder:true}
 };
-const UNIQUE_GEAR_IDS=Object.keys(UNIQUE_GEAR_DEFS);
+const UNIQUE_GEAR_IDS=Object.values(UNIQUE_GEAR_DEFS).filter(x=>x.rollable!==false).map(x=>x.id);
 const GEAR_SLOTS=[['weapon','武器','🗡️'],['armor','防具','👕'],['accessory','装飾','💍']];
 let gearManageUid=null,gearPickerSlot=null,gearSerial=0,gearPickupUid=null,gearFocusUid=null,gearPickupReturnMode='explore';
 let itemSerial=0,itemPickupNodeId=null,itemUseContext=null,itemTargetUid=null,itemDetailUid=null,battleItemSelectedUid=null,battleItemTargetUid=null;
@@ -1194,7 +1211,21 @@ function freshEnemy(idOverride=null){
  const maxHp=boosted?ceil(t.maxHp*1.15):t.maxHp;
  return {...t,maxHp,hp:maxHp,actionIndex:0,dead:false,statuses:[],permanentAmp:0,timedAmp:[],charm:0,charge:t.chargeMax?0:null,hpTriggerPending:false,hpTriggerUsed:false,activeOmen:null,omenBroken:false,damageMult:boosted?1.15:1};
 }
-function startBattleResources(){state.reason=0;state.partyBuffs=[];const living=state.party.filter(u=>!u.dead);const rings=living.reduce((sum,u)=>sum+gearStat(u,'startReason'),0);state.reason=Math.min(10,rings);const magic=living.filter(u=>u.type==='magic').length;state.party.forEach(u=>{u.statuses=[];u._mountBlockedActionToken=null;u.wisdom=u.id==='demon'&&!u.dead?magic+gearStat(u,'startWisdom'):u.id==='poison_slime'&&!u.dead?gearStat(u,'startWisdom'):0;const startGauge=gearStat(u,'startGauge');if(startGauge&&!u.dead)u.gauge=Math.min(skillMax(u),u.gauge+startGauge);const mount=gearStat(u,'startMount');if(mount&&!u.dead)addAllyStatus(u,{name:'マウント',x:mount,decay:0,kind:'buff',short:'マウント'})});const charm=living.reduce((sum,u)=>sum+gearStat(u,'startCharm'),0);if(state.enemy&&charm)state.enemy.charm=Math.min(10,(state.enemy.charm||0)+charm)}
+function startBattleResources(){
+ state.reason=0;state.partyBuffs=[];state._turnOneReasonBonus=0;state._turnOneCharmBonus=0;
+ const living=state.party.filter(u=>!u.dead),rings=living.reduce((sum,u)=>sum+gearStat(u,'startReason'),0),reasonUnique=living.reduce((sum,u)=>sum+equippedUniqueCountSlot(u,'reason_title','weapon')*5,0);
+ state._turnOneReasonBonus=reasonUnique;state.reason=Math.min(10,rings+reasonUnique);
+ const magic=living.filter(u=>u.type==='magic').length;
+ state.party.forEach(u=>{
+   u.statuses=[];u._mountBlockedActionToken=null;u._obsessionStacks=0;u._obsessionLastTurn=0;u._gritUsed=false;u._sanzuUsed=false;u._turnOneWisdomBonus=0;
+   const baseWisdom=u.id==='demon'&&!u.dead?magic+gearStat(u,'startWisdom'):u.id==='poison_slime'&&!u.dead?gearStat(u,'startWisdom'):0;
+   const wisdomUnique=!u.dead?equippedUniqueCountSlot(u,'wisdom_title','weapon')*5:0;u._turnOneWisdomBonus=wisdomUnique;u.wisdom=baseWisdom+wisdomUnique;
+   const startGauge=gearStat(u,'startGauge');if(startGauge&&!u.dead)u.gauge=Math.min(skillMax(u),u.gauge+startGauge);
+   if(!u.dead&&equippedUniqueCountSlot(u,'breakthrough','weapon'))u.gauge=skillMax(u);
+   const mount=gearStat(u,'startMount');if(mount&&!u.dead)addAllyStatus(u,{name:'マウント',x:mount,decay:0,kind:'buff',short:'マウント'})
+ });
+ const charm=living.reduce((sum,u)=>sum+gearStat(u,'startCharm'),0),charmUnique=living.reduce((sum,u)=>sum+equippedUniqueCountSlot(u,'charm_title','weapon')*5,0);state._turnOneCharmBonus=charmUnique;if(state.enemy&&(charm||charmUnique))state.enemy.charm=Math.min(10,(state.enemy.charm||0)+charm+charmUnique)
+}
 function resetRun(){
  gearSerial=0;itemSerial=0;state={battleNo:0,turn:1,reason:0,gold:0,parallelPoints:0,parallelUnlocks:{},enemyActionToken:0,inventory:[],items:[],party:makeParty(),enemy:null,partyBuffs:[],battleOver:true,runOver:false,battleContext:null,battleItemUsedTurn:0,stats:{battles:[],current:null,recorded:false,lastWin:null}};
  initializeEquippedInstances();gearPickerSlot=null;itemPickupNodeId=null;itemUseContext=null;itemTargetUid=null;itemDetailUid=null;battleItemSelectedUid=null;battleItemTargetUid=null;
@@ -1247,7 +1278,12 @@ function enemyStatus(n){return state.enemy.statuses.find(s=>s.name===n)}function
 function enemyPoisonAmp(){return enemyStatus('毒')?20:0}
 function totalEnemyAmp(){return state.enemy.permanentAmp+state.enemy.timedAmp.reduce((s,x)=>s+x.value,0)+enemyPoisonAmp()}
 function totalAttackBuffPct(){return state.partyBuffs.reduce((s,x)=>s+(x.valuePct||0),0)}function totalPartyDamageReductionPct(){return state.partyBuffs.reduce((s,x)=>s+(x.damageReductionPct||0),0)}
-function effectiveAtk(u){let a=u.atk;if(u.id==='dog'&&state.party.every(x=>x.statuses.every(s=>(s.kind||'debuff')==='buff')))a+=5;a*=1+gearStat(u,'atkPct')/100;return ceil(a*(1+totalAttackBuffPct()/100))}
+function allyHasStatusAilment(u){return !!u?.statuses?.some(s=>STATUS_AILMENT_NAMES.has(s.name))}
+function otherAlliesDead(u){return state.party.filter(x=>x.uid!==u.uid).every(x=>x.dead)}
+function floorKillCount(){return explore?.floorData?.[explore.floor]?.kills||0}
+function uniqueAttackPct(u){let pct=(u._obsessionStacks||0)*10;if(equippedUniqueCountSlot(u,'transcender','weapon'))pct+=Math.min(30,(explore?.collapse||0)*.3);if(equippedUniqueCountSlot(u,'indomitable','weapon')&&allyHasStatusAilment(u))pct+=30;if(equippedUniqueCountSlot(u,'brave','weapon'))pct+=Math.min(40,floorKillCount()*8);if(equippedUniqueCountSlot(u,'lone','weapon')&&otherAlliesDead(u))pct+=40;return pct}
+function uniqueDamageReductionPct(u){let pct=0;if(equippedUniqueCountSlot(u,'indomitable','armor')&&allyHasStatusAilment(u))pct+=30;if(equippedUniqueCountSlot(u,'lone','armor')&&otherAlliesDead(u))pct+=40;return pct}
+function effectiveAtk(u){let a=u.atk;if(u.id==='dog'&&state.party.every(x=>x.statuses.every(s=>(s.kind||'debuff')==='buff')))a+=5;a*=1+(gearStat(u,'atkPct')+uniqueAttackPct(u))/100;return ceil(a*(1+totalAttackBuffPct()/100))}
 function incomingAmp(u){let v=u.statuses.reduce((s,x)=>s+(x.damageTakenAmp||0),0);if(hasAllyStatus(u,'毒'))v+=u.id==='poison_slime'?-20:20;return v}
 function hasPartyForm(id,aliveOnly=false){return state.party.some(u=>u.id===id&&(!aliveOnly||!u.dead))}
 function partyCounterBuff(){return state.partyBuffs.reduce((s,b)=>s+(b.counterRate||0),0)}
@@ -1269,8 +1305,14 @@ function addCharm(n){if(!state.enemy||state.enemy.dead)return 0;const before=sta
 function pulseElement(el,cls='feedback-pulse'){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),900)}function popNear(el,t){if(!el)return;const h=el.closest('.unit')||el.closest('.enemy-hud')||el.parentElement;if(!h)return;if(getComputedStyle(h).position==='static')h.style.position='relative';const p=document.createElement('span');p.className='change-pop';p.textContent=t;p.style.right='6px';p.style.top='6px';h.appendChild(p);setTimeout(()=>p.remove(),900)}
 function feedbackEnemyStatus(t){const el=document.querySelector('#enemyStatus .status-pill');pulseElement(el);popNear(el,t)}function feedbackReason(t){const el=$('#reasonText');pulseElement(el);popNear(el,t)}function feedbackGauge(u,t){const el=document.querySelector(`[data-unit="${u.uid}"] [data-gauge-fill]`);pulseElement(el,'feedback-gauge');popNear(el,t)}function feedbackHp(u,t){const el=document.querySelector(`[data-unit="${u.uid}"] [data-hp-fill]`);pulseElement(el,'feedback-good');popNear(el,t)}function feedbackPartyAtk(t){state.party.forEach(u=>pulseElement(document.querySelector(`[data-unit="${u.uid}"] [data-atkline]`),'feedback-atk'));popNear(document.querySelector('[data-atkline]'),t)}
 function floatNumber(h,t,c='damage'){const n=document.createElement('div');n.className=`floating ${c}`;n.textContent=t;h.appendChild(n);setTimeout(()=>n.remove(),timing().float)}async function actFlash(u){const e=unitEl(u.uid);if(e){e.classList.add('acting');await delay(Math.round(timing().action*.33))}}function clearActing(){document.querySelectorAll('.unit.acting').forEach(x=>x.classList.remove('acting'))}async function enemyHitFeedback(d){enemyArt.classList.add('hit');floatNumber(stage,`-${d}`);await delay(Math.round(timing().action*.62));enemyArt.classList.remove('hit')}async function allyHitFeedback(u,d){const e=unitEl(u.uid);if(e){e.classList.add('target');floatNumber(e,`-${d}`)}await delay(Math.round(timing().action*.62));if(e)e.classList.remove('target')}
-function adjustedGaugeGain(u,base){return Math.max(0,Math.round(base*(1+(gearStat(u,'skillGainPct')+pinkSkillGainBonus()+crystalSkillGainBonus())/100)))}function gainGaugeAttack(u){const gain=adjustedGaugeGain(u,10);u.gauge=Math.min(skillMax(u),u.gauge+gain);return gain}function gaugeFromIncoming(u,d){const r=d/u.maxHp,base=r>=.75?50:r>=.5?25:10;return adjustedGaugeGain(u,base)}function enemyDamageReduction(){return enemyStatus('硬化')?50:0}
-async function damageEnemy(u,base,source,type='physical',gauge=false,finishOnKill=true){if(state.enemy.dead)return;const crit=Math.random()<gearStat(u,'critRate')/100;const bonus=conditionalDamageBonusPct(u);let raw=base*(crit?1.5:1)*(1+bonus/100)*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100);const dmg=Math.max(0,ceil(raw)),before=state.enemy.hp;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const actual=before-state.enemy.hp,gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}${crit?'【会心】':''}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');showBanner(`${u.name}の${source}${crit?'【会心】':''}！`,`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);const steal=gearStat(u,'lifeStealPct');if(steal>0&&actual>0&&!u.dead){const {actual:healed}=applyHealing(u,u,actual*steal/100);if(healed>0){if(state.stats&&state.stats.current)state.stats.current.healing+=healed;addLog(`HP吸収：${u.name}が${healed}回復。`,'heal');render();feedbackHp(u,`+${healed}`)}}await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){state.enemy.dead=true;if(finishOnKill)await finishBattle()}}
+function adjustedGaugeGain(u,base){const breakthroughPenalty=equippedUniqueCountSlot(u,'breakthrough','weapon')?-50:0;return Math.max(0,Math.round(base*(1+(gearStat(u,'skillGainPct')+pinkSkillGainBonus()+crystalSkillGainBonus()+breakthroughPenalty)/100)))}function gainGaugeAttack(u){const gain=adjustedGaugeGain(u,10);u.gauge=Math.min(skillMax(u),u.gauge+gain);return gain}function gaugeFromIncoming(u,d){const r=d/u.maxHp,base=r>=.75?50:r>=.5?25:10;return adjustedGaugeGain(u,base)}function enemyDamageReduction(){return enemyStatus('硬化')?50:0}
+async function damageEnemy(u,base,source,type='physical',gauge=false,finishOnKill=true){
+ if(state.enemy.dead)return {hit:false,actual:0};
+ const normalStrike=['通常攻撃','連撃','反撃'].includes(source),gambler=normalStrike&&equippedUniqueCountSlot(u,'gambler','weapon')>0;
+ let gambleMult=1;
+ if(gambler){if(Math.random()<.5){gambleMult=2;addLog(`【博打の】：${u.name}の${source}は大当たり！`,'system')}else{const gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`【博打の】：${u.name}の${source}は攻撃失敗！`,'system');showBanner('博打の','攻撃失敗');render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await delay(Math.round(timing().action*.65));return {hit:false,actual:0,gambleFail:true}}}
+ const crit=Math.random()<gearStat(u,'critRate')/100,bonus=conditionalDamageBonusPct(u);let raw=base*gambleMult*(crit?1.5:1)*(1+bonus/100)*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100);const dmg=Math.max(0,ceil(raw)),before=state.enemy.hp;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const actual=before-state.enemy.hp,gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}${gambler?'【博打成功】':''}${crit?'【会心】':''}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');showBanner(`${u.name}の${source}${crit?'【会心】':''}！`,`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);const steal=gearStat(u,'lifeStealPct');if(steal>0&&actual>0&&!u.dead){const {actual:healed}=applyHealing(u,u,actual*steal/100);if(healed>0){if(state.stats&&state.stats.current)state.stats.current.healing+=healed;addLog(`HP吸収：${u.name}が${healed}回復。`,'heal');render();feedbackHp(u,`+${healed}`)}}await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){state.enemy.dead=true;if(finishOnKill)await finishBattle()}return {hit:true,actual,dmg,crit}
+}
 async function performCounter(u){
  if(!u||u.dead||state.enemy?.dead)return;
  addLog(`${u.name}の反撃！`,'system');showBanner('反撃！',u.name);render();await delay(Math.round(timing().ability*.45));
@@ -1290,6 +1332,19 @@ async function onDamagedAbility(u,actual){
    const gain=addCharm(2);addLog(`いたずら粘液：敵の魅了+${gain}（${state.enemy.charm}/10）`,'system');showBanner('いたずら粘液',`魅了 ${state.enemy.charm}/10`);render();feedbackEnemyStatus(`魅了+${gain}`);await delay(Math.round(timing().ability*.65));
    if(state.enemy.charm>=5){addTimedEnemyAmp(15,2,'pink_slime_mischief');markBossDebuffApplied();addLog('いたずら粘液：魅了5以上のため、敵に被ダメージ+15%（2T）。','system');showBanner('魅了追加効果','被ダメ+15% / 2T');render();feedbackEnemyStatus('+15%');await delay(Math.round(timing().ability*.65))}
  }
+ if(equippedUniqueCountSlot(u,'reason_title','armor')&&Math.random()<.30){state.reason=Math.min(10,state.reason+1);addLog(`【理力の】：${u.name}が被ダメージ時に理力+1（${state.reason}）。`,'system');render();feedbackReason('+1');await delay(Math.round(timing().ability*.4))}
+ if(equippedUniqueCountSlot(u,'wisdom_title','armor')&&Math.random()<.50){u.wisdom=Math.max(0,(u.wisdom||0)+2);addLog(`【叡智の】：${u.name}が被ダメージ時に叡智+2（${u.wisdom}）。`,'system');render();popNear(unitEl(u.uid),'+2叡智');await delay(Math.round(timing().ability*.4))}
+ if(equippedUniqueCountSlot(u,'charm_title','armor')&&!state.enemy.dead&&Math.random()<.50){const gain=addCharm(1);addLog(`【魅了の】：被ダメージ時に敵の魅了+${gain}（${state.enemy.charm}/10）。`,'system');render();feedbackEnemyStatus(`魅了+${gain}`);await delay(Math.round(timing().ability*.4))}
+}
+function destroyEquippedGear(u,slot){const inst=equippedGear(u,slot);if(!inst)return null;applyGearInstanceDelta(u,inst,-1);u.gearInstances[slot]=null;syncLegacyGearFlags(u);return inst}
+async function resolveCombatDeath(u,source='ダメージ'){
+ if(!u||u.hp>0)return false;
+ const armor=equippedGear(u,'armor');
+ if(armor?.uniqueGearId==='rebirth'){
+   const name=gearDisplayName(armor);destroyEquippedGear(u,'armor');u.dead=false;u.hp=u.maxHp;addLog(`【再臨の】：${u.name}がHP最大で復活。「${name}」は消滅した。`,'heal');showBanner('再臨',`${u.name} 復活！`);render();feedbackHp(u,`HP MAX`);await delay(timing().ability);return true
+ }
+ if(armor?.uniqueGearId==='sanzu'&&!u._sanzuUsed&&state.gold>=5000){u._sanzuUsed=true;state.gold-=5000;u.dead=false;u.hp=u.maxHp;addLog(`【三途の】：5000Gを消費し、${u.name}がHP最大で復活。`,'heal');showBanner('三途',`${u.name} 復活 / -5000G`);render();feedbackHp(u,`HP MAX`);await delay(timing().ability);return true}
+ u.dead=true;if(state.stats&&state.stats.current)state.stats.current.ko++;addLog(`${u.name}は戦闘不能！`,'damage');showBanner(`${u.name}は戦闘不能！`);render();await delay(timing().ability);return false
 }
 async function damageAlly(u,base,source,type='physical',crit=false){
  if(!u||u.dead||state.enemy?.dead)return {hit:false,actual:0,blocked:'invalid'};
@@ -1298,28 +1353,21 @@ async function damageAlly(u,base,source,type='physical',crit=false){
  let dmg=base*(state.enemy?.damageMult||1)*(crit?1.5:1)*(1+incomingAmp(u)/100);
  if(enemyStatus('炎上'))dmg*=.8;
  dmg*=Math.max(0,1-totalPartyDamageReductionPct()/100);
- dmg*=Math.max(0,1-gearStat(u,'damageReductionPct')/100);
+ dmg*=Math.max(0,1-(gearStat(u,'damageReductionPct')+uniqueDamageReductionPct(u))/100);
  dmg*=Math.max(0,1+gearStat(u,'damageTakenPct')/100);
  if(type==='physical'&&u.id==='slime')dmg*=.95;
  dmg=ceil(dmg);
  const redKey=type==='physical'?'physReduction':type==='magic'?'magicReduction':type==='pleasure'?'pleasureReduction':null;
  if(redKey){const red=gearStat(u,redKey);if(red)dmg=Math.max(0,dmg-red)}
  if(u.id==='crystal_slime'&&!crit&&dmg<100)dmg=Math.max(0,ceil(dmg*.2));
- const beforeHp=u.hp;
- u.hp=Math.max(0,u.hp-dmg);
- const actual=beforeHp-u.hp;
+ if(equippedUniqueCountSlot(u,'gambler','armor')){if(Math.random()<.5){dmg=ceil(dmg*2);addLog(`【博打の】：${u.name}への被ダメージが2倍！`,'system')}else{addLog(`【博打の】：${u.name}はダメージを無効化！`,'system');showBanner('博打の','被ダメージ無効');render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.55));return {hit:false,actual:0,blocked:'gambler'}}}
+ let grit=false;if(equippedUniqueCountSlot(u,'grit','armor')&&!u._gritUsed&&dmg>=u.hp){u._gritUsed=true;dmg=Math.max(0,u.hp-1);grit=true}
+ const beforeHp=u.hp;u.hp=Math.max(0,u.hp-dmg);const actual=beforeHp-u.hp;
  if(state.stats&&state.stats.current)state.stats.current.damageTaken+=actual;
- const gain=gaugeFromIncoming(u,dmg);
- u.gauge=Math.min(skillMax(u),u.gauge+gain);
- addLog(`${source}${crit?'【会心】':''} → ${u.name}に${dmg}${typeJP(type)}ダメージ。`,'damage');
- showBanner(source,`${u.name}に${dmg}${crit?' 会心':''}`);
- render();feedbackGauge(u,`+${gain}`);await allyHitFeedback(u,dmg);await delay(Math.round(timing().action*.42));
+ const gain=gaugeFromIncoming(u,dmg);u.gauge=Math.min(skillMax(u),u.gauge+gain);
+ addLog(`${source}${crit?'【会心】':''} → ${u.name}に${dmg}${typeJP(type)}ダメージ。`,'damage');if(grit)addLog(`【気合の】：${u.name}はHP1で耐えた！`,'system');showBanner(grit?'気合で耐えた！':source,grit?`${u.name} HP1`:`${u.name}に${dmg}${crit?' 会心':''}`);render();feedbackGauge(u,`+${gain}`);await allyHitFeedback(u,dmg);await delay(Math.round(timing().action*.42));
  await onDamagedAbility(u,actual);
- if(u.hp<=0){
-   u.dead=true;
-   if(beforeHp>0&&state.stats&&state.stats.current)state.stats.current.ko++;
-   addLog(`${u.name}は戦闘不能！`,'damage');showBanner(`${u.name}は戦闘不能！`);render();await delay(timing().ability);return {hit:true,actual,ko:true}
- }
+ if(u.hp<=0){const revived=await resolveCombatDeath(u,source);return {hit:true,actual,ko:!revived,revived}}
  const rate=counterRate(u);if(rate>0&&!state.enemy.dead&&Math.random()<rate/100)await performCounter(u);
  return {hit:true,actual,ko:false}
 }
@@ -1327,7 +1375,7 @@ function addEnemyStatus(st){const o=state.enemy.statuses.find(x=>x.name===st.nam
 function addAllyStatus(u,st){const o=u.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else u.statuses.push({...st})}
 function mountStatus(u){return u?.statuses?.find(s=>s.name==='マウント'&&s.x>0)}
 async function tryEnemyNegativeEffect(u,st,{baseChance=100,isStatus=false}={}){if(!u||u.dead)return false;if(isStatus&&Math.random()>=enemyStatusChance(u,baseChance)/100)return false;const token=state.enemyActionToken||0;if(u._mountBlockedActionToken===token)return false;const mount=mountStatus(u);if(mount){mount.x=Math.max(0,mount.x-1);u._mountBlockedActionToken=token;if(mount.x<=0)u.statuses=u.statuses.filter(s=>s!==mount);addLog(`【マウント】：${u.name}は敵の不利効果を無効化。`,'system');showBanner('マウント',`${u.name} 不利効果無効`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().ability*.45));return false}addAllyStatus(u,st);return true}
-async function normalAttack(u){if(u.dead||state.enemy.dead)return;await actFlash(u);await damageEnemy(u,effectiveAtk(u),'通常攻撃',u.type,true);if(state.enemy.dead){clearActing();return}if(u.id==='dog'&&state.turn%3===0){state.enemy.timedAmp.push({value:10,turns:2});markBossDebuffApplied();state.reason=Math.min(10,state.reason+1);addLog(`噛みつき：敵の被ダメージ+10%（2T） / 理力+1（${state.reason}）`,'system');showBanner('噛みつき発動','被ダメ+10% / 理力+1');render();feedbackEnemyStatus('+10%');feedbackReason('+1');await delay(timing().ability)}if(u.id==='slug'){state.enemy.permanentAmp=Math.min(30,state.enemy.permanentAmp+2);markBossDebuffApplied();addLog(`ぬめぬめ：敵の被ダメージ+2%（累積${state.enemy.permanentAmp}%）`,'system');showBanner('ぬめぬめ','敵の被ダメ+2%');render();feedbackEnemyStatus('+2%');await delay(timing().ability)}if(u.id==='demon'){const burn=enemyStatus('炎上');if(burn){u.wisdom+=2;addLog(`ファイア：炎上中なので叡智+2（${u.wisdom}）`,'system');showBanner('ファイア','叡智+2');render();popNear(unitEl(u.uid),'+2叡智');await delay(timing().ability)}else if(Math.random()<playerStatusChance(u,40)/100){addEnemyStatus({name:'炎上',x:3,decay:1,kind:'debuff',short:'炎上'});addLog('ファイア：敵に【炎上3】を付与。','system');showBanner('ファイア','炎上3');render();feedbackEnemyStatus('炎上3');await delay(timing().ability)}else{}}
+async function normalAttack(u){if(u.dead||state.enemy.dead)return;if(equippedUniqueCountSlot(u,'obsession','weapon')&&u._obsessionLastTurn!==state.turn){u._obsessionLastTurn=state.turn;u._obsessionStacks=(u._obsessionStacks||0)+1;addLog(`【執念の】：${u.name}の攻撃力+${u._obsessionStacks*10}%。`,'system')}await actFlash(u);await damageEnemy(u,effectiveAtk(u),'通常攻撃',u.type,true);if(state.enemy.dead){clearActing();return}if(u.id==='dog'&&state.turn%3===0){state.enemy.timedAmp.push({value:10,turns:2});markBossDebuffApplied();state.reason=Math.min(10,state.reason+1);addLog(`噛みつき：敵の被ダメージ+10%（2T） / 理力+1（${state.reason}）`,'system');showBanner('噛みつき発動','被ダメ+10% / 理力+1');render();feedbackEnemyStatus('+10%');feedbackReason('+1');await delay(timing().ability)}if(u.id==='slug'){state.enemy.permanentAmp=Math.min(30,state.enemy.permanentAmp+2);markBossDebuffApplied();addLog(`ぬめぬめ：敵の被ダメージ+2%（累積${state.enemy.permanentAmp}%）`,'system');showBanner('ぬめぬめ','敵の被ダメ+2%');render();feedbackEnemyStatus('+2%');await delay(timing().ability)}if(u.id==='demon'){const burn=enemyStatus('炎上');if(burn){u.wisdom+=2;addLog(`ファイア：炎上中なので叡智+2（${u.wisdom}）`,'system');showBanner('ファイア','叡智+2');render();popNear(unitEl(u.uid),'+2叡智');await delay(timing().ability)}else if(Math.random()<playerStatusChance(u,40)/100){addEnemyStatus({name:'炎上',x:3,decay:1,kind:'debuff',short:'炎上'});addLog('ファイア：敵に【炎上3】を付与。','system');showBanner('ファイア','炎上3');render();feedbackEnemyStatus('炎上3');await delay(timing().ability)}else{}}
  if(!state.enemy.dead){const rate=multiHitRate(u);if(rate>0&&Math.random()<rate/100){addLog(`${u.name}の連撃！`,'system');showBanner('連撃！',u.name);await delay(Math.round(timing().ability*.45));await damageEnemy(u,effectiveAtk(u),'連撃',u.type,true)}}clearActing()}
 async function gluttonDogNormalAction(){
  const e=state.enemy,idx=e.actionIndex;
@@ -1433,14 +1481,17 @@ async function enemyAction(){
  if(e.id==='crusher'||e.id==='gluttonDog'){e.activeOmen=null;e.omenBroken=false}
  if(!aliveParty().length)await finishRun(false)
 }
+function enemyDotMultiplier(){const count=state.party.reduce((n,u)=>n+(!u.dead?equippedUniqueCountSlot(u,'alchemist','weapon'):0),0);return Math.pow(2,count)}
+function applyGritToRawDamage(u,dmg){if(equippedUniqueCountSlot(u,'grit','armor')&&!u._gritUsed&&dmg>=u.hp){u._gritUsed=true;return {dmg:Math.max(0,u.hp-1),grit:true}}return {dmg,grit:false}}
+function expireTurnOneUniqueBonuses(){if(state.turn!==1)return;const r=state._turnOneReasonBonus||0,c=state._turnOneCharmBonus||0;if(r)state.reason=Math.max(0,state.reason-r);state.party.forEach(u=>{const w=u._turnOneWisdomBonus||0;if(w)u.wisdom=Math.max(0,(u.wisdom||0)-w);u._turnOneWisdomBonus=0});if(state.enemy&&c)state.enemy.charm=Math.max(0,(state.enemy.charm||0)-c);state._turnOneReasonBonus=0;state._turnOneCharmBonus=0;if(r||c)addLog('1ターン目終了：二つ名による一時的な理力・叡智・魅了が減少。','system')}
 async function tickStatuses(){
- const burn=enemyStatus('炎上');if(burn&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*burn.x/100);if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【炎上${burn.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`炎上${burn.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
- const poison=enemyStatus('毒');if(poison&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*poison.x/100);if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【毒${poison.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`毒${poison.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
- for(const u of state.party){const ap=(u.statuses||[]).find(x=>x.name==='毒');if(!ap||u.dead)continue;const amount=ceil(u.maxHp*ap.x/100);if(u.id==='poison_slime'){const {actual}=applyHealing(u,u,u.maxHp*ap.x/100);if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`ポイズンジェル：【毒${ap.x}】が反転し、${u.name}が${actual}回復。`,'heal');showBanner(`毒${ap.x}反転`,`${u.name} HP+${actual}`);render();feedbackHp(u,`+${actual}`)}else{const before=u.hp;u.hp=Math.max(0,u.hp-amount);const actual=before-u.hp;if(state.stats&&state.stats.current)state.stats.current.damageTaken+=actual;addLog(`【毒${ap.x}】：${u.name}に${actual}ダメージ。`,'damage');showBanner(`毒${ap.x}`,`${u.name} -${actual}`);render();await allyHitFeedback(u,actual);if(u.hp<=0){u.dead=true;if(before>0&&state.stats&&state.stats.current)state.stats.current.ko++;addLog(`${u.name}は毒で戦闘不能！`,'damage')}}await delay(Math.round(timing().ability*.55))}
+ const burn=enemyStatus('炎上');if(burn&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*burn.x/100*enemyDotMultiplier());if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【炎上${burn.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`炎上${burn.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
+ const poison=enemyStatus('毒');if(poison&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*poison.x/100*enemyDotMultiplier());if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【毒${poison.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`毒${poison.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
+ for(const u of state.party){const ap=(u.statuses||[]).find(x=>x.name==='毒');if(!ap||u.dead)continue;const amount=ceil(u.maxHp*ap.x/100);if(u.id==='poison_slime'){const {actual}=applyHealing(u,u,u.maxHp*ap.x/100);if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`ポイズンジェル：【毒${ap.x}】が反転し、${u.name}が${actual}回復。`,'heal');showBanner(`毒${ap.x}反転`,`${u.name} HP+${actual}`);render();feedbackHp(u,`+${actual}`)}else{const before=u.hp,g=applyGritToRawDamage(u,amount),dmg=g.dmg;u.hp=Math.max(0,u.hp-dmg);const actual=before-u.hp;if(state.stats&&state.stats.current)state.stats.current.damageTaken+=actual;addLog(`【毒${ap.x}】：${u.name}に${actual}ダメージ。`,'damage');if(g.grit)addLog(`【気合の】：${u.name}は毒ダメージをHP1で耐えた！`,'system');showBanner(g.grit?'気合で耐えた！':`毒${ap.x}`,g.grit?`${u.name} HP1`:`${u.name} -${actual}`);render();await allyHitFeedback(u,actual);if(u.hp<=0)await resolveCombatDeath(u,'毒')}await delay(Math.round(timing().ability*.55))}
  state.party.forEach(u=>{u.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));u.statuses=u.statuses.filter(s=>s.x>0)});state.enemy.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));state.enemy.statuses=state.enemy.statuses.filter(s=>s.x>0);state.enemy.timedAmp.forEach(s=>s.turns--);state.enemy.timedAmp=state.enemy.timedAmp.filter(s=>s.turns>0);state.partyBuffs.forEach(b=>b.turns--);state.partyBuffs=state.partyBuffs.filter(b=>b.turns>0);if(state.enemy.hp<=0)state.enemy.dead=true
 }
 function skillDamageMultiplier(u){return 1+gearStat(u,'skillDamagePct')/100}
-async function runChain(sel){addLog(`スキルチェイン：${sel.map(u=>u.name).join('、')}`,'system');showBanner('スキルチェイン！',`${sel.length}人参加`);await delay(timing().ability);for(const u of sel){if(state.enemy.dead)break;u.gauge=0;await actFlash(u);const atk=effectiveAtk(u);
+async function runChain(sel){addLog(`スキルチェイン：${sel.map(u=>u.name).join('、')}`,'system');showBanner('スキルチェイン！',`${sel.length}人参加`);await delay(timing().ability);for(const u of sel){if(state.enemy.dead)break;u.gauge=0;if(u._obsessionStacks){addLog(`【執念の】：${u.name}がスキルを使用し、攻撃力上昇を解除。`,'system');u._obsessionStacks=0;u._obsessionLastTurn=0}await actFlash(u);const atk=effectiveAtk(u);
  if(u.id==='slime'){await damageEnemy(u,atk*1.2*skillDamageMultiplier(u),'ジェルスプラッシュ','physical');if(!state.enemy.dead&&state.reason>=5&&!u.dead&&!recoveryBlocked()){const {actual:a}=applyHealing(u,u,u.maxHp*.3);if(a>0){if(state.stats&&state.stats.current)state.stats.current.healing+=a;addLog(`理力5以上：スライム娘が${a}回復。`,'heal');showBanner('ジェルスプラッシュ追加効果',`HP+${a}`);render();feedbackHp(u,`+${a}`);await delay(timing().ability)}}}
  if(u.id==='slime_bes'){await damageEnemy(u,atk*1.2*skillDamageMultiplier(u),'ベスパンチ','physical');if(!state.enemy.dead&&state.reason>=5){refreshPartyBuff('ベスパンチ',{counterRate:30,turns:2,name:'反撃率+30%',kind:'buff',short:'反撃↑30'});addLog('ベスパンチ：理力5以上のため、2ターン味方全員の反撃率+30%。','system');showBanner('ベスパンチ追加効果','反撃率+30% / 2T');render();await delay(timing().ability)}}
  if(u.id==='poison_slime'){const strong=(u.wisdom||0)>=5;if(strong)u.wisdom-=5;await damageEnemy(u,atk*skillDamageMultiplier(u),'ポイズンスプラッシュ','magic');if(!state.enemy.dead&&Math.random()<playerStatusChance(u,100)/100){const x=strong?5:3;addEnemyStatus({name:'毒',x,decay:1,kind:'debuff',short:'毒'});addLog(`ポイズンスプラッシュ：敵に【毒${x}】を付与${strong?'（叡智5消費）':''}。`,'system');showBanner('ポイズンスプラッシュ',`毒${x}`);render();feedbackEnemyStatus(`毒${x}`);await delay(timing().ability)}}
@@ -1540,6 +1591,7 @@ async function playTurn(chain,jewel=null){
  await enemyAction();
  if(state.battleOver||state.runOver){animating=false;render();return}
  await tickStatuses();
+ expireTurnOneUniqueBonuses();
  if(state.enemy.dead){render();await delay(timing().ability);await finishBattle();animating=false;render();return}
  prepareBossHpTrigger();
  state.turn++;hideBanner();render();await delay(timing().pause);animating=false;render()
@@ -1591,6 +1643,7 @@ function battleRewardFor(kind){return REWARD_CFG[kind]||{gold:0,pp:0}}
 function grantBattleReward(kind){const base=battleRewardFor(kind),goldPct=state.party.reduce((s,u)=>s+gearStat(u,'goldBonusPct'),0),ppRings=state.party.reduce((s,u)=>s+gearStat(u,'parallelPpRing'),0);let ppBonus=0;for(let i=0;i<ppRings;i++)ppBonus+=rollInt(1,3);const r={gold:Math.round(base.gold*(1+goldPct/100)),pp:base.pp+ppBonus,baseGold:base.gold,goldBonusPct:goldPct,basePp:base.pp,ppBonus};state.gold+=r.gold;state.parallelPoints+=r.pp;return r}
 function renderBattleReward(r){const box=$('#battleReward');if(!box)return;if(!r||(r.gold<=0&&r.pp<=0)){box.className='battle-reward';box.innerHTML='';return}const goldNote=r.goldBonusPct?` <small>+${r.goldBonusPct}%</small>`:'',ppNote=r.ppBonus?` <small>リング+${r.ppBonus}</small>`:'';box.className='battle-reward show';box.innerHTML=`<span class="reward-pill gold">${r.gold}G 獲得${goldNote}</span><span class="reward-pill pp">PP +${r.pp}${ppNote}</span>`}
 function equippedUniqueCount(u,id){return GEAR_SLOTS.reduce((n,[slot])=>n+(equippedGear(u,slot)?.uniqueGearId===id?1:0),0)}
+function equippedUniqueCountSlot(u,id,slot){return equippedGear(u,slot)?.uniqueGearId===id?1:0}
 function applyUniqueVictoryEffects(){state.party.forEach(u=>{if(u.dead)return;const count=equippedUniqueCount(u,'glutton');if(!count)return;const {actual}=applyHealing(u,u,u.maxHp*.10*count);if(actual>0){if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`【大喰らいの】：${u.name}が勝利時に${actual}回復。`,'heal')}})}
 async function finishBattle(){
  if(state.battleOver)return;
@@ -1603,6 +1656,8 @@ async function finishBattle(){
  applyUniqueVictoryEffects();
  finalizeBattleStats(true);
  const ctx=state.battleContext;
+ state.party.forEach(u=>{u._obsessionStacks=0;u._obsessionLastTurn=0});
+ if(explore?.floorData?.[explore.floor]&&['enemy','unique','boss'].includes(ctx?.kind))explore.floorData[explore.floor].kills=(explore.floorData[explore.floor].kills||0)+1;
  const reward=grantBattleReward(ctx?.kind);
  let droppedGear=null;
  addLog(`${state.enemy.name}を撃破！`,'system');addLog(`報酬：${reward.gold}G / PP +${reward.pp}`,'system');showBanner('勝利！',state.enemy.name);renderBattleReward(reward);render();
@@ -1748,7 +1803,7 @@ function generateFloor(floor,hasShop=false){
  map.nodes[map.start].visited=true;return map
 }
 function createExploreRun(){
- const floorData={},shopFloors=shopFloorSet(EXPLORE_CFG.floors);for(let f=1;f<=EXPLORE_CFG.floors;f++){const hasShop=shopFloors.has(f);floorData[f]={map:generateFloor(f,hasShop),hasShop,uniqueSpawned:false,uniqueDefeated:false}}
+ const floorData={},shopFloors=shopFloorSet(EXPLORE_CFG.floors);for(let f=1;f<=EXPLORE_CFG.floors;f++){const hasShop=shopFloors.has(f);floorData[f]={map:generateFloor(f,hasShop),hasShop,uniqueSpawned:false,uniqueDefeated:false,kills:0}}
  return {floor:1,steps:0,collapse:0,collapsed:false,current:floorData[1].map.start,floorData,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null}
 }
 function currentMap(){return explore.floorData[explore.floor].map}
@@ -1903,7 +1958,8 @@ function gearDisplayName(inst){const base=gearBase(inst),ud=uniqueGearDef(inst);
 function gearInstanceStats(inst){const out={};if(!inst)return out;const base=gearBase(inst),ud=uniqueGearDef(inst);Object.entries(base?.stats||{}).forEach(([k,v])=>out[k]=(out[k]||0)+v);Object.entries(ud?.stats||{}).forEach(([k,v])=>out[k]=(out[k]||0)+v);(inst.affixes||[]).forEach(a=>Object.entries(a?.stats||{}).forEach(([k,v])=>out[k]=(out[k]||0)+v));return out}
 function gearAffixLines(inst){if(!inst)return[];const sums={},order=[];(inst.affixes||[]).forEach(a=>{if(!(a.id in sums))order.push(a.id);sums[a.id]=(sums[a.id]||0)+(a.value||0)});return order.map(id=>affixText(id,sums[id]))}
 function gearEffectLines(inst){if(!inst)return[];const base=gearBase(inst);return [...(base?.effects||[]),...gearAffixLines(inst)]}
-function uniqueEffectHtml(inst,pickup=false){const ud=uniqueGearDef(inst);if(!ud)return'';return `<div class="gear-unique-effect"><div class="gear-unique-head"><span class="gear-unique-kicker">二つ名効果</span><b>【${ud.prefix}】</b></div><small>${ud.description}</small></div>`}
+function uniqueDescription(inst){const ud=uniqueGearDef(inst),slot=gearBase(inst)?.slot;return ud?(ud.descriptions?.[slot]||ud.description||''):''}
+function uniqueEffectHtml(inst,pickup=false){const ud=uniqueGearDef(inst);if(!ud)return'';return `<div class="gear-unique-effect"><div class="gear-unique-head"><span class="gear-unique-kicker">二つ名効果</span><b>【${ud.prefix}】</b></div><small>${uniqueDescription(inst)}</small></div>`}
 function gearMeta(inst){const g=gearBase(inst);if(!g)return'';if(g.slot==='weapon')return `${GEAR_ATTR_ICON[g.weaponType]} ${GEAR_ATTR_LABEL[g.weaponType]}武器`;if(g.slot==='armor')return `${g.slotName} / ${GEAR_ATTR_LABEL[g.armorType]}耐性`;return g.slotName}
 function gearAttrClass(inst){const g=gearBase(inst);return g?.slot==='weapon'?` weapon-attr attr-${g.weaponType}`:''}
 function openGearPickup(inst,returnMode='explore'){
