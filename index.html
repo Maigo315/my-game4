@@ -563,7 +563,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .jewel-tab-intro-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .jewel-tab-intro b{font-size:13px}.jewel-tab-intro strong{font-size:12px;color:#e6c9ff}.jewel-tab-intro p{margin:5px 0 0;font-size:10px;line-height:1.55;color:#9da8bc}
 .jewel-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:3px 3px 7px;font-size:12px;font-weight:950;color:#e8edf7}.jewel-section-title span{font-size:9px;font-weight:800;color:#9aa6ba}
-.jewel-set-list,.jewel-owned-list{display:grid;gap:8px}.jewel-set-list{flex:0 0 auto}.jewel-owned-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:1px 3px 6px 0;scrollbar-gutter:stable;align-content:start;grid-auto-rows:max-content}
+.jewel-set-list,.jewel-owned-list{display:grid;gap:8px}.jewel-set-list{flex:0 0 auto}.jewel-owned-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior-y:none;-webkit-overflow-scrolling:touch;padding:1px 3px 6px 0;scrollbar-gutter:stable;align-content:start;grid-auto-rows:max-content}
+html.jewel-tab-scroll-lock,body.jewel-tab-scroll-lock{overflow:hidden!important;overscroll-behavior:none}body.jewel-tab-scroll-lock{position:fixed;width:100%;left:0;right:0;top:0}
 .jewel-slot{appearance:none;width:100%;display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:11px;align-items:center;padding:12px 12px;border-radius:14px;background:linear-gradient(135deg,#1d1828,#121824);border:1px solid #5a466d;color:#eef2f8;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s,background .15s,transform .1s}
 .jewel-slot.editing{border-color:#a86bd2;background:linear-gradient(135deg,#30203f,#171523);box-shadow:0 0 0 2px rgba(168,107,210,.24),0 0 18px rgba(132,71,170,.18)}
 .jewel-slot:active,.jewel-owned.selectable:active{transform:scale(.992)}
@@ -2304,6 +2305,7 @@ function renderBattleJewelChoices(){
 function openBattleJewelDialog(){if(animating||state.battleOver)return;renderBattleJewelChoices();jewelDialog.showModal()}
 
 function switchExploreTab(kind,resetGear=true){
+ const jewelScrollLock=kind==='jewel';document.documentElement.classList.toggle('jewel-tab-scroll-lock',jewelScrollLock);document.body.classList.toggle('jewel-tab-scroll-lock',jewelScrollLock);
  if(kind!=='jewel')jewelEditSlot=null;
  const pages={explore:$('#exploreTabPage'),item:$('#itemTabPage'),gear:$('#gearTabPage'),jewel:$('#jewelTabPage')};Object.entries(pages).forEach(([k,el])=>el&&el.classList.toggle('screen-hidden',k!==kind));
  const buttons={explore:$('#exploreTabBtn'),item:$('#itemManageBtn'),gear:$('#gearManageBtn'),jewel:$('#jewelManageBtn')};Object.entries(buttons).forEach(([k,b])=>b&&b.classList.toggle('active',k===kind));
