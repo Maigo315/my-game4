@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.32.0 罠システム</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.32.1 罠結果パネル</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -584,6 +584,22 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .jewel-battle-empty{padding:17px 11px;border:1px dashed #4a4058;border-radius:11px;background:#121622;color:#a8b1c2;text-align:center;font-size:10px;line-height:1.5}
 @media(max-width:380px){.explore-dock button{font-size:8px}.jewel-slot{grid-template-columns:48px minmax(0,1fr) auto;padding:10px 9px;gap:9px}.jewel-slot-icon{width:48px;height:48px;font-size:20px}.jewel-slot-label{font-size:8.5px;margin-top:-3px}.jewel-slot-name{font-size:12.5px}.jewel-slot-text{font-size:9px}.jewel-slot-change{padding:6px 7px;font-size:9px}.jewel-section-title{font-size:11px}.jewel-section-title span{font-size:8px}}
 
+
+/* ===== Trap result panel v13.32.1 ===== */
+#trapResultDialog{width:min(92vw,460px);max-height:88vh;box-sizing:border-box;overflow:hidden}
+.trap-result-panel{padding:16px;max-height:88vh;box-sizing:border-box;display:flex;flex-direction:column;background:linear-gradient(180deg,#17121a,#0e121b);border:1px solid #593847;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.48)}
+.trap-result-kicker{font-size:9px;font-weight:950;letter-spacing:.12em;color:#d993aa;text-align:center}
+.trap-result-title{margin:4px 0 0;font-size:21px;line-height:1.2;text-align:center;color:#fff2f5;text-shadow:0 0 14px rgba(225,84,122,.18)}
+.trap-result-body{display:grid;gap:10px;margin-top:13px;overflow:auto;min-height:0;padding:1px 2px 4px;scrollbar-width:none}.trap-result-body::-webkit-scrollbar{display:none}
+.trap-result-message{padding:11px 12px;border-radius:12px;border:1px solid #46313b;background:#17131b;color:#e8dfe4;font-size:12px;line-height:1.6;text-align:center}
+.trap-result-target{display:grid;grid-template-columns:66px minmax(0,1fr);gap:12px;align-items:center;padding:11px;border-radius:14px;border:1px solid #423746;background:#131824}
+.trap-result-target img{width:66px;height:66px;object-fit:contain;border-radius:11px;background:#0b0f17;border:1px solid #30394e}.trap-result-target b{display:block;font-size:14px}.trap-result-target p{margin:5px 0 0;font-size:11px;line-height:1.5;color:#c4cddd}
+.trap-meter-card{padding:11px 12px;border-radius:13px;border:1px solid #343e53;background:#111722}.trap-meter-head{display:flex;align-items:center;justify-content:space-between;gap:9px;font-size:11px}.trap-meter-head b{font-size:12px}.trap-meter-head span{font-weight:900;color:#d8dfeb}.trap-meter{height:9px;margin-top:8px;border-radius:999px;background:#080c13;overflow:hidden;border:1px solid #242c3b}.trap-meter>i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--hp),var(--hp2))}.trap-meter.gauge>i{background:linear-gradient(90deg,var(--gauge),var(--gauge2))}.trap-meter.collapse>i{background:linear-gradient(90deg,#d6934a,#d95c68)}
+.trap-party-meters{display:grid;gap:8px}.trap-party-row{display:grid;grid-template-columns:38px minmax(0,1fr);gap:9px;align-items:center;padding:8px 9px;border-radius:12px;border:1px solid #30394e;background:#111722}.trap-party-row img{width:38px;height:38px;object-fit:contain;border-radius:8px;background:#0b0f17}.trap-party-row b{font-size:10px}.trap-party-row .trap-meter-head{margin-top:2px;font-size:9px}.trap-party-row .trap-meter{height:7px;margin-top:5px}
+.trap-change{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);gap:7px;align-items:center}.trap-change-card{min-width:0;padding:11px;border-radius:12px;border:1px solid #343e53;background:#111722;text-align:center}.trap-change-card small{display:block;font-size:8px;color:#8995aa}.trap-change-card b{display:block;margin-top:4px;font-size:11px;line-height:1.35;word-break:break-word}.trap-change-arrow{text-align:center;font-size:18px;color:#df9bb2;font-weight:950}
+.trap-result-list{display:grid;gap:7px}.trap-result-list-item{padding:9px 10px;border-radius:11px;border:1px solid #343e53;background:#111722;font-size:10.5px;line-height:1.45;color:#dfe5ef}.trap-result-list-item b{color:#fff}
+.trap-result-confirm{width:100%;min-height:46px;margin-top:12px;border-radius:12px;border:1px solid #94546c;background:linear-gradient(180deg,#6d3349,#4d2638);color:#fff4f7;font-size:13px;font-weight:950;cursor:pointer}.trap-result-confirm:active{transform:scale(.99)}
+
 /* ===== Parallel Drive prototype v13.20.0 ===== */
 #shopDialog{width:min(94vw,520px);max-height:88vh;box-sizing:border-box;overflow:hidden}
 .shop-panel{max-height:88vh;display:flex;flex-direction:column;padding:15px;box-sizing:border-box}
@@ -857,6 +873,14 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
   <div class="enhance-targets" id="enhanceTargets"></div>
   <button class="enhance-confirm" id="enhanceConfirmBtn" type="button" disabled>魔物娘を選択してください</button>
 </div></dialog>
+
+<dialog id="trapResultDialog"><div class="trap-result-panel">
+  <div class="trap-result-kicker">TRAP</div>
+  <h3 class="trap-result-title" id="trapResultTitle">罠が作動！</h3>
+  <div class="trap-result-body" id="trapResultBody"></div>
+  <button class="trap-result-confirm" id="trapResultConfirmBtn" type="button">確認</button>
+</div></dialog>
+
 <div id="battleScreen" class="screen-hidden">
 <header class="topbar"><div class="top-title">戦闘</div><div class="chip" id="battleChip">B1/3</div><div class="chip" id="turnChip">T1</div><button class="chip" type="button" id="speedBtn">標準</button></header>
 <section class="card setup"><button class="setup-toggle" type="button" id="setupToggle"><span>テスト設定</span><span id="setupMark">開く ▾</span></button><div class="setup-body" id="setupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="partySetup"></div><div class="setup-title">3連戦の敵</div><div class="setup-grid" id="enemySetup"></div>
@@ -2167,7 +2191,7 @@ function treasureVaultFloorLabel(){return `${explore.floor}.5F`}
 function advanceSeizedItems(){const released=[];state.items.forEach(inst=>{if((inst.seizedMoves||0)>0){inst.seizedMoves=Math.max(0,inst.seizedMoves-1);if(inst.seizedMoves===0)released.push(itemDef(inst.itemId).name)}});if(released.length)renderItemTab();return released}
 function enterTreasureVault(){
  if(!explore||explore.floor>=EXPLORE_CFG.floors||inTreasureVault())return;
- const released=advanceSeizedItems();const source=explore.floorData[explore.floor];if(source){source.treasureVaultUsed=true;source.hasTreasureVaultEntrance=false}
+ clearPendingTrapBattleStatuses();const released=advanceSeizedItems();const source=explore.floorData[explore.floor];if(source){source.treasureVaultUsed=true;source.hasTreasureVaultEntrance=false}
  const bonus={type:'treasureVault',fromFloor:explore.floor,toFloor:explore.floor+1,map:generateTreasureVaultMap(explore.floor),uniqueSpawned:false,uniqueDefeated:false,kills:0};explore.bonusFloor=bonus;explore.largeSession=null;explore.current=bonus.map.start;bonus.map.nodes[bonus.map.start].visited=true;
  if(explore.collapsed&&!bonus.uniqueDefeated){const u=spawnUnique();if(u)bonus.uniqueSpawned=true}
  showEvent('宝物庫',`迷宮の狭間に隠された宝物庫へ入った。戦闘は発生しないが、崩壊中はユニーク敵が現れることがある。出口から本来の次階へ進む。${released.length?` 差し押さえ解除：${released.join('・')}。`:''}`);toast('宝物庫を発見！');renderExplore()
@@ -2234,29 +2258,65 @@ function trapDef(id){return TRAP_CATALOG[id]||TRAP_CATALOG.mine}
 function rollTrapId(isMonsterHouse=currentFloorState()?.isMonsterHouse){const ids=isMonsterHouse?TRAP_IDS.filter(id=>id!=='forced_transfer'):TRAP_IDS;return rand(ids)}
 function ensureTrapId(n){if(!n)return'mine';if(!n.trapId||(currentFloorState()?.isMonsterHouse&&n.trapId==='forced_transfer'))n.trapId=rollTrapId(!!currentFloorState()?.isMonsterHouse);return n.trapId}
 function queueNextBattleStatus(u,st){if(!u)return;(u.pendingBattleStatuses||(u.pendingBattleStatuses=[])).push({...st})}
+function clearPendingTrapBattleStatuses(){let count=0;state.party.forEach(u=>{count+=(u.pendingBattleStatuses||[]).length;u.pendingBattleStatuses=[]});return count}
 function randomTrapTarget(){const living=state.party.filter(u=>!u.dead);return living.length?rand(living):null}
 function trapStatusText(u,st){return `${u.name}は次の戦闘開始時に【${st.name}${st.x}】を受ける。`}
 function applyMineTrap(pct){const u=randomTrapTarget();if(!u)return'生存している味方がおらず、不発。';const wanted=Math.ceil(u.maxHp*pct),actual=Math.min(wanted,Math.max(0,u.hp-1)),before=u.hp;u.hp=Math.max(1,u.hp-actual);return `${u.name}に最大HPの${Math.round(pct*100)}%ダメージ。HP ${before} → ${u.hp}。`}
 function acidifyEquippedGear(){const pool=[];state.party.forEach(u=>['weapon','armor'].forEach(slot=>{const inst=equippedGear(u,slot);if(inst)pool.push({u,slot,inst})}));if(!pool.length)return null;const {u,slot,inst}=rand(pool),g=gearBase(inst),beforeStats=gearInstanceStats(inst),name=gearDisplayName(inst),oldScale=inst.baseScale??1,baseRaw=slot==='weapon'?(g?.stats?.atk||0):(g?.stats?.maxHp||0),baseBefore=Math.max(0,Math.floor(baseRaw*oldScale));inst.baseScale=oldScale*.8;const baseAfter=Math.max(0,Math.floor(baseRaw*inst.baseScale)),afterStats=gearInstanceStats(inst),atkDiff=(afterStats.atk||0)-(beforeStats.atk||0),hpDiff=(afterStats.maxHp||0)-(beforeStats.maxHp||0);if(atkDiff)u.atk=Math.max(0,u.atk+atkDiff);if(hpDiff){u.maxHp=Math.max(1,u.maxHp+hpDiff);u.hp=Math.min(u.hp,u.maxHp)}syncLegacyGearFlags(u);return {u,slot,inst,name,beforeStats,afterStats,baseBefore,baseAfter}}
 function swapUnequippedGear(){if(!state.inventory.length)return null;const index=Math.floor(Math.random()*state.inventory.length),before=state.inventory[index],beforeName=gearDisplayName(before);let after=null;for(let i=0;i<12;i++){const c=createRandomGearInstance(explore.floor);if(c.baseId!==before.baseId||c.uniqueGearId!==before.uniqueGearId){after=c;break}}after=after||createRandomGearInstance(explore.floor);state.inventory[index]=after;return {beforeName,afterName:gearDisplayName(after)}}
 function warpByTrap(n){const map=currentMap(),pool=Object.values(map.nodes).filter(x=>!x.hidden&&x.id!==n.id);if(!pool.length)return null;const dest=rand(pool);explore.current=dest.id;dest.visited=true;return dest}
-function triggerTrap(n){if(!n||n.type!=='trap')return;const id=ensureTrapId(n),def=trapDef(id);n.type='empty';delete n.trapId;let text='',after=null;
- if(id==='mine')text=applyMineTrap(.30);
- else if(id==='large_mine')text=applyMineTrap(.60);
- else if(id==='exhaustion'){const parts=[];state.party.forEach(u=>{const before=u.gauge;u.gauge=Math.max(0,u.gauge-30);parts.push(`${u.name} ${before}→${u.gauge}`)});text=`全員のスキルゲージ-30。${parts.join(' / ')}`}
- else if(id==='item_curse'){const pool=state.items.filter(x=>!x.cursed);if(!pool.length)text='呪えるアイテムを所持しておらず、不発。';else{const inst=rand(pool);inst.cursed=true;text=`「${itemDef(inst.itemId).name}」が呪われた。解呪するまで使用・効果発揮できない。`}}
- else if(id==='alarm'){const map=currentMap(),ids=neighborsOf(map,n.id),targets=ids.map(x=>map.nodes[x]).filter(x=>x&&!x.hidden&&!x.isLarge&&x.type==='empty'&&!x.secretEntrance);targets.forEach(x=>{x.type='enemy';x.infected=true});const info=monsterHouseInfo();text=targets.length?`周囲の無マス${targets.length}個が戦闘マスに変化した。${info&&!info.released?` 残りの敵 ${info.remaining}。`:''}`:'周囲に変化させられる無マスがなく、不発。'}
- else if(['poison_gas','seal','fear','sheep'].includes(id)){const u=randomTrapTarget();if(!u)text='対象になる味方がおらず、不発。';else{const st=id==='poison_gas'?{name:'毒',x:5,decay:1,kind:'debuff',short:'毒'}:id==='seal'?{name:'封印',x:99,decay:1,kind:'debuff',short:'封印'}:id==='fear'?{name:'恐怖',x:99,decay:1,kind:'debuff',short:'恐怖'}:{name:'眠気',x:50,decay:10,kind:'debuff',short:'眠気'};queueNextBattleStatus(u,st);text=trapStatusText(u,st)}}
- else if(id==='swap_gear'){const r=swapUnequippedGear();text=r?`未装備の「${r.beforeName}」が「${r.afterName}」にすり替わった。`:'未装備の装備品を所持しておらず、不発。'}
- else if(id==='kitsune'){if(!state.items.length)text='アイテムを所持しておらず、不発。';else{const inst=rand(state.items),before=itemDef(inst.itemId).name;inst.itemId='inari_sushi';text=`「${before}」が「いなり寿司」に変化した。`}}
- else if(id==='warp'){const dest=warpByTrap(n);text=dest?`フロア内の別のマスへ転移した。転移先「${nodeLabel(dest.type)}」の効果は発動しない。`:'転移先がなく、不発。'}
- else if(id==='oxidation'){const r=acidifyEquippedGear();if(!r)text='装備中の武器・防具がなく、不発。';else text=`${r.u.name}の「${r.name}」が酸化した。${r.slot==='weapon'?`基礎攻撃力 ${r.baseBefore} → ${r.baseAfter}`:`基礎最大HP ${r.baseBefore} → ${r.baseAfter}`}。`}
- else if(id==='collapse'){const before=explore.collapse,was=explore.collapsed;addCollapse(20);const newly=!was&&explore.collapsed;if(newly)explore.lastMessage=null;text=`崩壊度 ${before} → ${explore.collapse}${newly?'。崩壊が発生した。':'。'}`}
- else if(id==='seizure'){if(!state.items.length)text='アイテムを所持しておらず、不発。';else{const count=Math.min(state.items.length,rollInt(2,3)),picked=shuffle([...state.items]).slice(0,count);picked.forEach(inst=>inst.seizedMoves=Math.max(inst.seizedMoves||0,3));text=`${picked.map(x=>`「${itemDef(x.itemId).name}」`).join('・')}を差し押さえ。3回フロアを移動するまで使用できない。`}}
- else if(id==='forced_transfer'){if(currentFloorState()?.isMonsterHouse)text='モンスターハウスでは強制転移の罠は発生しない。';else if(explore.floor>=EXPLORE_CFG.floors)text='これ以上先のフロアがなく、不発。';else after='forced_transfer'}
+let trapResultConfirmAction=null;
+function trapPct(v,max){return Math.max(0,Math.min(100,max>0?v/max*100:0))}
+function trapTargetHtml(u,message=''){return `<div class="trap-result-target"><img src="${u.img}" alt="${u.name}"><div><b>${u.name}</b>${message?`<p>${message}</p>`:''}</div></div>`}
+function trapMeterHtml(label,before,after,max,kind='hp'){return `<div class="trap-meter-card"><div class="trap-meter-head"><b>${label}</b><span>${before} → ${after}</span></div><div class="trap-meter ${kind}"><i style="width:${trapPct(after,max)}%"></i></div></div>`}
+function trapPartyGaugeHtml(rows){return `<div class="trap-party-meters">${rows.map(r=>`<div class="trap-party-row"><img src="${r.u.img}" alt="${r.u.name}"><div><b>${r.u.name}</b><div class="trap-meter-head"><span>SKILL</span><span>${r.before} → ${r.after}</span></div><div class="trap-meter gauge"><i style="width:${trapPct(r.after,skillMax(r.u))}%"></i></div></div></div>`).join('')}</div>`}
+function showTrapResult(def,html,confirmAction=null){
+ trapResultConfirmAction=confirmAction;$('#trapResultTitle').textContent=`${def.name}が作動！`;$('#trapResultBody').innerHTML=html||'<div class="trap-result-message">何も起こらなかった。</div>';const dlg=$('#trapResultDialog');if(!dlg.open)dlg.showModal();requestAnimationFrame(()=>$('#trapResultConfirmBtn').focus())
+}
+function closeTrapResult(){const dlg=$('#trapResultDialog');if(dlg.open)dlg.close();const fn=trapResultConfirmAction;trapResultConfirmAction=null;if(fn)fn();else{renderExplore();renderItemTab()}}
+function triggerTrap(n){
+ if(!n||n.type!=='trap')return;const id=ensureTrapId(n),def=trapDef(id);n.type='empty';delete n.trapId;let html='',after=null;
+ if(id==='mine'||id==='large_mine'){
+   const pct=id==='mine'?.30:.60,u=randomTrapTarget();
+   if(!u)html='<div class="trap-result-message">生存している味方がおらず、不発。</div>';
+   else{const before=u.hp,wanted=Math.ceil(u.maxHp*pct),actual=Math.min(wanted,Math.max(0,u.hp-1));u.hp=Math.max(1,u.hp-actual);html=trapTargetHtml(u,`最大HPの${Math.round(pct*100)}%ダメージ。HPは0にはならない。`)+trapMeterHtml('HP',before,u.hp,u.maxHp,'hp')}
+ }
+ else if(id==='exhaustion'){
+   const rows=state.party.map(u=>{const before=u.gauge;u.gauge=Math.max(0,u.gauge-30);return {u,before,after:u.gauge}});html='<div class="trap-result-message">味方全員のスキルゲージが30減少した。</div>'+trapPartyGaugeHtml(rows)
+ }
+ else if(id==='item_curse'){
+   const pool=state.items.filter(x=>!x.cursed);if(!pool.length)html='<div class="trap-result-message">呪えるアイテムを所持しておらず、不発。</div>';else{const inst=rand(pool),name=itemDef(inst.itemId).name;inst.cursed=true;html=`<div class="trap-change"><div class="trap-change-card"><small>対象</small><b>${name}</b></div><div class="trap-change-arrow">→</div><div class="trap-change-card"><small>状態</small><b>呪い</b></div></div><div class="trap-result-message">解呪するまで使用・効果発揮できない。</div>`}
+ }
+ else if(id==='alarm'){
+   const map=currentMap(),ids=neighborsOf(map,n.id),beforeInfo=monsterHouseInfo(),targets=ids.map(x=>map.nodes[x]).filter(x=>x&&!x.hidden&&!x.isLarge&&x.type==='empty'&&!x.secretEntrance);targets.forEach(x=>{x.type='enemy';x.infected=true});const afterInfo=monsterHouseInfo();html=targets.length?`<div class="trap-result-message">周囲の無マス <b>${targets.length}個</b> が戦闘マスに変化した。${beforeInfo&&afterInfo&&!afterInfo.released?`<br>残りの敵 ${beforeInfo.remaining} → ${afterInfo.remaining}`:''}</div>`:'<div class="trap-result-message">周囲に変化させられる無マスがなく、不発。</div>'
+ }
+ else if(['poison_gas','seal','fear','sheep'].includes(id)){
+   const u=randomTrapTarget();if(!u)html='<div class="trap-result-message">対象になる味方がおらず、不発。</div>';else{const st=id==='poison_gas'?{name:'毒',x:5,decay:1,kind:'debuff',short:'毒'}:id==='seal'?{name:'封印',x:99,decay:1,kind:'debuff',short:'封印'}:id==='fear'?{name:'恐怖',x:99,decay:1,kind:'debuff',short:'恐怖'}:{name:'眠気',x:50,decay:10,kind:'debuff',short:'眠気'};queueNextBattleStatus(u,st);html=trapTargetHtml(u,`次の戦闘開始時に【${st.name}${st.x}】を受ける。戦闘せずフロアを移動した場合、この効果は消える。`)}
+ }
+ else if(id==='swap_gear'){
+   const r=swapUnequippedGear();html=r?`<div class="trap-change"><div class="trap-change-card"><small>変化前</small><b>${r.beforeName}</b></div><div class="trap-change-arrow">→</div><div class="trap-change-card"><small>変化後</small><b>${r.afterName}</b></div></div><div class="trap-result-message">未装備の装備品が別の装備品にすり替わった。</div>`:'<div class="trap-result-message">未装備の装備品を所持しておらず、不発。</div>'
+ }
+ else if(id==='kitsune'){
+   if(!state.items.length)html='<div class="trap-result-message">アイテムを所持しておらず、不発。</div>';else{const inst=rand(state.items),before=itemDef(inst.itemId).name;inst.itemId='inari_sushi';html=`<div class="trap-change"><div class="trap-change-card"><small>変化前</small><b>${before}</b></div><div class="trap-change-arrow">→</div><div class="trap-change-card"><small>変化後</small><b>🍣 いなり寿司</b></div></div><div class="trap-result-message">ランダムなアイテムがいなり寿司に変化した。</div>`}
+ }
+ else if(id==='warp'){
+   html='<div class="trap-result-message">フロア内のどこかへ転移させられる……。<br>転移先のノード効果は発動しない。</div>';after='warp'
+ }
+ else if(id==='oxidation'){
+   const r=acidifyEquippedGear();if(!r)html='<div class="trap-result-message">装備中の武器・防具がなく、不発。</div>';else{const stat=r.slot==='weapon'?'基礎攻撃力':'基礎最大HP';html=trapTargetHtml(r.u,`装備中の「${r.name}」が酸化した。`)+trapMeterHtml(stat,r.baseBefore,r.baseAfter,Math.max(1,r.baseBefore),'collapse')}
+ }
+ else if(id==='collapse'){
+   const before=explore.collapse,was=explore.collapsed;addCollapse(20);const newly=!was&&explore.collapsed;if(newly)explore.lastMessage=null;html=trapMeterHtml('崩壊度',before,explore.collapse,EXPLORE_CFG.collapseMax,'collapse')+`<div class="trap-result-message">崩壊度が20上昇した。${newly?'<br><b>崩壊が発生した！</b>':''}</div>`
+ }
+ else if(id==='seizure'){
+   if(!state.items.length)html='<div class="trap-result-message">アイテムを所持しておらず、不発。</div>';else{const count=Math.min(state.items.length,rollInt(2,3)),picked=shuffle([...state.items]).slice(0,count);picked.forEach(inst=>inst.seizedMoves=Math.max(inst.seizedMoves||0,3));html=`<div class="trap-result-list">${picked.map(x=>`<div class="trap-result-list-item"><b>${itemDef(x.itemId).name}</b><br>差し押さえ：あと3回フロア移動</div>`).join('')}</div><div class="trap-result-message">対象アイテムは解除まで使用できない。</div>`}
+ }
+ else if(id==='forced_transfer'){
+   if(currentFloorState()?.isMonsterHouse)html='<div class="trap-result-message">モンスターハウスでは発生しない罠のため、不発。</div>';else if(explore.floor>=EXPLORE_CFG.floors)html='<div class="trap-result-message">これ以上先のフロアがなく、不発。</div>';else{html='<div class="trap-result-message"><b>強制的に次のフロアへ送られる！</b><br>未処理のマスを残していても、この階には戻れない。</div>';after='forced_transfer'}
+ }
  renderExplore();renderItemTab();
- if(after==='forced_transfer'){toast('強制転移の罠！',true);advanceFloor();return}
- showEvent(def.name,text);toast(`${def.name}が作動！`,true);renderExplore()
+ const action=after==='warp'?()=>{const dest=warpByTrap(n);renderExplore();showEvent('ワープ',dest?`転移先「${nodeLabel(dest.type)}」へ移動した。転移先の効果は発動しない。`:'転移先がなく、不発。');toast('ワープした')}:after==='forced_transfer'?()=>{advanceFloor()}:null;
+ showTrapResult(def,html,action);toast(`${def.name}が作動！`,true)
 }
 function moveToNode(id){
  if(state.runOver||explore?.largeSession||battleScreen.classList.contains('screen-hidden')===false)return;const map=currentMap();if(!neighborsOf(map,explore.current).includes(id))return;
@@ -2354,7 +2414,7 @@ function resolveExploreNode(){
  if(n.type==='exit'){showEvent('次階への道',`${explore.floor+1}Fへ進める。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`,'次の階へ',advanceFloor);return}
  if(n.type==='boss'){showEvent('最奥','クラッシャーが待ち構えている。','ボス戦開始',()=>startExploreBattle(n.id,'crusher','boss'));return}
 }
-function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;const released=advanceSeizedItems();explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}const releaseNote=released.length?` 差し押さえ解除：${released.join('・')}。`:'';if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}。出口から撤退することもできる。${releaseNote}`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。${releaseNote}`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。${releaseNote}`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
+function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;clearPendingTrapBattleStatuses();const released=advanceSeizedItems();explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}const releaseNote=released.length?` 差し押さえ解除：${released.join('・')}。`:'';if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}。出口から撤退することもできる。${releaseNote}`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。${releaseNote}`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。${releaseNote}`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
 function applyPendingTrapStatusesForBattle(){const notes=[];state.party.forEach(u=>{const pending=[...(u.pendingBattleStatuses||[])];u.pendingBattleStatuses=[];pending.forEach(st=>{addAllyStatus(u,st);notes.push(`${u.name}：罠の影響で【${st.name}${st.x}】`);if(!u.dead&&ACTION_DISABLE_STATUS_NAMES.has(st.name)&&Math.random()<Math.max(0,Math.min(100,st.x))/100){u._actionDisabledTurn=state.turn;u._actionDisabledBy=st.name;notes.push(`${u.name}は【${st.name}${st.x}】により、このターン行動不能`)}})});return notes}
 function startExploreBattle(nodeId,enemyId,kind,uniqueGearId=null){
  state.battleNo++;state.turn=1;state.battleItemUsedTurn=0;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0;clearAllyActionDisable(u)});startBattleResources();const trapNotes=applyPendingTrapStatusesForBattle();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');trapNotes.forEach(t=>addLog(t,'system'));showBattle();render()
@@ -2709,6 +2769,7 @@ if(jewelTabPage){
 $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#treasureVaultTestBtn').addEventListener('click',()=>{if(inTreasureVault()){toast('すでに宝物庫です',true);return}if(explore.floor>=EXPLORE_CFG.floors){toast('最終階からは宝物庫へ入れません',true);return}enterTreasureVault()});$('#trapPlusBtn').addEventListener('click',()=>{const map=currentMap(),c=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&!n.secretEntrance&&n.id!==explore.current&&n.id!==map.start&&n.id!==map.end);if(!c.length){toast('罠に変えられる無マスがありません',true);return}const n=rand(c);n.type='trap';n.trapId=rollTrapId(!!currentFloorState()?.isMonsterHouse);n.infected=true;renderExplore();toast('テスト用：罠を追加')});$('#treasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),large=Object.values(map.nodes).filter(n=>n.isLarge);if(large.length){const n=rand(large),id=`${n.id}__debug_${Date.now()}`,e={id,type:'treasure',visited:true,hidden:true,largeParentId:n.id,largeEventIndex:(n.largeEvents||[]).length};map.nodes[id]=e;(n.largeEvents||(n.largeEvents=[])).push(id);renderExplore();toast('テスト用：大型ノードに宝箱を追加');return}const c=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&n.id!==explore.current);if(!c.length){toast('宝箱に変えられる無マスがありません',true);return}const n=rand(c);n.type='treasure';n.infected=true;renderExplore();toast('テスト用：宝箱を追加')});$('#jewelTreasureTestBtn').addEventListener('click',()=>{const map=currentMap(),id=`debug_jewel_treasure_${Date.now()}`,n={id,type:'jewel_treasure',visited:true,hidden:true};map.nodes[id]=n;openTreasure(n)});
 $('#lockedTreasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),n=collapseBlockToLarge(map,explore.floor,`debug_${Date.now()}`,'locked_treasure',[explore.current]);if(!n){toast('カギ付き宝箱を置ける2×2領域がありません',true);return}renderExplore();toast('テスト用：カギ付き宝箱を追加')});
 $('#treasureKeyPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('treasure_key'));renderExplore();renderItemTab();toast('テスト用：財宝のカギ +1')});
+$('#trapResultConfirmBtn').addEventListener('click',closeTrapResult);$('#trapResultDialog').addEventListener('cancel',e=>{e.preventDefault()});
 $('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{if(inTreasureVault()){const f=currentFloorState();f.map=generateTreasureVaultMap(f.fromFloor);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}showEvent('再生成','宝物庫をテスト用に再生成した。崩壊度は維持。');renderExplore();return}const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,!!f.isMonsterHouse);f.uniqueSpawned=false;f.uniqueDefeated=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=false;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;showEvent('再生成',f.isMonsterHouse?'現在階のモンスターハウスをテスト用に再生成した。':'現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
 $('#monsterHouseTestBtn').addEventListener('click',()=>{if(inTreasureVault()){toast('宝物庫内ではMH化できません',true);return}const f=explore.floorData[explore.floor];f.isMonsterHouse=true;f.hasShop=false;f.hasTreasure=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=true;f.map=generateFloor(explore.floor,false,false,true);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`テスト用に現在階をモンスターハウスへ変更した。残りの敵 ${info.remaining}。`);renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
