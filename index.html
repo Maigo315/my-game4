@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.27.2 大型ノード残数・状態表示調整</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.27.3 状態表示微調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -190,7 +190,7 @@ button.chip{cursor:pointer}
   min-height:20px;margin-top:4px;display:flex;gap:3px;align-items:center;justify-content:center;flex-wrap:nowrap;
 }
 .status-mini{
-  max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   font-size:7px;padding:3px 4px;border-radius:999px;
   background:#1d2231;border:1px solid #343d52;color:#ced6e8;
 }
@@ -1866,7 +1866,7 @@ function finishRun(win){
  $('#intermissionText').textContent=win?'迷宮を踏破した。':'探索の途中でパーティが全滅しました。';
  $('#nextBattleBtn').textContent='探索を最初から';intermission.classList.add('show');showBanner(win?'探索クリア！':'パーティは全滅した……');render();
 }
-function statusSummary(u){const a=[];u.statuses.forEach(s=>{if(Number.isFinite(s.damageTakenAmp)){a.push({text:`被ダメ+${s.damageTakenAmp}%  ${s.x}T`,kind:s.kind||'debuff',full:`被ダメージ+${s.damageTakenAmp}%：残り${s.x}T`});return}a.push({text:`${s.short||s.name}${s.x}`,kind:s.kind||'debuff',full:`${s.name}${s.x}`})});if(allyActionDisabled(u))a.push({text:'行動不能',kind:'debuff',full:`${u._actionDisabledBy||'状態異常'}：このターン行動不能`});state.partyBuffs.forEach(b=>a.push({text:`${b.short} ${b.turns}T`,kind:'buff',full:`${b.name}：残り${b.turns}T`}));return a}
+function statusSummary(u){const a=[];u.statuses.forEach(s=>{if(Number.isFinite(s.damageTakenAmp)){a.push({text:`被ダメ+${s.damageTakenAmp}%`,kind:s.kind||'debuff',full:`被ダメージ+${s.damageTakenAmp}%：残り${s.x}T`});return}a.push({text:`${s.short||s.name}${s.x}`,kind:s.kind||'debuff',full:`${s.name}${s.x}`})});if(allyActionDisabled(u))a.push({text:'行動不能',kind:'debuff',full:`${u._actionDisabledBy||'状態異常'}：このターン行動不能`});state.partyBuffs.forEach(b=>a.push({text:`${b.short} ${b.turns}T`,kind:'buff',full:`${b.name}：残り${b.turns}T`}));return a}
 function openDetail(uid){selectedDetailId=uid;const u=state.party.find(x=>x.uid===uid);if(!u)return;const gear=gearNames(u).join(' / ')||'装備なし';$('#detailName').textContent=u.name;$('#detailBody').innerHTML=`ATK ${effectiveAtk(u)} / HP ${u.hp}/${u.maxHp} / SKILL ${u.gauge}/${skillMax(u)}${['demon','poison_slime'].includes(u.id)?` / 叡智 ${u.wisdom}`:''}<br>通常攻撃：${typeJP(u.type)}<br>スキル：${u.skill}｜${u.skillShort}<br>装備：${gear}`;const box=$('#detailStatuses');box.innerHTML='';const items=statusSummary(u);if(!items.length){const s=document.createElement('span');s.className='status-pill';s.textContent='バフ・デバフなし';box.appendChild(s)}else items.forEach(it=>{const s=document.createElement('span');s.className=`status-pill ${it.kind}`;s.textContent=it.full;box.appendChild(s)});detailPanel.classList.add('show')}
 function render(){
  $('#battleChip').textContent=`戦闘${state.battleNo}`;$('#turnChip').textContent=`T${state.turn}`;$('#speedBtn').textContent=timing().label;$('#enemyName').textContent=state.enemy.name;$('#enemyImg').src=state.enemy.img;$('#enemyHpText').textContent=`${state.enemy.hp} / ${state.enemy.maxHp}`;$('#enemyHpFill').style.width=`${Math.max(0,state.enemy.hp/state.enemy.maxHp*100)}%`;
