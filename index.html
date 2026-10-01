@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.29.0 宝珠宝箱・カギ付き宝箱</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.30.0 モンスターハウス</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -608,6 +608,11 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 
 /* Treasure chest */
 .map-node.type-treasure,.map-node.type-jewel_treasure{background:#392c12;border-color:#c69b43;box-shadow:0 0 15px rgba(226,181,72,.22)}
+.map-node.type-trap{background:#30202a;border-color:#85546a;box-shadow:0 0 12px rgba(180,82,116,.14)}
+.map-node.type-jewel_treasure.monster-house-sealed{background:#272130;border-color:#725a85;box-shadow:0 0 0 2px rgba(123,91,148,.12),0 0 18px rgba(113,80,143,.22);filter:saturate(.72)}
+.map-node.type-jewel_treasure.monster-house-sealed span{filter:grayscale(.45)}
+.map-node.type-jewel_treasure.monster-house-ready{background:#403115;border-color:#ffe080;box-shadow:0 0 0 3px rgba(255,224,128,.18),0 0 30px rgba(255,214,94,.82);animation:monsterHouseTreasureReady .78s ease-in-out infinite alternate}
+@keyframes monsterHouseTreasureReady{from{transform:scale(1);filter:brightness(1)}to{transform:scale(1.10);filter:brightness(1.35)}}
 .map-node.large-node.type-locked_treasure{background:linear-gradient(145deg,#3a2d16,#191a20);border-color:#d0a84e;box-shadow:0 0 0 2px rgba(208,168,78,.12),0 0 24px rgba(226,181,72,.18),0 8px 24px rgba(0,0,0,.45)}
 .map-node.large-node.type-locked_treasure_opened{background:linear-gradient(145deg,#28251d,#171a21);border-color:#776b50;box-shadow:0 8px 24px rgba(0,0,0,.45)}
 .jewel-special-tag{display:inline-grid;place-items:center;min-width:20px;height:18px;margin-left:6px;padding:0 5px;border-radius:999px;border:1px solid #d6b96f;background:#3b321d;color:#ffe7a4;font-size:8px;font-weight:950;vertical-align:2px}
@@ -748,11 +753,11 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
   <section class="card map-card">
     <div class="map-head"><b id="mapTitle">迷宮 1F</b><div class="map-tools"><span>ドラッグで地図を移動</span><button class="map-center-btn" id="centerMapBtn" type="button" aria-label="現在地へ戻る">◎</button></div></div>
     <div class="map-viewport" id="mapViewport"><div class="map-board" id="mapBoard"><svg class="map-lines" id="mapLines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="mapNodes"></div></div></div>
-    <div class="explore-legend"><span>⚔ 敵</span><span>▣ 宝箱</span><span>✦ アイテム</span><span>¤ 店</span><span>◇ 装備</span><span>✚ 強化</span><span>♥ 休憩</span><span>⇢ 次階</span><span>☠ ユニーク</span></div>
+    <div class="explore-legend"><span>⚔ 敵</span><span>▣ 宝箱</span><span>✦ アイテム</span><span>⌁ 罠</span><span>¤ 店</span><span>◇ 装備</span><span>✚ 強化</span><span>♥ 休憩</span><span>⇢ 次階</span><span>☠ ユニーク</span></div>
   </section>
   <section class="card explore-event" id="exploreEvent"><h3 id="exploreEventTitle">入口</h3><p id="exploreEventText">迷宮へ踏み込んだ。</p><button class="explore-action screen-hidden" id="exploreActionBtn" type="button"></button></section>
   <section class="card explore-party-card"><div class="explore-party-head"><b>探索パーティ</b><span>HP・SKILL 持ち越し</span></div><div class="explore-party" id="exploreParty"></div></section>
-  <section class="card setup" style="margin-top:7px"><button class="setup-toggle" type="button" id="exploreSetupToggle"><span><span class="prototype-note">探索テスト設定</span></span><span id="exploreSetupMark">開く ▾</span></button><div class="setup-body" id="exploreSetupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="explorePartySetup"></div><button class="apply-setup" type="button" id="exploreApplySetup">設定を反映して探索をやり直す</button><div class="explore-debug"><button id="collapsePlusBtn" type="button">崩壊度 +5</button><button id="collapseNearBtn" type="button">崩壊直前へ</button><button id="regenMapBtn" type="button">現在階を再生成</button><button id="treasurePlusBtn" type="button">宝箱を追加</button><button id="jewelTreasureTestBtn" type="button">宝珠宝箱を開く</button><button id="lockedTreasurePlusBtn" type="button">カギ宝箱を追加</button><button id="treasureKeyPlusBtn" type="button">財宝のカギ +1</button><button id="goldPlusBtn" type="button">G +500</button><button id="ppPlusBtn" type="button">PP +50</button><button id="parallelJewelPlusBtn" type="button">パラレルジュエル +1</button></div><button class="reset" type="button" id="exploreResetBtn">探索を最初からやり直す</button></div></section>
+  <section class="card setup" style="margin-top:7px"><button class="setup-toggle" type="button" id="exploreSetupToggle"><span><span class="prototype-note">探索テスト設定</span></span><span id="exploreSetupMark">開く ▾</span></button><div class="setup-body" id="exploreSetupBody"><div class="setup-title">味方編成・簡易装備</div><div class="setup-grid" id="explorePartySetup"></div><button class="apply-setup" type="button" id="exploreApplySetup">設定を反映して探索をやり直す</button><div class="explore-debug"><button id="collapsePlusBtn" type="button">崩壊度 +5</button><button id="collapseNearBtn" type="button">崩壊直前へ</button><button id="regenMapBtn" type="button">現在階を再生成</button><button id="monsterHouseTestBtn" type="button">現在階をMH化</button><button id="treasurePlusBtn" type="button">宝箱を追加</button><button id="jewelTreasureTestBtn" type="button">宝珠宝箱を開く</button><button id="lockedTreasurePlusBtn" type="button">カギ宝箱を追加</button><button id="treasureKeyPlusBtn" type="button">財宝のカギ +1</button><button id="goldPlusBtn" type="button">G +500</button><button id="ppPlusBtn" type="button">PP +50</button><button id="parallelJewelPlusBtn" type="button">パラレルジュエル +1</button></div><button class="reset" type="button" id="exploreResetBtn">探索を最初からやり直す</button></div></section>
   </div>
 
   <section id="itemTabPage" class="explore-tab-page item-tab-page screen-hidden">
@@ -911,6 +916,11 @@ const TREASURE_RUN_COUNT_TEST=1; // テスト段階：1ランにつき通常宝�
 const LARGE_NODE_COUNT_TEST=1; // テスト段階：各階に通常大型ノードを1個
 const TREASURE_UNIQUE_WEAPON_RATE=.03;
 const JEWEL_TREASURE_SPECIAL_RATE=.15; // 仮値：宝珠宝箱で特殊宝珠が1枠混ざる確率。特殊フロア設計時に再調整。
+const MONSTER_HOUSE_RANDOM_START_FLOOR=5;
+const MONSTER_HOUSE_RANDOM_RATE=.04;
+const MONSTER_HOUSE_COOLDOWN=8;
+const MONSTER_HOUSE_FIXED_FLOOR_TEST=2; // 3Fテスト版で必ず体験できる固定モンスターハウス
+const MONSTER_HOUSE_NODE_WEIGHTS=[{id:'enemy',weight:58},{id:'item',weight:18},{id:'equipment',weight:15},{id:'trap',weight:6},{id:'empty',weight:3}];
 const TREASURE_ITEM_IDS=['ex_potion','elixir','skill_injection','skill_capsule_omega','salvation_scale','disaster_scale'];
 const REWARD_CFG={enemy:{gold:50,pp:1},unique:{gold:250,pp:10},boss:{gold:500,pp:10}};
 const ENHANCE_EFFECTS=[
@@ -1859,12 +1869,15 @@ async function finishBattle(){
    queueExploreMessage('ユニーク撃破！',`崩壊度が0に戻った。${reward.gold}G / PP +${reward.pp}。二つ名装備「${gearDisplayName(droppedGear)}」を獲得した。`,'good');
  }else if(ctx?.kind==='enemy'){
    setNodeType(ctx.nodeId,'empty');
+   const mhFloor=explore.floorData[explore.floor];if(mhFloor?.isMonsterHouse&&!mhFloor.monsterHouseSealReleased)mhFloor.monsterHouseDefeated=(mhFloor.monsterHouseDefeated||0)+1;
+   const mhReleased=releaseMonsterHouseTreasureIfReady(),mhInfo=monsterHouseInfo(mhFloor),mhSuffix=mhReleased?' 宝箱を封じていた力が消えた！':(mhInfo&&!mhInfo.released?` 残りの敵 ${mhInfo.remaining}/${mhInfo.total}。`:'');
+   if(mhReleased)addLog('モンスターハウス殲滅！ 宝珠宝箱の封印が解けた。','system');
    if(Math.random()<NORMAL_GEAR_DROP_RATE){
      droppedGear=addGearToInventory(createRandomGearInstance(explore.floor),true);
      addLog(`装備「${gearDisplayName(droppedGear)}」をドロップ！`,'system');
-     queueExploreMessage('戦闘勝利',`${reward.gold}G / PP +${reward.pp} を獲得。さらに「${gearDisplayName(droppedGear)}」をドロップした。`,'good');
+     queueExploreMessage(mhReleased?'殲滅完了！':'戦闘勝利',`${reward.gold}G / PP +${reward.pp} を獲得。さらに「${gearDisplayName(droppedGear)}」をドロップした。${mhSuffix}`,'good');
    }else{
-     queueExploreMessage('戦闘勝利',`${reward.gold}G / PP +${reward.pp} を獲得した。`,'good');
+     queueExploreMessage(mhReleased?'殲滅完了！':'戦闘勝利',`${reward.gold}G / PP +${reward.pp} を獲得した。${mhSuffix}`,'good');
    }
  }else if(ctx?.kind==='boss'){
    explore.cleared=true;state.runOver=true;state.stats.lastWin=true;recordCumulative(true);
@@ -2026,7 +2039,7 @@ function resolveLargeEvent(parent,e,index,total){
  }
  e.type='empty';continueLargeNodeNow(parent.id)
 }
-function generateFloor(floor,hasShop=false,hasTreasure=false){
+function generateFloor(floor,hasShop=false,hasTreasure=false,isMonsterHouse=false){
  const W=EXPLORE_CFG.w,H=EXPLORE_CFG.h,map={nodes:{},edges:[],start:null,end:null};
  // 迷宮全体が縦方向にも広がるよう、まず上端まで届く「幹」を作る。出口そのものは後で別途抽選する。
  let x=2,y=H-1;let cur=newNode(x,y,'entrance');map.nodes[cur.id]=cur;map.start=cur.id;
@@ -2045,49 +2058,88 @@ function generateFloor(floor,hasShop=false,hasTreasure=false){
  map.end=chooseDestination(map,floor);map.nodes[map.end].type=floor===EXPLORE_CFG.floors?'boss':'exit';
  const largeNodes=[];for(let li=0;li<LARGE_NODE_COUNT_TEST;li++){const ln=collapseBlockToLarge(map,floor,li,'large');if(ln)largeNodes.push(ln)}
  // 店は通常マスへ置かず、単機能の大型ノードとして追加する。品揃えはこの大型ノード自身に保持されるため再訪しても固定。
- const shopLarge=hasShop?collapseBlockToLarge(map,floor,'shop','shop'):null;if(hasShop&&!shopLarge)map.shopLargePlacementFailed=true;
+ const shopLarge=(!isMonsterHouse&&hasShop)?collapseBlockToLarge(map,floor,'shop','shop'):null;if(!isMonsterHouse&&hasShop&&!shopLarge)map.shopLargePlacementFailed=true;
  const candidates=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.id!==map.start&&n.id!==map.end);
  candidates.forEach(n=>n.type='empty');
 
- // ループ追加後の実際の最短ルートを基準に敵を置く。
- const path=shortestPathIds(map,map.start,map.end);
- const mainPath=new Set(path.slice(1,-1));
- const pathCandidates=shuffle(candidates.filter(n=>mainPath.has(n.id)));
- const sideCandidates=shuffle(candidates.filter(n=>!mainPath.has(n.id)));
- const enemyCount=floor===1?2:(floor===2?2:(Math.random()<.5?1:2));
- const mandatoryEnemyCount=floor===1?(Math.random()<.35?1:0):1;
- const enemyNodes=[];
- for(let i=0;i<mandatoryEnemyCount&&pathCandidates.length;i++)enemyNodes.push(pathCandidates.pop());
- while(enemyNodes.length<enemyCount&&sideCandidates.length)enemyNodes.push(sideCandidates.pop());
- while(enemyNodes.length<enemyCount&&pathCandidates.length)enemyNodes.push(pathCandidates.pop());
- enemyNodes.forEach(n=>n.type='enemy');
+ if(isMonsterHouse){
+   map.isMonsterHouse=true;
+   // 中央付近に封印された宝珠宝箱を1個置く。最初から存在が見える報酬目標。
+   const cx=(W-1)/2,cy=(H-1)/2;
+   const chestPool=candidates.filter(n=>n.type==='empty').sort((a,b)=>((a.x-cx)**2+(a.y-cy)**2)-((b.x-cx)**2+(b.y-cy)**2));
+   const chest=chestPool[0];
+   if(chest){chest.type='jewel_treasure';chest.monsterHouseSealed=true;chest.alwaysRevealed=true;map.monsterHouseTreasureId=chest.id}
+   candidates.filter(n=>n!==chest).forEach(n=>{n.type=weightedPick(MONSTER_HOUSE_NODE_WEIGHTS).id});
+   // 大型ノードは通常フロアと同じ内部比率。大型内部の戦闘も殲滅対象に含む。
+   largeNodes.forEach(n=>createLargeEvents(map,n,false));
+   if(!Object.values(map.nodes).some(n=>n.type==='enemy')){const fallback=candidates.find(n=>n!==chest&&n.type!=='jewel_treasure');if(fallback)fallback.type='enemy'}
+ }else{
+   // ループ追加後の実際の最短ルートを基準に敵を置く。
+   const path=shortestPathIds(map,map.start,map.end);
+   const mainPath=new Set(path.slice(1,-1));
+   const pathCandidates=shuffle(candidates.filter(n=>mainPath.has(n.id)));
+   const sideCandidates=shuffle(candidates.filter(n=>!mainPath.has(n.id)));
+   const enemyCount=floor===1?2:(floor===2?2:(Math.random()<.5?1:2));
+   const mandatoryEnemyCount=floor===1?(Math.random()<.35?1:0):1;
+   const enemyNodes=[];
+   for(let i=0;i<mandatoryEnemyCount&&pathCandidates.length;i++)enemyNodes.push(pathCandidates.pop());
+   while(enemyNodes.length<enemyCount&&sideCandidates.length)enemyNodes.push(sideCandidates.pop());
+   while(enemyNodes.length<enemyCount&&pathCandidates.length)enemyNodes.push(pathCandidates.pop());
+   enemyNodes.forEach(n=>n.type='enemy');
 
- // 行き止まりは「無駄道」にしない。報酬・休憩を優先配置し、残りは寄り道側へ。
- const deadEnds=shuffle(candidates.filter(n=>n.type==='empty'&&neighborsOf(map,n.id).length===1));
- const freeSide=shuffle(candidates.filter(n=>n.type==='empty'&&!mainPath.has(n.id)));
- const freeAny=shuffle(candidates.filter(n=>n.type==='empty'));
- const takeFree=()=>{let n=null;while(deadEnds.length){n=deadEnds.pop();if(n.type==='empty')return n}while(freeSide.length){n=freeSide.pop();if(n.type==='empty')return n}while(freeAny.length){n=freeAny.pop();if(n.type==='empty')return n}return null};
- const itemCount=2+Math.floor(Math.random()*2);
- const rewards=[...((hasTreasure&&!largeNodes.length)?['treasure']:[]),...Array(itemCount).fill('item'),'equipment','equipment','enhance','rest'];
- rewards.forEach(type=>{const n=takeFree();if(n)n.type=type});
- largeNodes.forEach((n,i)=>createLargeEvents(map,n,hasTreasure&&i===0));
+   // 行き止まりは「無駄道」にしない。報酬・休憩を優先配置し、残りは寄り道側へ。
+   const deadEnds=shuffle(candidates.filter(n=>n.type==='empty'&&neighborsOf(map,n.id).length===1));
+   const freeSide=shuffle(candidates.filter(n=>n.type==='empty'&&!mainPath.has(n.id)));
+   const freeAny=shuffle(candidates.filter(n=>n.type==='empty'));
+   const takeFree=()=>{let n=null;while(deadEnds.length){n=deadEnds.pop();if(n.type==='empty')return n}while(freeSide.length){n=freeSide.pop();if(n.type==='empty')return n}while(freeAny.length){n=freeAny.pop();if(n.type==='empty')return n}return null};
+   const itemCount=2+Math.floor(Math.random()*2);
+   const rewards=[...((hasTreasure&&!largeNodes.length)?['treasure']:[]),...Array(itemCount).fill('item'),'equipment','equipment','enhance','rest'];
+   rewards.forEach(type=>{const n=takeFree();if(n)n.type=type});
+   largeNodes.forEach((n,i)=>createLargeEvents(map,n,hasTreasure&&i===0));
+ }
 
  map.nodes[map.start].visited=true;return map
 }
-function treasureFloorSet(total){const set=new Set();if(total<=0)return set;const count=Math.min(TREASURE_RUN_COUNT_TEST,total);while(set.size<count)set.add(rollInt(1,total));return set}
+function treasureFloorSet(total,exclude=new Set()){const set=new Set();if(total<=0)return set;const pool=Array.from({length:total},(_,i)=>i+1).filter(f=>!exclude.has(f));const count=Math.min(TREASURE_RUN_COUNT_TEST,pool.length);while(set.size<count&&pool.length){const i=Math.floor(Math.random()*pool.length);set.add(pool.splice(i,1)[0])}return set}
+function monsterHouseFloorSet(total){
+ const set=new Set();
+ if(MONSTER_HOUSE_FIXED_FLOOR_TEST>=1&&MONSTER_HOUSE_FIXED_FLOOR_TEST<=total)set.add(MONSTER_HOUSE_FIXED_FLOOR_TEST);
+ for(let f=MONSTER_HOUSE_RANDOM_START_FLOOR;f<=total;f++){
+   if([...set].some(x=>Math.abs(x-f)<=MONSTER_HOUSE_COOLDOWN))continue;
+   if(Math.random()<MONSTER_HOUSE_RANDOM_RATE)set.add(f)
+ }
+ return set
+}
 function createExploreRun(){
- const floorData={},shopFloors=shopFloorSet(EXPLORE_CFG.floors),treasureFloors=treasureFloorSet(EXPLORE_CFG.floors);for(let f=1;f<=EXPLORE_CFG.floors;f++){const hasShop=shopFloors.has(f),hasTreasure=treasureFloors.has(f);floorData[f]={map:generateFloor(f,hasShop,hasTreasure),hasShop,hasTreasure,uniqueSpawned:false,uniqueDefeated:false,kills:0}}
+ const floorData={},monsterHouseFloors=monsterHouseFloorSet(EXPLORE_CFG.floors),shopFloors=shopFloorSet(EXPLORE_CFG.floors),treasureFloors=treasureFloorSet(EXPLORE_CFG.floors,monsterHouseFloors);
+ monsterHouseFloors.forEach(f=>shopFloors.delete(f));
+ for(let f=1;f<=EXPLORE_CFG.floors;f++){
+   const isMonsterHouse=monsterHouseFloors.has(f),hasShop=!isMonsterHouse&&shopFloors.has(f),hasTreasure=!isMonsterHouse&&treasureFloors.has(f);
+   floorData[f]={map:generateFloor(f,hasShop,hasTreasure,isMonsterHouse),hasShop,hasTreasure,isMonsterHouse,monsterHouseDefeated:0,monsterHouseSealReleased:false,uniqueSpawned:false,uniqueDefeated:false,kills:0}
+ }
  return {floor:1,steps:0,collapse:0,collapsed:false,current:floorData[1].map.start,floorData,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null,largeSession:null}
 }
 function currentMap(){return explore.floorData[explore.floor].map}
 function currentNode(){return currentMap().nodes[explore.current]}
 function setNodeType(id,type){const n=currentMap().nodes[id];if(n)n.type=type}
-function nodeLabel(type){return {entrance:'入口',empty:'無',enemy:'敵',unique:'ユニーク',item:'アイテム',treasure:'宝箱',jewel_treasure:'宝珠宝箱',locked_treasure:'カギ付き宝箱',locked_treasure_opened:'開封済',large:'大型',shop:'店',equipment:'装備',enhance:'強化',rest:'休憩',exit:'次階',boss:'ボス'}[type]||type}
-function nodeIcon(type){return {entrance:'◎',empty:'·',enemy:'⚔',unique:'☠',item:'✦',treasure:'▣',jewel_treasure:'◆',locked_treasure:'🔒',locked_treasure_opened:'◇',large:'▦',shop:'¤',equipment:'◇',enhance:'✚',rest:'♥',exit:'⇢',boss:'♛'}[type]||'·'}
+function nodeLabel(type){return {entrance:'入口',empty:'無',enemy:'敵',unique:'ユニーク',item:'アイテム',trap:'罠',treasure:'宝箱',jewel_treasure:'宝珠宝箱',locked_treasure:'カギ付き宝箱',locked_treasure_opened:'開封済',large:'大型',shop:'店',equipment:'装備',enhance:'強化',rest:'休憩',exit:'次階',boss:'ボス'}[type]||type}
+function nodeIcon(type){return {entrance:'◎',empty:'·',enemy:'⚔',unique:'☠',item:'✦',trap:'⌁',treasure:'▣',jewel_treasure:'◆',locked_treasure:'🔒',locked_treasure_opened:'◇',large:'▦',shop:'¤',equipment:'◇',enhance:'✚',rest:'♥',exit:'⇢',boss:'♛'}[type]||'·'}
 function toast(msg,danger=false){const el=$('#exploreToast');el.textContent=msg;el.className=`explore-toast show${danger?' danger':''}`;clearTimeout(toast._t);toast._t=setTimeout(()=>el.className='explore-toast',1200)}
 function queueExploreMessage(title,text,kind=''){explore.lastMessage={title,text,kind}}
 function showEvent(title,text,actionLabel=null,action=null){$('#exploreEventTitle').textContent=title;$('#exploreEventText').textContent=text;const b=$('#exploreActionBtn');if(actionLabel){b.textContent=actionLabel;b.classList.remove('screen-hidden');b.onclick=action}else{b.classList.add('screen-hidden');b.onclick=null}}
 function addCollapse(n){if(!explore||state.runOver)return;const was=explore.collapsed;explore.collapse=Math.min(EXPLORE_CFG.collapseMax,explore.collapse+n);if(!was&&explore.collapse>=EXPLORE_CFG.collapseMax){explore.collapsed=true;triggerCollapse()}return was}
+function monsterHouseInfo(f=explore?.floorData?.[explore?.floor]){
+ if(!f?.isMonsterHouse)return null;
+ const nodes=Object.values(f.map.nodes),remaining=nodes.filter(n=>n.type==='enemy').length,defeated=f.monsterHouseDefeated||0;
+ return {remaining,defeated,total:remaining+defeated,released:!!f.monsterHouseSealReleased}
+}
+function monsterHouseTreasureNode(f=explore?.floorData?.[explore?.floor]){if(!f?.isMonsterHouse)return null;return f.map.nodes[f.map.monsterHouseTreasureId]||null}
+function releaseMonsterHouseTreasureIfReady(){
+ const f=explore?.floorData?.[explore.floor],info=monsterHouseInfo(f);if(!info||f.monsterHouseSealReleased||info.remaining>0)return false;
+ f.monsterHouseSealReleased=true;const chest=monsterHouseTreasureNode(f);if(chest){chest.monsterHouseSealed=false;chest.monsterHouseReady=true}
+ return true
+}
+function monsterHouseSealText(f=explore?.floorData?.[explore?.floor]){const info=monsterHouseInfo(f);return info?`不思議な力で封印されている……。残りの敵 ${info.remaining}/${info.total}`:'不思議な力で封印されている……。'}
 function triggerCollapse(){
  toast('崩壊発生！',true);const f=explore.floorData[explore.floor];
  if(!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}
@@ -2174,11 +2226,13 @@ function resolveExploreNode(){
    if(!n.itemId)n.itemId=rollItemId();
    openItemPickup(n);return
  }
+ if(n.type==='jewel_treasure'&&n.monsterHouseSealed){showEvent('封印された宝珠宝箱',monsterHouseSealText());return}
  if(n.type==='treasure'||n.type==='jewel_treasure'){openTreasure(n);return}
  if(n.type==='locked_treasure'){inspectLockedTreasure(n);return}
  if(n.type==='locked_treasure_opened'){showEvent('カギ付き宝箱','すでに開封済み。');return}
  if(n.type==='large'){beginLargeNode(n);return}
  if(n.type==='shop'){ensureShopStock(n);showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。品揃えはこの店で固定。`,'商品を見る',()=>openShop(n));return}
+ if(n.type==='trap'){n.type='empty';showEvent('罠','罠が作動した。罠そのものの効果は未設計のため、現在は配置・消化のみの仮実装。');toast('罠が作動した',true);return}
  if(n.type==='equipment'){
    const inst=createRandomGearInstance(explore.floor),g=gearBase(inst);addGearToInventory(inst);n.type='empty';
    showEvent('装備入手',`「${gearDisplayName(inst)}」を入手した。所持品に追加され、使用済みマスは「無」になった。`);openGearPickup(inst);return
@@ -2193,7 +2247,7 @@ function resolveExploreNode(){
  if(n.type==='exit'){showEvent('次階への道',`${explore.floor+1}Fへ進める。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`,'次の階へ',advanceFloor);return}
  if(n.type==='boss'){showEvent('最奥','クラッシャーが待ち構えている。','ボス戦開始',()=>startExploreBattle(n.id,'crusher','boss'));return}
 }
-function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true;showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越したため、この階にもユニーク敵が出現した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。`)}else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。`);toast(`${explore.floor}Fへ`,explore.collapsed);renderExplore()}
+function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}/${info.total}。出口から撤退することもできる。`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
 function startExploreBattle(nodeId,enemyId,kind,uniqueGearId=null){
  state.battleNo++;state.turn=1;state.battleItemUsedTurn=0;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0;clearAllyActionDisable(u)});startBattleResources();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');showBattle();render()
 }
@@ -2248,8 +2302,8 @@ function treasureNodeById(id){const n=id?currentMap().nodes[id]:null;return isTr
 function treasureKeyInstance(){return state.items.find(x=>x.itemId==='treasure_key')||null}
 function unlockLockedTreasure(n){if(!n||n.type!=='locked_treasure')return;if(n.lockedOpened){openTreasure(n);return}const key=treasureKeyInstance();if(!key){toast('財宝のカギがありません',true);return}removeItemInstance(key.uid);n.lockedOpened=true;ensureTreasureRewards(n);renderItemTab();renderExplore();toast('財宝のカギを使用');openTreasure(n)}
 function inspectLockedTreasure(n){if(!n||n.type!=='locked_treasure')return;if(n.lockedOpened){showEvent('カギ付き宝箱','カギは開いている。3つの中から1つ選べる。','中身を見る',()=>openTreasure(n));return}if(!treasureKeyInstance()){showEvent('カギ付き宝箱','財宝のカギがないため開けられない。');return}showEvent('カギ付き宝箱','財宝のカギを1個消費して開ける。','カギを使って開ける',()=>unlockLockedTreasure(n))}
-function openTreasure(n){if(!isTreasureNode(n))return;if(n.type==='locked_treasure'&&!n.lockedOpened){inspectLockedTreasure(n);return}treasureSelectedIndex=null;treasureSelectedNodeId=n.id;const title=$('#treasureDialogTitle');if(title)title.textContent=treasureTitle(n);const rewards=ensureTreasureRewards(n),box=$('#treasureChoices');box.innerHTML='';rewards.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='treasure-choice';b.dataset.treasureIndex=String(i);b.setAttribute('aria-pressed','false');b.innerHTML=treasureRewardHtml(r);if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){b.disabled=true;b.querySelector('.treasure-take').textContent='所持上限'}else b.addEventListener('click',()=>selectTreasureReward(n,i));box.appendChild(b)});updateTreasureSelectionUI();const dlg=$('#treasureDialog');if(!dlg.open)dlg.showModal()}
-function takeTreasureReward(n,index){if(!isTreasureNode(n))return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);openTreasure(n);return}const name=treasureRewardName(r),parentId=n.largeParentId,isLarge=largeChild(n)&&largeSessionMatches(n),wasLocked=n.type==='locked_treasure';if(r.kind==='jewel')addOwnedJewel(r.jewelId);else if(r.kind==='item')state.items.push(createItemInstance(r.itemId));else addGearToInventory(r.gear);n.type=wasLocked?'locked_treasure_opened':'empty';delete n.treasureRewards;treasureSelectedIndex=null;treasureSelectedNodeId=null;const dlg=$('#treasureDialog');if(dlg.open)dlg.close();renderExplore();renderItemTab();renderJewelTab();if(r.kind==='jewel'){if(!isLarge)showEvent('宝珠入手',`「${name}」を入手した。宝珠タブからセットを変更できる。`,'宝珠を見る',()=>switchExploreTab('jewel'));toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}else if(r.kind==='gear'){if(!isLarge)showEvent('装備入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);openGearPickup(r.gear,isLarge?'large':'explore')}else{if(!isLarge)showEvent('アイテム入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}}
+function openTreasure(n){if(!isTreasureNode(n))return;if(n.type==='jewel_treasure'&&n.monsterHouseSealed){showEvent('封印された宝珠宝箱',monsterHouseSealText());return}if(n.type==='locked_treasure'&&!n.lockedOpened){inspectLockedTreasure(n);return}treasureSelectedIndex=null;treasureSelectedNodeId=n.id;const title=$('#treasureDialogTitle');if(title)title.textContent=treasureTitle(n);const rewards=ensureTreasureRewards(n),box=$('#treasureChoices');box.innerHTML='';rewards.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='treasure-choice';b.dataset.treasureIndex=String(i);b.setAttribute('aria-pressed','false');b.innerHTML=treasureRewardHtml(r);if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){b.disabled=true;b.querySelector('.treasure-take').textContent='所持上限'}else b.addEventListener('click',()=>selectTreasureReward(n,i));box.appendChild(b)});updateTreasureSelectionUI();const dlg=$('#treasureDialog');if(!dlg.open)dlg.showModal()}
+function takeTreasureReward(n,index){if(!isTreasureNode(n))return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);openTreasure(n);return}const name=treasureRewardName(r),parentId=n.largeParentId,isLarge=largeChild(n)&&largeSessionMatches(n),wasLocked=n.type==='locked_treasure';if(r.kind==='jewel')addOwnedJewel(r.jewelId);else if(r.kind==='item')state.items.push(createItemInstance(r.itemId));else addGearToInventory(r.gear);n.type=wasLocked?'locked_treasure_opened':'empty';delete n.treasureRewards;delete n.monsterHouseSealed;delete n.monsterHouseReady;treasureSelectedIndex=null;treasureSelectedNodeId=null;const dlg=$('#treasureDialog');if(dlg.open)dlg.close();renderExplore();renderItemTab();renderJewelTab();if(r.kind==='jewel'){if(!isLarge)showEvent('宝珠入手',`「${name}」を入手した。宝珠タブからセットを変更できる。`,'宝珠を見る',()=>switchExploreTab('jewel'));toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}else if(r.kind==='gear'){if(!isLarge)showEvent('装備入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);openGearPickup(r.gear,isLarge?'large':'explore')}else{if(!isLarge)showEvent('アイテム入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}}
 
 function rollShopItemId(){const group=weightedPick([{id:'normal',weight:70},{id:'upper',weight:25},{id:'rare',weight:5}]).id;return rand(SHOP_ITEM_GROUPS[group])}
 function rollShopGearTier(depth=1){const center=Math.max(0,Math.min(6,(depth||1)-1));return weightedPick(Array.from({length:7},(_,tier)=>({tier,weight:[55,22,9,4,2,1,.5][Math.abs(tier-center)]||.25}))).tier}
@@ -2495,12 +2549,12 @@ function renderExploreParty(){
  })
 }
 function renderExplore(){
- if(!explore)return;const map=currentMap();['goldChip','itemGoldChip','gearGoldChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`G ${state.gold}`});['ppChip','itemPpChip','gearPpChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`PP ${state.parallelPoints}`});const itemCount=$('#itemCountChip');if(itemCount)itemCount.textContent=`${state.items.length} / ${ITEM_LIMIT}`;$('#floorChip').textContent=`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=`迷宮 ${explore.floor}F`;mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
+ if(!explore)return;const floorState=explore.floorData[explore.floor];if(floorState?.isMonsterHouse)releaseMonsterHouseTreasureIfReady();const map=currentMap();['goldChip','itemGoldChip','gearGoldChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`G ${state.gold}`});['ppChip','itemPpChip','gearPpChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`PP ${state.parallelPoints}`});const itemCount=$('#itemCountChip');if(itemCount)itemCount.textContent=`${state.items.length} / ${ITEM_LIMIT}`;$('#floorChip').textContent=`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=explore.floorData[explore.floor]?.isMonsterHouse?`モンスターハウス ${explore.floor}F`:`迷宮 ${explore.floor}F`;mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
  const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?'崩壊中：休憩不可。移動時35%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。':'移動するたび+1。階をまたいで持ち越します。テスト用上限40（本番はもっと高い想定）。';
  mapLinesEl.innerHTML='';map.edges.forEach(k=>{const [a,b]=k.split('|'),na=map.nodes[a],nb=map.nodes[b],line=document.createElementNS('http://www.w3.org/2000/svg','line');const px=n=>8+n.x*(84/(EXPLORE_CFG.w-1)),py=n=>8+n.y*(84/(EXPLORE_CFG.h-1)),point=(n,otherId)=>n?.isLarge&&n.largePorts?.[otherId]?n.largePorts[otherId]:n,pa=point(na,b),pb=point(nb,a);line.setAttribute('x1',px(pa));line.setAttribute('y1',py(pa));line.setAttribute('x2',px(pb));line.setAttribute('y2',py(pb));line.setAttribute('class',`map-line ${(na.visited&&nb.visited)?'visited':''}`);mapLinesEl.appendChild(line)});
  mapNodesEl.innerHTML='';const reachable=new Set(neighborsOf(map,explore.current));const visitedIds=new Set(Object.values(map.nodes).filter(x=>!x.hidden&&x.visited).map(x=>x.id));
- const isRevealed=n=>n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
- Object.values(map.nodes).filter(n=>!n.hidden).forEach(n=>{const revealed=isRevealed(n),showType=revealed?n.type:'unknown';const b=document.createElement('button');b.type='button';b.className=`map-node${n.isLarge?' large-node':''} type-${showType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${reachable.has(n.id)?' reachable':''}${n.infected&&revealed?' infected':''}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;const label=n.isLarge&&n.type==='large'&&revealed?largeMapProgressLabel(n):nodeLabel(n.type),hideEmptyLabel=revealed&&n.type==='empty';b.innerHTML=revealed?`<span>${nodeIcon(n.type)}</span>${hideEmptyLabel?'':`<small>${label}</small>`}`:'<span>?</span>';b.disabled=!!explore.largeSession||!reachable.has(n.id)||n.id===explore.current;b.addEventListener('click',()=>moveToNode(n.id));mapNodesEl.appendChild(b);n.infected=false});
+ const isRevealed=n=>n.alwaysRevealed||n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
+ Object.values(map.nodes).filter(n=>!n.hidden).forEach(n=>{const revealed=isRevealed(n),showType=revealed?n.type:'unknown';const b=document.createElement('button');b.type='button';const mhSeal=n.monsterHouseSealed?' monster-house-sealed':(n.monsterHouseReady?' monster-house-ready':'');b.className=`map-node${n.isLarge?' large-node':''} type-${showType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${reachable.has(n.id)?' reachable':''}${n.infected&&revealed?' infected':''}${mhSeal}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;const label=n.monsterHouseSealed?'封印中':(n.isLarge&&n.type==='large'&&revealed?largeMapProgressLabel(n):nodeLabel(n.type)),hideEmptyLabel=revealed&&n.type==='empty';b.innerHTML=revealed?`<span>${nodeIcon(n.type)}</span>${hideEmptyLabel?'':`<small>${label}</small>`}`:'<span>?</span>';b.disabled=!!explore.largeSession||!reachable.has(n.id)||n.id===explore.current;b.addEventListener('click',()=>moveToNode(n.id));mapNodesEl.appendChild(b);n.infected=false});
  renderExploreParty();requestAnimationFrame(()=>centerMapOnCurrent(false));if(!$('#exploreEventTitle').textContent)resolveExploreNode()
 }
 function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力のリング</label></div>`;p.appendChild(b)})}
@@ -2532,6 +2586,7 @@ if(jewelTabPage){
 $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#treasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),large=Object.values(map.nodes).filter(n=>n.isLarge);if(large.length){const n=rand(large),id=`${n.id}__debug_${Date.now()}`,e={id,type:'treasure',visited:true,hidden:true,largeParentId:n.id,largeEventIndex:(n.largeEvents||[]).length};map.nodes[id]=e;(n.largeEvents||(n.largeEvents=[])).push(id);renderExplore();toast('テスト用：大型ノードに宝箱を追加');return}const c=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&n.id!==explore.current);if(!c.length){toast('宝箱に変えられる無マスがありません',true);return}const n=rand(c);n.type='treasure';n.infected=true;renderExplore();toast('テスト用：宝箱を追加')});$('#jewelTreasureTestBtn').addEventListener('click',()=>{const map=currentMap(),id=`debug_jewel_treasure_${Date.now()}`,n={id,type:'jewel_treasure',visited:true,hidden:true};map.nodes[id]=n;openTreasure(n)});
 $('#lockedTreasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),n=collapseBlockToLarge(map,explore.floor,`debug_${Date.now()}`,'locked_treasure',[explore.current]);if(!n){toast('カギ付き宝箱を置ける2×2領域がありません',true);return}renderExplore();toast('テスト用：カギ付き宝箱を追加')});
 $('#treasureKeyPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('treasure_key'));renderExplore();renderItemTab();toast('テスト用：財宝のカギ +1')});
-$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;showEvent('再生成','現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
+$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,!!f.isMonsterHouse);f.uniqueSpawned=false;f.uniqueDefeated=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;explore.largeSession=null;explore.current=f.map.start;showEvent('再生成',f.isMonsterHouse?'現在階のモンスターハウスをテスト用に再生成した。':'現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
+$('#monsterHouseTestBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.isMonsterHouse=true;f.hasShop=false;f.hasTreasure=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.map=generateFloor(explore.floor,false,false,true);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`テスト用に現在階をモンスターハウスへ変更した。残りの敵 ${info.remaining}/${info.total}。`);renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
