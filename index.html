@@ -921,7 +921,6 @@ const JEWEL_TREASURE_SPECIAL_RATE=.15; // 仮値：宝珠宝箱で特殊宝珠�
 const MONSTER_HOUSE_RANDOM_START_FLOOR=5;
 const MONSTER_HOUSE_RANDOM_RATE=.04;
 const MONSTER_HOUSE_COOLDOWN=8;
-const MONSTER_HOUSE_FIXED_FLOOR_TEST=2; // 3Fテスト版で必ず体験できる固定モンスターハウス
 const MONSTER_HOUSE_NODE_WEIGHTS=[{id:'enemy',weight:58},{id:'item',weight:18},{id:'equipment',weight:15},{id:'trap',weight:6},{id:'empty',weight:3}];
 const TREASURE_VAULT_SECRET_RATE=.04; // 通常フロアごとに4%。当選時は無マス1つへ秘密入口を仕込む。
 const TREASURE_VAULT_NODE_WEIGHTS=[{id:'item',weight:45},{id:'equipment',weight:45},{id:'empty',weight:10}];
@@ -2171,7 +2170,6 @@ function leaveTreasureVault(){
 function treasureFloorSet(total,exclude=new Set()){const set=new Set();if(total<=0)return set;const pool=Array.from({length:total},(_,i)=>i+1).filter(f=>!exclude.has(f));const count=Math.min(TREASURE_RUN_COUNT_TEST,pool.length);while(set.size<count&&pool.length){const i=Math.floor(Math.random()*pool.length);set.add(pool.splice(i,1)[0])}return set}
 function monsterHouseFloorSet(total){
  const set=new Set();
- if(MONSTER_HOUSE_FIXED_FLOOR_TEST>=1&&MONSTER_HOUSE_FIXED_FLOOR_TEST<=total)set.add(MONSTER_HOUSE_FIXED_FLOOR_TEST);
  for(let f=MONSTER_HOUSE_RANDOM_START_FLOOR;f<=total;f++){
    if([...set].some(x=>Math.abs(x-f)<=MONSTER_HOUSE_COOLDOWN))continue;
    if(Math.random()<MONSTER_HOUSE_RANDOM_RATE)set.add(f)
