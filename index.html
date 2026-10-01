@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.30.0 モンスターハウス</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.30.1 モンスターハウス微調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -1870,8 +1870,8 @@ async function finishBattle(){
  }else if(ctx?.kind==='enemy'){
    setNodeType(ctx.nodeId,'empty');
    const mhFloor=explore.floorData[explore.floor];if(mhFloor?.isMonsterHouse&&!mhFloor.monsterHouseSealReleased)mhFloor.monsterHouseDefeated=(mhFloor.monsterHouseDefeated||0)+1;
-   const mhReleased=releaseMonsterHouseTreasureIfReady(),mhInfo=monsterHouseInfo(mhFloor),mhSuffix=mhReleased?' 宝箱を封じていた力が消えた！':(mhInfo&&!mhInfo.released?` 残りの敵 ${mhInfo.remaining}/${mhInfo.total}。`:'');
-   if(mhReleased)addLog('モンスターハウス殲滅！ 宝珠宝箱の封印が解けた。','system');
+   const mhReleased=releaseMonsterHouseTreasureIfReady(),mhInfo=monsterHouseInfo(mhFloor),mhSuffix=mhReleased?' 宝箱を封じていた力が消えた！':(mhInfo&&!mhInfo.released?` 残りの敵 ${mhInfo.remaining}。`:'');
+   if(mhReleased){addLog('モンスターハウス殲滅！ 宝珠宝箱の封印が解けた。','system');if(ctx?.largeParentId)explore.suppressLargeCompleteMessageOnce=true}
    if(Math.random()<NORMAL_GEAR_DROP_RATE){
      droppedGear=addGearToInventory(createRandomGearInstance(explore.floor),true);
      addLog(`装備「${gearDisplayName(droppedGear)}」をドロップ！`,'system');
@@ -2023,6 +2023,7 @@ function continueLargeNode(nodeId){
  while(s.cursor<ids.length){const e=currentMap().nodes[ids[s.cursor]],idx=s.cursor++;if(!e||e.type==='empty')continue;resolveLargeEvent(n,e,idx,ids.length);return}
  const pending=largePendingEvents(n);explore.largeSession=null;renderExplore();
  if(pending.length){const names=pending.map(e=>nodeLabel(e.type)).join('・');showEvent('大型ノード',`${largeProgressLabel(n)}　保留：${names}`)}
+ else if(explore.suppressLargeCompleteMessageOnce){explore.suppressLargeCompleteMessageOnce=false}
  else showEvent('大型ノード',`${largeProgressLabel(n)}　すべての処理を完了した。`)
 }
 function resolveLargeEvent(parent,e,index,total){
@@ -2139,7 +2140,7 @@ function releaseMonsterHouseTreasureIfReady(){
  f.monsterHouseSealReleased=true;const chest=monsterHouseTreasureNode(f);if(chest){chest.monsterHouseSealed=false;chest.monsterHouseReady=true}
  return true
 }
-function monsterHouseSealText(f=explore?.floorData?.[explore?.floor]){const info=monsterHouseInfo(f);return info?`不思議な力で封印されている……。残りの敵 ${info.remaining}/${info.total}`:'不思議な力で封印されている……。'}
+function monsterHouseSealText(f=explore?.floorData?.[explore?.floor]){const info=monsterHouseInfo(f);return info?`不思議な力で封印されている……。残りの敵 ${info.remaining}`:'不思議な力で封印されている……。'}
 function triggerCollapse(){
  toast('崩壊発生！',true);const f=explore.floorData[explore.floor];
  if(!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}
@@ -2247,11 +2248,11 @@ function resolveExploreNode(){
  if(n.type==='exit'){showEvent('次階への道',`${explore.floor+1}Fへ進める。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`,'次の階へ',advanceFloor);return}
  if(n.type==='boss'){showEvent('最奥','クラッシャーが待ち構えている。','ボス戦開始',()=>startExploreBattle(n.id,'crusher','boss'));return}
 }
-function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}/${info.total}。出口から撤退することもできる。`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
+function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}。出口から撤退することもできる。`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
 function startExploreBattle(nodeId,enemyId,kind,uniqueGearId=null){
  state.battleNo++;state.turn=1;state.battleItemUsedTurn=0;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0;clearAllyActionDisable(u)});startBattleResources();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');showBattle();render()
 }
-function returnFromBattle(){if(state.runOver){resetRun();return}const ctx=state.battleContext;state.battleContext=null;state.enemy=null;intermission.classList.remove('show');showExplore();if(ctx?.largeParentId){explore.lastMessage=null;renderExplore();if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst){setTimeout(()=>openGearPickup(inst,'large'),60);return}}setTimeout(()=>continueLargeNode(ctx.largeParentId),30);return}else{resolveExploreNode();renderExplore()}if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst)setTimeout(()=>openGearPickup(inst),80)}}
+function returnFromBattle(){if(state.runOver){resetRun();return}const ctx=state.battleContext;state.battleContext=null;state.enemy=null;intermission.classList.remove('show');showExplore();if(ctx?.largeParentId){if(!explore.suppressLargeCompleteMessageOnce)explore.lastMessage=null;renderExplore();if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst){setTimeout(()=>openGearPickup(inst,'large'),60);return}}setTimeout(()=>continueLargeNode(ctx.largeParentId),30);return}else{resolveExploreNode();renderExplore()}if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst)setTimeout(()=>openGearPickup(inst),80)}}
 function centerMapOnCurrent(smooth=false){
  if(!mapViewport)return;const node=mapNodesEl.querySelector('.map-node.current');if(!node)return;
  const left=Math.max(0,node.offsetLeft+node.offsetWidth/2-mapViewport.clientWidth/2);
@@ -2587,6 +2588,6 @@ $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupB
 $('#lockedTreasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),n=collapseBlockToLarge(map,explore.floor,`debug_${Date.now()}`,'locked_treasure',[explore.current]);if(!n){toast('カギ付き宝箱を置ける2×2領域がありません',true);return}renderExplore();toast('テスト用：カギ付き宝箱を追加')});
 $('#treasureKeyPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('treasure_key'));renderExplore();renderItemTab();toast('テスト用：財宝のカギ +1')});
 $('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,!!f.isMonsterHouse);f.uniqueSpawned=false;f.uniqueDefeated=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;explore.largeSession=null;explore.current=f.map.start;showEvent('再生成',f.isMonsterHouse?'現在階のモンスターハウスをテスト用に再生成した。':'現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
-$('#monsterHouseTestBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.isMonsterHouse=true;f.hasShop=false;f.hasTreasure=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.map=generateFloor(explore.floor,false,false,true);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`テスト用に現在階をモンスターハウスへ変更した。残りの敵 ${info.remaining}/${info.total}。`);renderExplore()});
+$('#monsterHouseTestBtn').addEventListener('click',()=>{const f=explore.floorData[explore.floor];f.isMonsterHouse=true;f.hasShop=false;f.hasTreasure=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.map=generateFloor(explore.floor,false,false,true);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`テスト用に現在階をモンスターハウスへ変更した。残りの敵 ${info.remaining}。`);renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
