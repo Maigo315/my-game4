@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.34 アイテム完全実装</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.34.1 アイテム・ショップUI調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -604,24 +604,24 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 
 /* ===== Parallel Drive prototype v13.20.0 ===== */
 #shopDialog{width:min(94vw,520px);max-height:88vh;box-sizing:border-box;overflow:hidden}
-.shop-panel{max-height:88vh;display:flex;flex-direction:column;padding:15px;box-sizing:border-box}
-.shop-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid #30394e}
-.shop-head h3{margin:0;font-size:18px}.shop-head p{margin:4px 0 0;font-size:8.5px;line-height:1.45;color:var(--muted)}
-.shop-gold{flex:0 0 auto;padding:7px 10px;border-radius:999px;border:1px solid #675a39;background:#292414;color:#ffe09a;font-size:10px;font-weight:950}
-.shop-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;padding:4px;border-radius:12px;border:1px solid #30394e;background:#101522}
-.shop-tab{min-height:36px;border:1px solid transparent;border-radius:9px;background:transparent;color:#aeb8ca;font-size:9px;font-weight:950;cursor:pointer}
+.shop-panel{max-height:88vh;display:flex;flex-direction:column;padding:17px;box-sizing:border-box}
+.shop-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid #30394e}
+.shop-head h3{margin:0;font-size:21px}.shop-head p{display:none}
+.shop-gold{flex:0 0 auto;padding:8px 12px;border-radius:999px;border:1px solid #675a39;background:#292414;color:#ffe09a;font-size:12px;font-weight:950;font-variant-numeric:tabular-nums}
+.shop-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:11px;padding:4px;border-radius:12px;border:1px solid #30394e;background:#101522}
+.shop-tab{min-height:41px;border:1px solid transparent;border-radius:9px;background:transparent;color:#aeb8ca;font-size:11.5px;font-weight:950;cursor:pointer}
 .shop-tab.active{border-color:#70568a;background:linear-gradient(135deg,#332742,#261f33);color:#fff;box-shadow:0 0 0 1px rgba(157,111,196,.10)}
-.shop-list{display:grid;gap:8px;margin-top:10px;overflow:auto;padding:0 2px 2px;scrollbar-width:none}.shop-list::-webkit-scrollbar{display:none}
-.shop-product{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border-radius:13px;border:1px solid #303a50;background:#111724}
+.shop-list{display:grid;gap:9px;margin-top:11px;overflow:auto;padding:0 2px 3px;scrollbar-width:none}.shop-list::-webkit-scrollbar{display:none}
+.shop-product{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px;border-radius:13px;border:1px solid #303a50;background:#111724}
 .shop-product.sold{opacity:.48;filter:saturate(.55)}
-.shop-icon{width:48px;height:48px;border-radius:11px;display:grid;place-items:center;background:#171d2b;border:1px solid #3b465e;font-size:25px}
-.shop-copy{min-width:0}.shop-copy b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shop-copy small{display:block;margin-top:2px;font-size:7.5px;color:#98a4ba;line-height:1.35}.shop-effects{display:grid;gap:2px;margin-top:5px}.shop-effect{font-size:8px;line-height:1.4;color:#cbd4e2}.shop-effect.hidden-affix{color:#cbb6df}
-.shop-side{display:grid;gap:5px;justify-items:end;min-width:72px}.shop-price{font-size:10px;font-weight:950;color:#ffe09a}.shop-buy,.shop-sell{min-width:70px;min-height:34px;padding:0 8px;border-radius:9px;font-size:8px;font-weight:950;cursor:pointer}.shop-buy{border:1px solid #76588d;background:#342742;color:#f5effa}.shop-buy:disabled{cursor:default;opacity:.42;background:#202635;border-color:#394258;color:#8a94a7}.shop-sell{border:1px solid #55765d;background:#203529;color:#d8f0df}.shop-sell:active{transform:scale(.98)}
-.shop-sold-label{font-size:9px;font-weight:950;color:#aeb7c8;padding:7px 4px}
-.shop-empty{padding:20px 12px;border-radius:12px;border:1px dashed #364158;background:#101522;color:#929db1;font-size:9px;line-height:1.6;text-align:center}
-.shop-close{width:100%;min-height:42px;margin-top:10px;border-radius:11px;border:1px solid #3b465e;background:#202737;color:#dfe5f0;font-size:9px;font-weight:950;cursor:pointer;flex:0 0 auto}
-#shopSellConfirmDialog{width:min(90vw,390px)}.shop-sell-confirm{padding:16px}.shop-sell-confirm h3{margin:0 0 5px;font-size:16px}.shop-sell-confirm p{margin:0;font-size:9px;line-height:1.55;color:var(--muted)}.shop-sell-confirm-price{margin-top:12px;padding:10px 11px;border-radius:11px;border:1px solid #554b34;background:#262115;color:#ffe09a;font-size:13px;font-weight:950;text-align:center}.shop-sell-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.shop-sell-confirm-actions button{min-height:42px;border-radius:10px;font-size:9px;font-weight:950;cursor:pointer}.shop-sell-cancel{border:1px solid #3b465e;background:#202737;color:#dfe5f0}.shop-sell-confirm-btn{border:1px solid #55765d;background:#203529;color:#d8f0df}
-@media(max-width:380px){.shop-panel{padding:12px}.shop-product{grid-template-columns:42px minmax(0,1fr) auto;padding:8px}.shop-icon{width:42px;height:42px;font-size:22px}.shop-side{min-width:64px}.shop-buy,.shop-sell{min-width:62px;padding:0 6px}}
+.shop-icon{width:52px;height:52px;border-radius:11px;display:grid;place-items:center;background:#171d2b;border:1px solid #3b465e;font-size:27px}
+.shop-copy{min-width:0}.shop-copy b{display:block;font-size:13px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shop-copy small{display:block;margin-top:3px;font-size:9.5px;color:#98a4ba;line-height:1.4}.shop-effects{display:grid;gap:3px;margin-top:6px}.shop-effect{font-size:10.5px;line-height:1.45;color:#cbd4e2}.shop-effect.hidden-affix{color:#cbb6df}
+.shop-side{display:grid;gap:7px;justify-items:end;min-width:82px}.shop-price{display:flex;align-items:baseline;justify-content:flex-end;gap:4px;font-size:13.5px;font-weight:950;color:#ffe09a;font-variant-numeric:tabular-nums;white-space:nowrap}.shop-price-unit{font-size:8.5px;letter-spacing:.08em;color:#e9c870}.shop-buy,.shop-sell{min-width:80px;min-height:39px;padding:0 9px;border-radius:9px;font-size:10.5px;font-weight:950;cursor:pointer}.shop-buy{border:1px solid #76588d;background:#342742;color:#f5effa}.shop-buy:disabled{cursor:default;opacity:.42;background:#202635;border-color:#394258;color:#8a94a7}.shop-sell{border:1px solid #55765d;background:#203529;color:#d8f0df}.shop-sell:active{transform:scale(.98)}
+.shop-sold-label{font-size:10.5px;font-weight:950;color:#aeb7c8;padding:7px 4px}
+.shop-empty{padding:20px 12px;border-radius:12px;border:1px dashed #364158;background:#101522;color:#929db1;font-size:10.5px;line-height:1.6;text-align:center}
+.shop-close{width:100%;min-height:47px;margin-top:11px;border-radius:11px;border:1px solid #3b465e;background:#202737;color:#dfe5f0;font-size:11.5px;font-weight:950;cursor:pointer;flex:0 0 auto}
+#shopSellConfirmDialog{width:min(90vw,390px)}.shop-sell-confirm{padding:16px}.shop-sell-confirm h3{margin:0 0 5px;font-size:18px}.shop-sell-confirm p{margin:0;font-size:10.5px;line-height:1.55;color:var(--muted)}.shop-sell-confirm-price{margin-top:12px;padding:10px 11px;border-radius:11px;border:1px solid #554b34;background:#262115;color:#ffe09a;font-size:15px;font-weight:950;text-align:center}.shop-sell-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.shop-sell-confirm-actions button{min-height:44px;border-radius:10px;font-size:10.5px;font-weight:950;cursor:pointer}.shop-sell-cancel{border:1px solid #3b465e;background:#202737;color:#dfe5f0}.shop-sell-confirm-btn{border:1px solid #55765d;background:#203529;color:#d8f0df}
+@media(max-width:380px){.shop-panel{padding:13px}.shop-product{grid-template-columns:46px minmax(0,1fr) auto;gap:9px;padding:9px}.shop-icon{width:46px;height:46px;font-size:23px}.shop-copy b{font-size:12px}.shop-copy small{font-size:8.8px}.shop-effect{font-size:9.6px}.shop-side{min-width:74px}.shop-price{font-size:12.5px}.shop-buy,.shop-sell{min-width:72px;padding:0 6px;font-size:10px}}
 
 
 /* Treasure chest */
@@ -857,7 +857,7 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
 </div></dialog>
 
 <dialog id="shopDialog"><div class="shop-panel">
-  <div class="shop-head"><div><h3>ショップ</h3><p id="shopIntro">品揃えはこの店で固定。装備のランダム付加効果は購入後に判明します。</p></div><div class="shop-gold" id="shopGold">G 0</div></div>
+  <div class="shop-head"><div><h3>ショップ</h3><p id="shopIntro"></p></div><div class="shop-gold" id="shopGold">G 0</div></div>
   <div class="shop-tabs"><button class="shop-tab active" id="shopBuyTab" type="button">購入</button><button class="shop-tab" id="shopSellTab" type="button">売却</button></div>
   <div class="shop-list" id="shopList"></div>
   <button class="shop-close" id="shopCloseBtn" type="button">店を出る</button>
@@ -973,20 +973,20 @@ const TRAP_CATALOG={
 };
 const TRAP_IDS=Object.keys(TRAP_CATALOG);
 const ITEM_CATALOG={
- potion:{id:'potion',name:'ポーション',icon:'🧪',price:50,rarity:'C',dropWeight:4,text:'味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。',battleUsable:true},
- high_potion:{id:'high_potion',name:'ハイポーション',icon:'🧪',price:100,rarity:'U',dropWeight:4,text:'味方1人のHPを最大HPの60%回復。戦闘不能者には使用できない。',battleUsable:true},
- ex_potion:{id:'ex_potion',name:'エクスポーション',icon:'🧪',price:200,rarity:'R',dropWeight:4,text:'味方1人のHPを最大HPの90%回復。戦闘不能者には使用できない。',battleUsable:true},
- elixir:{id:'elixir',name:'エリクサー',icon:'✨',price:1000,rarity:'SR',dropWeight:4,text:'味方1人のHPを100%回復し、SKILLを最大まで充填。戦闘不能者には使用できない。',battleUsable:true},
+ potion:{id:'potion',name:'ポーション',icon:'🧪',price:50,rarity:'C',dropWeight:2,text:'味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。',battleUsable:true},
+ high_potion:{id:'high_potion',name:'ハイポーション',icon:'🧪',price:100,rarity:'U',dropWeight:2,text:'味方1人のHPを最大HPの60%回復。戦闘不能者には使用できない。',battleUsable:true},
+ ex_potion:{id:'ex_potion',name:'エクスポーション',icon:'🧪',price:200,rarity:'R',dropWeight:2,text:'味方1人のHPを最大HPの90%回復。戦闘不能者には使用できない。',battleUsable:true},
+ elixir:{id:'elixir',name:'エリクサー',icon:'✨',price:1000,rarity:'SR',dropWeight:2,text:'味方1人のHPを100%回復し、SKILLを最大まで充填。戦闘不能者には使用できない。',battleUsable:true},
  panacea:{id:'panacea',name:'万能薬',icon:'💊',price:80,rarity:'C',dropWeight:2,text:'味方1人のデバフ・状態異常をすべて解除。戦闘不能者には使用できない。',battleUsable:true},
- skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',price:100,rarity:'C',dropWeight:3,text:'味方全員のSKILL+20。戦闘不能者には効果なし。',battleUsable:true},
- skill_injection:{id:'skill_injection',name:'スキルインジェクション',icon:'💉',price:200,rarity:'U',dropWeight:3,text:'味方1人のSKILL+100。戦闘不能者には使用できない。',battleUsable:true},
- skill_capsule_omega:{id:'skill_capsule_omega',name:'スキルカプセルΩ',icon:'◎',price:800,rarity:'SR',dropWeight:3,text:'味方全員のSKILLを最大まで充填。戦闘不能者には効果なし。',battleUsable:true},
+ skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',price:100,rarity:'C',dropWeight:2,text:'味方全員のSKILL+20。戦闘不能者には効果なし。',battleUsable:true},
+ skill_injection:{id:'skill_injection',name:'スキルインジェクション',icon:'💉',price:200,rarity:'U',dropWeight:2,text:'味方1人のSKILL+100。戦闘不能者には使用できない。',battleUsable:true},
+ skill_capsule_omega:{id:'skill_capsule_omega',name:'スキルカプセルΩ',icon:'◎',price:800,rarity:'SR',dropWeight:2,text:'味方全員のSKILLを最大まで充填。戦闘不能者には効果なし。',battleUsable:true},
  balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',price:100,rarity:'C',dropWeight:2,text:'崩壊度-20。崩壊度0では使用できない。',battleUsable:false},
  salvation_scale:{id:'salvation_scale',name:'救世の天秤',icon:'⚖️',price:1500,rarity:'SR',dropWeight:2,text:'崩壊を解除し、現在のユニークマスを消滅させ、崩壊度を0にする。',battleUsable:false},
  imbalance_scale:{id:'imbalance_scale',name:'不均衡の天秤',icon:'⚖️',price:100,rarity:'C',dropWeight:1,text:'崩壊度+30。上限に達した場合は崩壊が発生する。',battleUsable:false},
  disaster_scale:{id:'disaster_scale',name:'災厄の天秤',icon:'⚖️',price:1500,rarity:'SR',dropWeight:2,text:'崩壊度+100。さらにユニークマスを追加で1個発生させる。',battleUsable:false},
- life_stone:{id:'life_stone',name:'命の石',icon:'🔷',price:500,rarity:'R',dropWeight:3,text:'味方1人の戦闘不能を解除して、HP50%で復活。',battleUsable:true},
- phoenix_feather:{id:'phoenix_feather',name:'フェニックスの羽',icon:'🪶',price:1500,rarity:'SR',dropWeight:3,text:'味方1人の戦闘不能を解除して、HP100%で復活。',battleUsable:true},
+ life_stone:{id:'life_stone',name:'命の石',icon:'🔷',price:500,rarity:'R',dropWeight:2,text:'味方1人の戦闘不能を解除して、HP50%で復活。',battleUsable:true},
+ phoenix_feather:{id:'phoenix_feather',name:'フェニックスの羽',icon:'🪶',price:1500,rarity:'SR',dropWeight:2,text:'味方1人の戦闘不能を解除して、HP100%で復活。',battleUsable:true},
  emergency_escape:{id:'emergency_escape',name:'緊急脱出パック',icon:'🎒',price:300,rarity:'U',dropWeight:2,text:'ボス以外の戦闘を強制終了し、戦闘中の敵マスを無マスにする。撃破報酬は得られない。',battleUsable:true,battleOnly:true},
  reason_potion:{id:'reason_potion',name:'理力のポーション',icon:'🔵',price:300,rarity:'U',dropWeight:2,text:'「理力」を2獲得。',battleUsable:true,battleOnly:true},
  wisdom_potion:{id:'wisdom_potion',name:'叡智のポーション',icon:'🟣',price:300,rarity:'U',dropWeight:2,text:'味方1人に「叡智」3付与。',battleUsable:true,battleOnly:true},
@@ -2483,21 +2483,22 @@ function ensureShopStock(n){if(!n.shopStock)n.shopStock=generateShopStock(explor
 function shopProductHtml(p,index){if(p.kind==='item'){const d=itemDef(p.itemId);return `<div class="shop-icon">${d.icon}</div><div class="shop-copy"><b>${d.name}</b><small>アイテム</small><div class="shop-effects"><div class="shop-effect">${d.text}</div></div></div>${shopProductSideHtml(p,index)}`}
  const inst=p.gear,g=gearBase(inst);const base=(g.effects||[]).map(t=>`<div class="shop-effect">${t}</div>`).join('');const mystery=g.slot==='accessory'?'':`<div class="shop-effect hidden-affix">付加効果：？？？</div>`;return `<div class="shop-icon">${g.icon}</div><div class="shop-copy"><b>${g.name}</b><small>${gearMeta(inst)}</small><div class="shop-effects">${base}${mystery}</div></div>${shopProductSideHtml(p,index)}`
 }
-function shopProductSideHtml(p,index){if(p.sold)return `<div class="shop-side"><div class="shop-price">${p.price}G</div><div class="shop-sold-label">売り切れ</div></div>`;const full=p.kind==='item'&&state.items.length>=itemCapacity(),poor=state.gold<p.price,disabled=full||poor;const label=full?'所持上限':poor?'G不足':'購入';return `<div class="shop-side"><div class="shop-price">${p.price}G</div><button class="shop-buy" type="button" data-shop-index="${index}" ${disabled?'disabled':''}>${label}</button></div>`}
+function shopPriceHtml(price){return `<div class="shop-price"><span>${price}</span><span class="shop-price-unit">G</span></div>`}
+function shopProductSideHtml(p,index){if(p.sold)return `<div class="shop-side">${shopPriceHtml(p.price)}<div class="shop-sold-label">売り切れ</div></div>`;const full=p.kind==='item'&&state.items.length>=itemCapacity(),poor=state.gold<p.price,disabled=full||poor;const label=full?'所持上限':poor?'お金不足':'購入';return `<div class="shop-side">${shopPriceHtml(p.price)}<button class="shop-buy" type="button" data-shop-index="${index}" ${disabled?'disabled':''}>${label}</button></div>`}
 function roundSellPrice(v){return Math.max(0,Math.round(v/5)*5)}
 function itemSellPrice(itemId){return roundSellPrice((itemDef(itemId)?.price||0)*.5)}
 function gearSellPrice(inst){return roundSellPrice(shopGearPrice(inst)*.1)}
-function shopSellItemHtml(inst){const d=itemDef(inst.itemId),price=itemSellPrice(inst.itemId),st=itemStateText(inst);return `<div class="shop-icon">${d.icon}</div><div class="shop-copy"><b>${d.name}</b><small>アイテム / 1個${st?` / ${st}`:''}</small><div class="shop-effects"><div class="shop-effect">${d.text}</div></div></div><div class="shop-side"><div class="shop-price">${price}G</div><button class="shop-sell" type="button" data-sell-kind="item" data-sell-uid="${inst.uid}">売却</button></div>`}
-function shopSellGearHtml(inst){const g=gearBase(inst),price=gearSellPrice(inst);return `<div class="shop-icon">${g.icon}</div><div class="shop-copy"><b>${gearDisplayName(inst)}${inst.uniqueGearId?'<span class="gear-unique-badge">二つ名</span>':''}</b><small>${gearMeta(inst)}</small><div class="shop-effects">${effectLinesHtml(inst).replaceAll('gear-effect-line','shop-effect')}</div></div><div class="shop-side"><div class="shop-price">${price}G</div><button class="shop-sell" type="button" data-sell-kind="gear" data-sell-uid="${inst.uid}">売却</button></div>`}
-function setShopMode(mode,n=currentNode()){shopMode=mode==='sell'?'sell':'buy';$('#shopBuyTab').classList.toggle('active',shopMode==='buy');$('#shopSellTab').classList.toggle('active',shopMode==='sell');$('#shopIntro').textContent=shopMode==='buy'?'品揃えはこの店で固定。装備のランダム付加効果は購入後に判明します。':'アイテムは価格の50%、装備は基礎価格の10%で売却。売値は5G単位に丸めます。';renderShop(n)}
+function shopSellItemHtml(inst){const d=itemDef(inst.itemId),price=itemSellPrice(inst.itemId),st=itemStateText(inst);return `<div class="shop-icon">${d.icon}</div><div class="shop-copy"><b>${d.name}</b><small>アイテム / 1個${st?` / ${st}`:''}</small><div class="shop-effects"><div class="shop-effect">${d.text}</div></div></div><div class="shop-side">${shopPriceHtml(price)}<button class="shop-sell" type="button" data-sell-kind="item" data-sell-uid="${inst.uid}">売却</button></div>`}
+function shopSellGearHtml(inst){const g=gearBase(inst),price=gearSellPrice(inst);return `<div class="shop-icon">${g.icon}</div><div class="shop-copy"><b>${gearDisplayName(inst)}${inst.uniqueGearId?'<span class="gear-unique-badge">二つ名</span>':''}</b><small>${gearMeta(inst)}</small><div class="shop-effects">${effectLinesHtml(inst).replaceAll('gear-effect-line','shop-effect')}</div></div><div class="shop-side">${shopPriceHtml(price)}<button class="shop-sell" type="button" data-sell-kind="gear" data-sell-uid="${inst.uid}">売却</button></div>`}
+function setShopMode(mode,n=currentNode()){shopMode=mode==='sell'?'sell':'buy';$('#shopBuyTab').classList.toggle('active',shopMode==='buy');$('#shopSellTab').classList.toggle('active',shopMode==='sell');$('#shopIntro').textContent=shopMode==='buy'?'':'アイテムは価格の50%、装備は基礎価格の10%で売却。売値は5G単位に丸めます。';renderShop(n)}
 function renderShopBuy(n,list){const stock=ensureShopStock(n);stock.forEach((p,i)=>{const row=document.createElement('div');row.className=`shop-product${p.sold?' sold':''}`;row.innerHTML=shopProductHtml(p,i);const b=row.querySelector('.shop-buy');if(b)b.addEventListener('click',()=>buyShopProduct(n,i));list.appendChild(row)})}
 function renderShopSell(n,list){const entries=[...state.items.map(inst=>({kind:'item',inst})),...state.inventory.map(inst=>({kind:'gear',inst}))];if(!entries.length){list.innerHTML='<div class="shop-empty">売却できる所持品がありません。<br>装備中の装備は売却一覧には表示されません。</div>';return}entries.forEach(({kind,inst})=>{const row=document.createElement('div');row.className='shop-product';row.innerHTML=kind==='item'?shopSellItemHtml(inst):shopSellGearHtml(inst);const b=row.querySelector('.shop-sell');if(b)b.addEventListener('click',()=>openShopSellConfirm(kind,inst.uid));list.appendChild(row)})}
-function renderShop(n){if(!n||n.type!=='shop')return;ensureShopStock(n);$('#shopGold').textContent=`G ${state.gold}`;$('#shopBuyTab').classList.toggle('active',shopMode==='buy');$('#shopSellTab').classList.toggle('active',shopMode==='sell');$('#shopIntro').textContent=shopMode==='buy'?'品揃えはこの店で固定。装備のランダム付加効果は購入後に判明します。':'アイテムは価格の50%、装備は基礎価格の10%で売却。売値は5G単位に丸めます。';const list=$('#shopList');list.innerHTML='';if(shopMode==='sell')renderShopSell(n,list);else renderShopBuy(n,list)}
+function renderShop(n){if(!n||n.type!=='shop')return;ensureShopStock(n);$('#shopGold').textContent=`G ${state.gold}`;$('#shopBuyTab').classList.toggle('active',shopMode==='buy');$('#shopSellTab').classList.toggle('active',shopMode==='sell');$('#shopIntro').textContent=shopMode==='buy'?'':'アイテムは価格の50%、装備は基礎価格の10%で売却。売値は5G単位に丸めます。';const list=$('#shopList');list.innerHTML='';if(shopMode==='sell')renderShopSell(n,list);else renderShopBuy(n,list)}
 function openShop(n=currentNode()){if(!n||n.type!=='shop')return;renderShop(n);const dlg=$('#shopDialog');if(!dlg.open)dlg.showModal()}
 function openShopSellConfirm(kind,uid){let name='',price=0;if(kind==='item'){const inst=state.items.find(x=>x.uid===uid);if(!inst)return;name=itemDef(inst.itemId).name;price=itemSellPrice(inst.itemId)}else{const inst=state.inventory.find(x=>x.uid===uid);if(!inst)return;name=gearDisplayName(inst);price=gearSellPrice(inst)}shopSellTarget={kind,uid};$('#shopSellConfirmText').textContent=`「${name}」を売却しますか？` ;$('#shopSellConfirmPrice').textContent=`売却額 ${price}G`;const dlg=$('#shopSellConfirmDialog');if(!dlg.open)dlg.showModal()}
 function closeShopSellConfirm(){shopSellTarget=null;const dlg=$('#shopSellConfirmDialog');if(dlg.open)dlg.close()}
 function confirmShopSell(){const t=shopSellTarget;if(!t)return closeShopSellConfirm();let name='',price=0;if(t.kind==='item'){const inst=state.items.find(x=>x.uid===t.uid);if(!inst)return closeShopSellConfirm();name=itemDef(inst.itemId).name;price=itemSellPrice(inst.itemId);removeItemInstance(inst.uid)}else{const i=state.inventory.findIndex(x=>x.uid===t.uid);if(i<0)return closeShopSellConfirm();const inst=state.inventory[i];name=gearDisplayName(inst);price=gearSellPrice(inst);state.inventory.splice(i,1)}state.gold+=price;closeShopSellConfirm();toast(`${name}を${price}Gで売却`);renderItemTab();renderExplore();renderShop(currentNode())}
-function closeShop(){const dlg=$('#shopDialog');if(dlg.open)dlg.close();showEvent('ショップ','品揃えは変わらない。必要ならこのマスへ戻ってまた利用できる。','商品を見る',()=>openShop(currentNode()))}
+function closeShop(){const dlg=$('#shopDialog');if(dlg.open)dlg.close();showEvent('ショップ','必要ならこのマスへ戻ってまた利用できる。','商品を見る',()=>openShop(currentNode()))}
 function buyShopProduct(n,index){const stock=ensureShopStock(n),p=stock[index];if(!p||p.sold)return;if(state.gold<p.price){toast('Gが足りない',true);renderShop(n);return}if(p.kind==='item'&&state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);renderShop(n);return}
  state.gold-=p.price;p.sold=true;if(p.kind==='item'){const d=itemDef(p.itemId);state.items.push(createItemInstance(p.itemId));toast(`${d.name}を購入`);renderItemTab();renderExplore();renderShop(n);return}
  const inst=p.gear;addGearToInventory(inst);const dlg=$('#shopDialog');if(dlg.open)dlg.close();renderExplore();openGearPickup(inst,'shop')
@@ -2520,7 +2521,7 @@ function resolveExploreNode(){
  if(n.type==='locked_treasure'){inspectLockedTreasure(n);return}
  if(n.type==='locked_treasure_opened'){showEvent('カギ付き宝箱','すでに開封済み。');return}
  if(n.type==='large'){beginLargeNode(n);return}
- if(n.type==='shop'){ensureShopStock(n);showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。品揃えはこの店で固定。`,'商品を見る',()=>openShop(n));return}
+ if(n.type==='shop'){ensureShopStock(n);showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。`,'商品を見る',()=>openShop(n));return}
  if(n.type==='trap'){triggerTrap(n);return}
  if(n.type==='equipment'){
    const inst=createRandomGearInstance(explore.floor),g=gearBase(inst);addGearToInventory(inst);n.type='empty';
@@ -2780,11 +2781,18 @@ function itemResultMessage(itemId,targetUid=null){
  if(itemId==='parallel_jewel'){const before=state.parallelPoints;state.parallelPoints+=30;return {title:d.name,text:`パラレルポイントが${before} → ${state.parallelPoints}になった。`,toast:'PP +30'}}
  return null
 }
+const ITEM_RETURN_TO_EXPLORE=new Set(['light_scroll','transfer_scroll','blast_scroll','cleaning_scroll','demon_seed','treasure_map','change_cube','balance_scale','salvation_scale','imbalance_scale','disaster_scale','parallel_ticket']);
 function finishItemUse(itemId,source,targetUid=null){
  const cubeNodeFirst=itemId==='change_cube'&&source.kind==='node';if(cubeNodeFirst)clearItemNode(source.nodeId);const result=itemResultMessage(itemId,targetUid);if(!result)return false;
  if(source.kind==='inventory')removeItemInstance(source.uid);else if(source.kind==='node'&&!cubeNodeFirst)clearItemNode(source.nodeId);
  itemUseContext=null;itemTargetUid=null;const td=$('#itemTargetDialog');if(td?.open)td.close();const pd=$('#itemPickupDialog');if(pd?.open)pd.close();
- const srcNode=!cubeNodeFirst&&source.kind==='node'?currentMap().nodes[source.nodeId]:null,isLarge=srcNode&&largeChild(srcNode)&&largeSessionMatches(srcNode),parentId=srcNode?.largeParentId;if(!isLarge)showEvent('アイテム使用',`${result.title}：${result.text}`);toast(result.toast);renderExplore();renderItemTab();if(isLarge)continueLargeNode(parentId);return true
+ const srcNode=!cubeNodeFirst&&source.kind==='node'?currentMap().nodes[source.nodeId]:null,isLarge=srcNode&&largeChild(srcNode)&&largeSessionMatches(srcNode),parentId=srcNode?.largeParentId;
+ renderExplore();renderItemTab();
+ const returnToExplore=!isLarge&&source.kind==='inventory'&&ITEM_RETURN_TO_EXPLORE.has(itemId);
+ if(returnToExplore){switchExploreTab('explore');showEvent(result.title,result.text)}
+ else if(!isLarge&&source.kind==='node')showEvent(result.title,result.text);
+ else if(!isLarge)toast(result.toast);
+ if(isLarge)continueLargeNode(parentId);return true
 }
 function useItemFromSource(itemId,source){
  const detail=$('#itemDetailDialog');if(detail?.open)detail.close();itemDetailUid=null;
@@ -2869,7 +2877,7 @@ function switchExploreTab(kind,resetGear=true){
  if(kind==='gear'){if(!gearManageUid||!state.party.some(u=>u.uid===gearManageUid))gearManageUid=state.party[0].uid;if(resetGear){gearPickerSlot=null;gearFocusUid=null;}const g=$('#gearGoldChip'),p=$('#gearPpChip');if(g)g.textContent=`G ${state.gold}`;if(p)p.textContent=`PP ${state.parallelPoints}`;renderGearManager()}
  if(kind==='item')renderItemTab();
  if(kind==='jewel')renderJewelTab();
- if(kind==='explore'){const n=currentNode();if(n?.type==='locked_treasure'){inspectLockedTreasure(n)}else if(n?.type==='locked_treasure_opened'){showEvent('カギ付き宝箱','すでに開封済み。')}else if(isTreasureNode(n)){showEvent(treasureTitle(n),'中身はこの場所に固定されている。','宝箱を開く',()=>openTreasure(n))}else if(n?.type==='item'&&!$('#itemPickupDialog').open){const d=itemDef(n.itemId||ITEM_IDS[0]);showEvent('アイテム発見',`「${d.name}」がこのマスに残っている。`,'確認する',()=>openItemPickup(n))}else if(n?.type==='shop')showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。品揃えはこの店で固定。`,'商品を見る',()=>openShop(n))}
+ if(kind==='explore'){const n=currentNode();if(n?.type==='locked_treasure'){inspectLockedTreasure(n)}else if(n?.type==='locked_treasure_opened'){showEvent('カギ付き宝箱','すでに開封済み。')}else if(isTreasureNode(n)){showEvent(treasureTitle(n),'中身はこの場所に固定されている。','宝箱を開く',()=>openTreasure(n))}else if(n?.type==='item'&&!$('#itemPickupDialog').open){const d=itemDef(n.itemId||ITEM_IDS[0]);showEvent('アイテム発見',`「${d.name}」がこのマスに残っている。`,'確認する',()=>openItemPickup(n))}else if(n?.type==='shop')showEvent('ショップ',`8商品が並んでいる。所持金 ${state.gold}G。`,'商品を見る',()=>openShop(n))}
  window.scrollTo({top:0,behavior:'smooth'})
 }
 function openExploreManager(kind){
