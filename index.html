@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.32.4 罠抽選比率</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.33.0 ユニーク固有能力</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -436,6 +436,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .map-node.current::after{content:'現在地';position:absolute;left:50%;top:calc(100% + 5px);transform:translateX(-50%);padding:2px 5px;border-radius:999px;background:#ffd56e;color:#211a07;border:1px solid #fff0a7;font-size:6px;font-weight:950;white-space:nowrap;box-shadow:0 3px 8px rgba(0,0,0,.4)}
 .map-node.visited:not(.current){filter:saturate(.72);opacity:.82}
 .map-node.type-enemy{background:#331d27;border-color:#884458}.map-node.type-unique{background:#421a37;border-color:#e060bd;box-shadow:0 0 17px rgba(224,96,189,.42)}
+.map-node.type-unique{overflow:visible}.unique-info-mark{position:absolute;right:-9px;top:-9px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#f1d9ff;color:#3b164b;border:2px solid #7d3f97;font-size:12px;font-weight:1000;line-height:1;box-shadow:0 3px 10px rgba(0,0,0,.48);z-index:12;cursor:pointer}.map-node.type-unique:not(.reachable){cursor:help}
 .map-node.type-item{background:#1b2d35;border-color:#477b89}.map-node.type-shop{background:#24301c;border-color:#72894b;box-shadow:0 0 13px rgba(190,214,103,.15)}.map-node.type-equipment{background:#302919;border-color:#806b3f}.map-node.type-enhance{background:#2b2438;border-color:#8f6ab5;box-shadow:0 0 14px rgba(143,106,181,.22)}.map-node.type-rest{background:#1d3126;border-color:#4a7d5e}.map-node.type-exit,.map-node.type-boss{background:#30203c;border-color:#8b62a6}.map-node.type-entrance{background:#202938;border-color:#5d708e}.map-node.type-unknown{background:#121722;border-color:#39435a;color:#8993a8}.map-node.type-unknown small{color:#758096}
 .map-node.infected{animation:infectPop .72s ease-out}
 @keyframes nodeReady{from{filter:brightness(1)}to{filter:brightness(1.18)}}
@@ -587,6 +588,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 
 /* ===== Trap result panel v13.32.2 ===== */
 #trapResultDialog{width:min(92vw,460px);max-height:88vh;box-sizing:border-box;overflow:hidden}
+#uniqueInfoDialog{width:min(92vw,470px);max-height:90vh;box-sizing:border-box}.unique-info-dialog{padding:16px}.unique-info-hero{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center;margin:10px 0 12px}.unique-info-hero img{width:96px;height:96px;object-fit:cover;border-radius:16px;background:#0d111b;border:1px solid #4b3a5d}.unique-info-name{font-size:18px;font-weight:1000;line-height:1.25}.unique-info-meta{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}.unique-info-meta span{padding:4px 7px;border-radius:999px;background:#211b2d;border:1px solid #574568;color:#e8dbf1;font-size:9px;font-weight:900}.unique-info-section{padding:10px;border-radius:12px;background:#171b28;border:1px solid #3b4257;margin-top:8px}.unique-info-section b{display:block;font-size:11px;color:#f3cf87;margin-bottom:5px}.unique-info-section p{margin:0;font-size:10px;line-height:1.55;color:#d8deea}.unique-info-note{font-size:8.5px!important;color:#aeb7c9!important;margin-top:5px!important}
 .trap-result-panel{padding:16px;max-height:88vh;box-sizing:border-box;display:flex;flex-direction:column;background:linear-gradient(180deg,#17121a,#0e121b);border:1px solid #593847;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.48)}
 .trap-result-kicker{font-size:9px;font-weight:950;letter-spacing:.12em;color:#d993aa;text-align:center}
 .trap-result-title{margin:4px 0 0;font-size:21px;line-height:1.2;text-align:center;color:#fff2f5;text-shadow:0 0 14px rgba(225,84,122,.18)}
@@ -931,6 +933,13 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
 <p id="bossDetailLead"></p>
 <div class="boss-detail-list" id="bossDetailBody"></div>
 <button class="jewel-cancel" type="button" id="bossDetailCloseBtn">閉じる</button>
+</div></dialog>
+<dialog id="uniqueInfoDialog"><div class="jewel-dialog unique-info-dialog">
+<h3>ユニーク敵情報</h3>
+<div class="unique-info-hero"><img id="uniqueInfoImg" alt="ユニーク敵"><div><div class="unique-info-name" id="uniqueInfoName"></div><div class="unique-info-meta" id="uniqueInfoMeta"></div></div></div>
+<div class="unique-info-section"><b id="uniqueInfoTraitTitle">固有能力</b><p id="uniqueInfoTraitText"></p><p class="unique-info-note">二つ名の固有能力はバフではなく、解除できません。</p></div>
+<div class="unique-info-section"><b>撃破報酬</b><p id="uniqueInfoReward"></p></div>
+<button class="jewel-cancel" type="button" id="uniqueInfoCloseBtn">探索に戻る</button>
 </div></dialog><script>(() => {
 const $=s=>document.querySelector(s), ceil=Math.ceil;
 const partyGrid=$('#partyGrid'),stage=$('#stage'),enemyArt=$('#enemyArt'),eventBanner=$('#eventBanner'),logEl=$('#log'),intermission=$('#intermission'),jewelDialog=$('#jewelDialog'),detailPanel=$('#detailPanel');
@@ -1118,8 +1127,8 @@ const GEAR_AFFIX_DEFS=[
 ];
 const UNIQUE_GEAR_DEFS={
  glutton:{id:'glutton',prefix:'大喰らいの',enemyName:'食いしん坊な犬娘',slots:['weapon','armor'],description:'戦闘勝利時、装備者のHPを最大HPの10%回復。'},
- big:{id:'big',prefix:'大きな',enemyName:'ビッグな犬娘',slots:['weapon','armor'],description:'通常の付加効果が確定で3個付与される。',affixCount:3},
- giant:{id:'giant',prefix:'巨大な',enemyName:'ジャイアントな犬娘',slots:['weapon','armor'],description:'通常の付加効果が確定で4個付与される。',affixCount:4},
+ big:{id:'big',prefix:'大きな',enemyName:'ビッグ犬娘',slots:['weapon','armor'],description:'通常の付加効果が確定で3個付与される。',affixCount:3},
+ giant:{id:'giant',prefix:'巨大な',enemyName:'ジャイアント犬娘',slots:['weapon','armor'],description:'通常の付加効果が確定で4個付与される。',affixCount:4},
  ferocious:{id:'ferocious',prefix:'凶暴な',enemyName:'凶暴な犬娘',slots:['weapon'],description:'攻撃力+30%。被ダメージ+20%。',stats:{atkPct:30,damageTakenPct:20}},
  obsession:{id:'obsession',prefix:'執念の',enemyName:'しつこい犬娘',slots:['weapon'],description:'通常攻撃時、1ターンに1度だけ攻撃力+10%。スキル使用・戦闘終了で解除。'},
  transcender:{id:'transcender',prefix:'超越者の',enemyName:'次元を越える犬娘',slots:['weapon'],description:'崩壊度の30%だけ攻撃力アップ（上限+30%）。'},
@@ -1133,13 +1142,37 @@ const UNIQUE_GEAR_DEFS={
  charm_title:{id:'charm_title',prefix:'魅了の',enemyName:'誘惑的な犬娘',slots:['weapon','armor'],descriptions:{weapon:'戦闘開始時、敵に「魅了」+5。1ターン目終了時、敵の「魅了」-5。',armor:'被ダメージ時、50%の確率で敵に「魅了」1付与。'}},
  breakthrough:{id:'breakthrough',prefix:'一点突破の',enemyName:'猛進する犬娘',slots:['weapon'],description:'戦闘開始時、スキルゲージ最大。スキルゲージ上昇量-50%。'},
  ironwall:{id:'ironwall',prefix:'鉄壁の',enemyName:'頑丈な犬娘',slots:['armor'],description:'攻撃力-20%。被ダメージ-30%。',stats:{atkPct:-20,damageReductionPct:30}},
- holy:{id:'holy',prefix:'聖なる',enemyName:'神聖な犬娘',slots:['armor'],description:'【呪い】無効化。アイテムが呪われない。※呪いシステム実装待ち。',rollable:false,placeholder:true},
+ holy:{id:'holy',prefix:'聖なる',enemyName:'神聖な犬娘',slots:['armor'],description:'【呪い】無効化。アイテムが呪われない。'},
  grit:{id:'grit',prefix:'気合の',enemyName:'ど根性の犬娘',slots:['armor'],description:'1戦闘に1度、現在HP以上のダメージを受ける時、HP1で耐える。'},
  rebirth:{id:'rebirth',prefix:'再臨の',enemyName:'再臨の犬娘',slots:['armor'],description:'戦闘不能になった時、HP最大で復活する。その後、この装備は消滅する。'},
  sanzu:{id:'sanzu',prefix:'三途の',enemyName:'死の淵に立つ犬娘',slots:['armor'],description:'1戦闘に1度、戦闘不能になった時、5000G消費してHP最大で復活する。'},
- cleaner:{id:'cleaner',prefix:'掃除屋の',enemyName:'掃除屋の犬娘',slots:['armor'],description:'地雷系の罠による味方全員へのダメージを無効化する。※罠システム実装待ち。',rollable:false,placeholder:true}
+ cleaner:{id:'cleaner',prefix:'掃除屋の',enemyName:'掃除屋の犬娘',slots:['armor'],description:'地雷系の罠による味方全員へのダメージを無効化する。'}
 };
 const UNIQUE_GEAR_IDS=Object.values(UNIQUE_GEAR_DEFS).filter(x=>x.rollable!==false).map(x=>x.id);
+const UNIQUE_ENEMY_TRAITS={
+ glutton:{title:'食いしん坊な',hpMult:2,damageMult:1.5,text:'パラレルバースト使用後、HPを最大HPの15%回復する。'},
+ big:{title:'ビッグ',hpMult:2.3,damageMult:1.5,text:'基本HPが元の魔物娘の2.3倍になる。'},
+ giant:{title:'ジャイアント',hpMult:2.6,damageMult:1.5,text:'基本HPが元の魔物娘の2.6倍になる。'},
+ ferocious:{title:'凶暴な',hpMult:1.5,damageMult:2,text:'基本HPは元の魔物娘の1.5倍、与ダメージは2倍になる。'},
+ obsession:{title:'しつこい',hpMult:2,damageMult:1.5,text:'戦闘開始時に1人を執着対象に選び、そのキャラが戦闘不能になるまで執拗に狙う。'},
+ transcender:{title:'次元を越える',hpMult:2,damageMult:1.5,text:'ターン数×5%だけ与ダメージが上昇する（上限40%）。'},
+ indomitable:{title:'不屈の',hpMult:2,damageMult:1.5,text:'自身が状態異常中、与ダメージ+20%、被ダメージ-20%。'},
+ gambler:{title:'ギャンブラーな',hpMult:2,damageMult:1.5,text:'味方へのダメージは50%で2倍か0。受けるダメージは50%で2倍か半分になる。'},
+ brave:{title:'勇敢な',hpMult:2,damageMult:1.5,text:'攻撃対象のTierに応じて与ダメージ上昇。Tier0:+0%、Tier1・2:+10%、Tier3・4:+20%、Tier5:+30%。'},
+ lone:{title:'孤高の',hpMult:2,damageMult:1.5,text:'このフロアに他の未処理の戦闘マスがない場合、与ダメージ+50%。'},
+ alchemist:{title:'錬金術師の',hpMult:2,damageMult:1.5,text:'戦闘開始時、味方全員に同じ【毒3】【炎上3】【封印2】のいずれかをランダムに付与する。'},
+ reason_title:{title:'理を司る',hpMult:2,damageMult:1.5,text:'パラレルバースト使用後、味方の「理力」を2減少させる。'},
+ wisdom_title:{title:'賢そうな',hpMult:2,damageMult:1.5,text:'パラレルバースト使用後、味方全員の「叡智」を2ずつ減少させる。'},
+ charm_title:{title:'誘惑的な',hpMult:2,damageMult:1.5,text:'パラレルバースト使用後、自身に蓄積した「魅了」を3減少させる。'},
+ breakthrough:{title:'猛進する',hpMult:2,damageMult:1.5,text:'戦闘開始時CHARGE+3。パラレルバーストのダメージ+30%。'},
+ ironwall:{title:'頑丈な',hpMult:2,damageMult:1.5,text:'常時、被ダメージ-30%。この効果は解除できない。'},
+ grit:{title:'ど根性の',hpMult:2,damageMult:1.5,text:'現在HP以上のダメージを受ける時、HP1で耐える。1戦闘に5回まで発動する。'},
+ rebirth:{title:'再臨の',hpMult:2,damageMult:1.5,text:'HPが0になった時、1戦闘に1回だけHP50%で復活する。'},
+ sanzu:{title:'死の淵に立つ',hpMult:2,damageMult:1.5,text:'現在HPが少ないほど与ダメージが上昇する。背水と同じ補正で、HP50%未満から最大+60%。'},
+ holy:{title:'神聖な',hpMult:2,damageMult:1.5,text:'【呪い】を無効化。パラレルバースト使用後、味方全員の解除可能なバフを1個ずつ解除する。'},
+ cleaner:{title:'掃除屋の',hpMult:2,damageMult:1.5,text:'攻撃対象の現在HPが低いほど与ダメージが上昇する。背水と同じ補正で、HP50%未満から最大+60%。'}
+};
+const UNIQUE_ENEMY_IDS=Object.keys(UNIQUE_ENEMY_TRAITS);
 const GEAR_SLOTS=[['weapon','武器','🗡️'],['armor','防具','👕'],['accessory','装飾','💍']];
 let gearManageUid=null,gearPickerSlot=null,gearSerial=0,gearPickupUid=null,gearFocusUid=null,gearPickupReturnMode='explore';
 let itemSerial=0,itemPickupNodeId=null,itemUseContext=null,itemTargetUid=null,itemDetailUid=null,battleItemSelectedUid=null,battleItemTargetUid=null;
@@ -1190,7 +1223,7 @@ const ALLY_DETAILS={
  pink_slime:{role:PARALLEL_FORMS.pink_slime.role,summary:PARALLEL_FORMS.pink_slime.summary,abilities:PARALLEL_FORMS.pink_slime.abilities,skill:PARALLEL_FORMS.pink_slime.skill},
  crystal_slime:{role:PARALLEL_FORMS.crystal_slime.role,summary:PARALLEL_FORMS.crystal_slime.summary,abilities:PARALLEL_FORMS.crystal_slime.abilities,skill:PARALLEL_FORMS.crystal_slime.skill}
 };
-const ENEMIES={slime:{id:'slime',name:'スライム娘',maxHp:180,img:IMG.slime},dog:{id:'dog',name:'犬娘',maxHp:250,img:IMG.dog},arachne:{id:'arachne',name:'アラクネ',maxHp:260,img:IMG.arachne},golem:{id:'golem',name:'ゴーレム娘',maxHp:350,img:IMG.golem},gluttonDog:{id:'gluttonDog',name:'食いしん坊の犬娘',maxHp:500,img:IMG.dog,chargeMax:3,unique:true},crusher:{id:'crusher',name:'クラッシャー',maxHp:600,img:IMG.crusher,chargeMax:3,boss:true}};
+const ENEMIES={slime:{id:'slime',name:'スライム娘',maxHp:180,img:IMG.slime},dog:{id:'dog',name:'犬娘',maxHp:250,img:IMG.dog},arachne:{id:'arachne',name:'アラクネ',maxHp:260,img:IMG.arachne},golem:{id:'golem',name:'ゴーレム娘',maxHp:350,img:IMG.golem},gluttonDog:{id:'gluttonDog',name:'食いしん坊な犬娘',maxHp:500,img:IMG.dog,chargeMax:3,unique:true,uniqueGearId:'glutton',baseEnemyId:'dog',damageMult:1.5},crusher:{id:'crusher',name:'クラッシャー',maxHp:600,img:IMG.crusher,chargeMax:3,boss:true}};
 const SPEEDS=[{label:'標準',action:540,ability:1080,pause:250,float:920},{label:'×2',action:285,ability:720,pause:120,float:700},{label:'×4',action:165,ability:520,pause:70,float:560}];
 let speedIndex=0,animating=false,selectedDetailId=null,state;
 const cumulativeByConfig={};
@@ -1363,7 +1396,7 @@ function freshEnemy(idOverride=null){
  const t=ENEMIES[id];
  const boosted=!!(explore&&explore.collapsed&&!t.unique&&!t.boss);
  const maxHp=boosted?ceil(t.maxHp*1.15):t.maxHp;
- return {...t,maxHp,hp:maxHp,actionIndex:0,dead:false,statuses:[],permanentAmp:0,timedAmp:[],charm:0,charge:t.chargeMax?0:null,hpTriggerPending:false,hpTriggerUsed:false,activeOmen:null,omenBroken:false,damageMult:boosted?1.15:1};
+ const e={...t,maxHp,hp:maxHp,actionIndex:0,dead:false,statuses:[],permanentAmp:0,timedAmp:[],charm:0,charge:t.chargeMax?0:null,hpTriggerPending:false,hpTriggerUsed:false,activeOmen:null,omenBroken:false,damageMult:t.damageMult??(boosted?1.15:1)};if(e.unique){e.uniqueGearId=e.uniqueGearId||'glutton';e.baseEnemyId=e.baseEnemyId||'dog';e._uniqueGritUses=0;e._uniqueRebirthUsed=false;e._uniqueObsessTarget=null}return e;
 }
 function startBattleResources(){
  state.reason=0;state.partyBuffs=[];state.battleJewelUses={};state._turnOneReasonBonus=0;state._turnOneCharmBonus=0;
@@ -1390,6 +1423,21 @@ function resetRun(){
 function addLog(t,c=''){const d=document.createElement('div');if(c)d.className=c;d.textContent=t;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight}
 function showBanner(t,e=''){eventBanner.innerHTML=e?`${t} <strong>${e}</strong>`:t;eventBanner.classList.add('show')}function hideBanner(){eventBanner.classList.remove('show')}
 function aliveParty(){return state.party.filter(u=>!u.dead)}function randomAlive(ex=[]){const a=aliveParty().filter(u=>!ex.includes(u.uid));return a.length?a[Math.floor(Math.random()*a.length)]:null}
+function uniqueTrait(id=state.enemy?.uniqueGearId){return UNIQUE_ENEMY_TRAITS[id]||UNIQUE_ENEMY_TRAITS.glutton}
+function uniqueEnemyDisplayName(uniqueId,baseEnemyId='dog'){const tr=uniqueTrait(uniqueId),base=ENEMIES[baseEnemyId]||ENEMIES.dog;return `${tr.title}${base.name}`}
+function uniqueEnemyBasePool(){return ['slime','dog','arachne']}
+function uniqueEnemyNodeData(n){const uniqueId=n?.uniqueGearId||'glutton',baseId=n?.uniqueEnemyId||'dog',tr=uniqueTrait(uniqueId),base=ENEMIES[baseId]||ENEMIES.dog;return {uniqueId,baseId,tr,base,name:uniqueEnemyDisplayName(uniqueId,baseId),maxHp:ceil(base.maxHp*tr.hpMult),damageMult:tr.damageMult||1.5,gear:UNIQUE_GEAR_DEFS[uniqueId]||UNIQUE_GEAR_DEFS.glutton}}
+function uniqueOtherBattleNodesRemain(nodeId=state.battleContext?.nodeId){const map=currentMap?.();if(!map)return false;return Object.values(map.nodes).some(n=>n.id!==nodeId&&['enemy','unique','boss'].includes(n.type))}
+function uniqueTierDamageBonus(u){const tier=parallelForm(u?.id)?.tier||0;return tier>=5?30:tier>=3?20:tier>=1?10:0}
+function uniqueBackwaterBonus(hp,maxHp){if(!maxHp)return 0;const r=hp/maxHp;if(r>=.5)return 0;return 60*Math.pow((.5-r)/.5,1.5)}
+function uniqueEnemyOutgoingMultiplier(target){const e=state.enemy;if(!e?.unique)return 1;const id=e.uniqueGearId;let mult=1;if(id==='transcender')mult*=1+Math.min(40,state.turn*5)/100;if(id==='indomitable'&&enemyHasStatusAilment())mult*=1.20;if(id==='brave')mult*=1+uniqueTierDamageBonus(target)/100;if(id==='lone'&&!uniqueOtherBattleNodesRemain())mult*=1.50;if(id==='sanzu')mult*=1+uniqueBackwaterBonus(e.hp,e.maxHp)/100;if(id==='cleaner')mult*=1+uniqueBackwaterBonus(target.hp,target.maxHp)/100;if(id==='gambler'){const dbl=Math.random()<.5;mult*=dbl?2:0;addLog(`【ギャンブラーな】：${dbl?'与ダメージ2倍！':'与ダメージ0！'}`,'system')}return mult}
+function uniqueEnemyIncomingGambleMultiplier(){const e=state.enemy;if(!e?.unique||e.uniqueGearId!=='gambler')return 1;const dbl=Math.random()<.5;addLog(`【ギャンブラーな】：受けるダメージが${dbl?'2倍':'半分'}！`,'system');return dbl?2:.5}
+function applyUniqueEnemyGrit(dmg){const e=state.enemy;if(!e?.unique||e.uniqueGearId!=='grit'||(e._uniqueGritUses||0)>=5||dmg<e.hp||e.hp<=0)return {dmg,grit:false};e._uniqueGritUses=(e._uniqueGritUses||0)+1;return {dmg:Math.max(0,e.hp-1),grit:true}}
+async function resolveUniqueEnemyZeroHp(){const e=state.enemy;if(!e?.unique||e.hp>0)return false;if(e.uniqueGearId==='rebirth'&&!e._uniqueRebirthUsed){e._uniqueRebirthUsed=true;e.dead=false;e.hp=Math.max(1,ceil(e.maxHp*.5));addLog(`【再臨の】：${e.name}がHP50%で復活！`,'heal');showBanner('再臨',`${e.name} HP50%`);render();await delay(timing().ability);return true}return false}
+function uniqueObsessiveTarget(ex=[]){const e=state.enemy;if(!e?.unique||e.uniqueGearId!=='obsession')return randomAlive(ex);let u=state.party.find(x=>x.uid===e._uniqueObsessTarget&&!x.dead);if(!u){u=randomAlive();e._uniqueObsessTarget=u?.uid||null}return u||randomAlive(ex)}
+function uniqueEnemyTraitStatusText(){const e=state.enemy;if(!e?.unique)return'';const tr=uniqueTrait(e.uniqueGearId);if(e.uniqueGearId==='lone')return uniqueOtherBattleNodesRemain()?'現在は条件未成立':'現在、条件成立中';if(e.uniqueGearId==='grit')return `残り発動 ${Math.max(0,5-(e._uniqueGritUses||0))}/5`;if(e.uniqueGearId==='rebirth')return e._uniqueRebirthUsed?'復活使用済み':'復活未使用';return''}
+function removeHolyBurstBuffs(){const living=aliveParty();if(state.partyBuffs.length){const idx=Math.floor(Math.random()*state.partyBuffs.length),b=state.partyBuffs.splice(idx,1)[0];return `全体バフ「${b.name||'バフ'}」を解除`}let removed=0;living.forEach(u=>{const pool=(u.statuses||[]).filter(s=>(s.kind||'debuff')==='buff');if(!pool.length)return;const st=rand(pool);u.statuses=u.statuses.filter(x=>x!==st);removed++});return removed?`${removed}人のバフを1個ずつ解除`:'解除できるバフなし'}
+function partyHasEquippedUnique(id,slot=null){return state.party.some(u=>slot?equippedUniqueCountSlot(u,id,slot)>0:equippedUniqueCount(u,id)>0)}
 function enemyChargeMax(e=state.enemy){return e?.chargeMax?(e.chargeMax+(enemyStatus('重圧')?1:0)):0}
 function chargeOmenKind(e=state.enemy){
  if(!e||!e.chargeMax)return null;
@@ -1398,7 +1446,7 @@ function chargeOmenKind(e=state.enemy){
    if(e.hpTriggerPending)return 'crash';
    if(e.charge>=enemyChargeMax(e))return 'rock';
  }
- if(e.id==='gluttonDog'&&e.charge>=enemyChargeMax(e))return 'parallelBurst';
+ if(e.unique&&e.charge>=enemyChargeMax(e))return 'parallelBurst';
  return null
 }
 function chargeOmenInfo(kind){
@@ -1415,14 +1463,15 @@ function showOmenBreak(title){
 }
 function markBossDebuffApplied(){const e=state.enemy;if(!e||e.id!=='crusher'||e.activeOmen!=='crash'||e.omenBroken)return;e.omenBroken=true;addLog('予兆解除条件達成：クラッシュを解除！','system');render();showOmenBreak('クラッシュ')}
 function prepareBossHpTrigger(){const e=state.enemy;if(!e||e.id!=='crusher'||e.dead||e.hpTriggerUsed)return;if(e.hp<=e.maxHp*.5){e.hpTriggerUsed=true;e.hpTriggerPending=true;addLog('クラッシャーのHP50%トリガー：次ターン【クラッシュ】予兆。','system')}}
-function renderBossMechanic(){const box=$('#bossMechanic'),e=state.enemy;if(!box)return;const hasCharge=!!e&&!!e.chargeMax;stage.classList.toggle('boss-stage',hasCharge);if(!hasCharge){box.className='boss-mechanic';box.innerHTML='';return}const max=enemyChargeMax(e),filled=Math.max(0,Math.min(max,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(Math.max(0,max-filled)),kind=e.omenBroken?null:chargeOmenKind(e),info=chargeOmenInfo(kind);box.className=`boss-mechanic show${kind?' omen':''}`;let html=`<div class="boss-charge-row"><span>CHARGE</span><span class="boss-charge">${dots}</span></div>`;if(info)html+=`<div class="boss-omen-title">⚠ ${info.title}</div>`;box.innerHTML=html}
+function renderBossMechanic(){const box=$('#bossMechanic'),e=state.enemy;if(!box)return;const hasCharge=!!e&&!!e.chargeMax;stage.classList.toggle('boss-stage',hasCharge);if(!hasCharge){box.className='boss-mechanic';box.innerHTML='';return}const max=enemyChargeMax(e),filled=Math.max(0,Math.min(max,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(Math.max(0,max-filled)),kind=e.omenBroken?null:chargeOmenKind(e),info=chargeOmenInfo(kind);box.className=`boss-mechanic show${kind?' omen':''}`;box.setAttribute('aria-label',e.unique?'ユニーク固有能力とCHARGEの詳細':'ボス行動の詳細');let html=`<div class="boss-charge-row"><span>CHARGE${e.unique?' / 詳細':''}</span><span class="boss-charge">${dots}</span></div>`;if(info)html+=`<div class="boss-omen-title">⚠ ${info.title}</div>`;box.innerHTML=html}
 function openBossDetail(){
  const e=state.enemy;if(!e||!e.chargeMax)return;
  const max=enemyChargeMax(e),filled=Math.max(0,Math.min(max,e.charge||0)),dots='◆'.repeat(filled)+'◇'.repeat(Math.max(0,max-filled)),kind=e.omenBroken?null:chargeOmenKind(e),info=chargeOmenInfo(kind);
  $('#bossDetailTitle').textContent=e.name;
  $('#bossDetailLead').textContent=`CHARGE ${dots}（${filled}/${max}）${info?' / 予兆：'+info.title:''}`;
- if(e.id==='gluttonDog'){
-   $('#bossDetailBody').innerHTML=`<div class="boss-detail-item"><b>二つ名付き</b>通常の犬娘を基準に、HP約2倍・与ダメージ約1.5倍で調整したユニーク敵テストです。</div><div class="boss-detail-item"><b>CHARGE</b>通常行動後に1段階上昇。3まで溜まると、次のターンに「パラレルバースト」を予兆します。発動後は0に戻ります。</div><div class="boss-detail-item"><b>パラレルバースト</b>味方全員に30無属性ダメージ。解除条件なし。防御の宝珠などの被ダメージ軽減は有効ですが、物理専用の軽減は適用されません。<br>※30はテスト値。本番では階層に応じたダメージを想定。</div>`;
+ if(e.unique){
+   const tr=uniqueTrait(e.uniqueGearId),extra=uniqueEnemyTraitStatusText();
+   $('#bossDetailBody').innerHTML=`<div class="boss-detail-item"><b>固有能力：${tr.title}</b>${tr.text}${extra?`<br><strong>${extra}</strong>`:''}<br><small>二つ名固有能力はバフではなく、解除できません。</small></div><div class="boss-detail-item"><b>ユニーク共通</b>元の魔物娘を基準にHP×${tr.hpMult}・与ダメージ×${tr.damageMult}。CHARGEが3まで溜まると次ターンに「パラレルバースト」を予兆します。</div><div class="boss-detail-item"><b>パラレルバースト</b>味方全員への無属性攻撃。発動後CHARGEは0に戻ります。${e.uniqueGearId==='breakthrough'?'<br>「猛進する」によりダメージ+30%。':''}</div>`;
  }else{
    $('#bossDetailBody').innerHTML=`<div class="boss-detail-item"><b>CHARGE</b>通常行動などの後に1段階上昇。3まで溜まると、次のターンに「岩石落とし」を予兆します。岩石落とし後は0に戻ります。</div><div class="boss-detail-item"><b>岩石落とし</b>味方全員に28物理ダメージ。<br>解除：3人でスキルチェイン。解除時は通常行動を行います。</div><div class="boss-detail-item"><b>クラッシュ（HP50% / 1回）</b>ランダムな味方1人に基礎24物理ダメージ、会心率100%（現行倍率で36相当）。<br>解除：予兆ターン中に状態異常またはデバフを新しく付与。解除時は通常行動を行います。HPトリガーはチャージ予兆より優先し、チャージを消費しません。</div>`;
  }
@@ -1489,13 +1538,13 @@ function addCharm(n){if(!state.enemy||state.enemy.dead)return 0;const before=sta
 function pulseElement(el,cls='feedback-pulse'){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);setTimeout(()=>el.classList.remove(cls),900)}function popNear(el,t){if(!el)return;const h=el.closest('.unit')||el.closest('.enemy-hud')||el.parentElement;if(!h)return;if(getComputedStyle(h).position==='static')h.style.position='relative';const p=document.createElement('span');p.className='change-pop';p.textContent=t;p.style.right='6px';p.style.top='6px';h.appendChild(p);setTimeout(()=>p.remove(),900)}
 function feedbackEnemyStatus(t){const el=document.querySelector('#enemyStatus .status-pill');pulseElement(el);popNear(el,t)}function feedbackReason(t){const el=$('#reasonText');pulseElement(el);popNear(el,t)}function feedbackGauge(u,t){const el=document.querySelector(`[data-unit="${u.uid}"] [data-gauge-fill]`);pulseElement(el,'feedback-gauge');popNear(el,t)}function feedbackHp(u,t){const el=document.querySelector(`[data-unit="${u.uid}"] [data-hp-fill]`);pulseElement(el,'feedback-good');popNear(el,t)}function feedbackPartyAtk(t){state.party.forEach(u=>pulseElement(document.querySelector(`[data-unit="${u.uid}"] [data-atkline]`),'feedback-atk'));popNear(document.querySelector('[data-atkline]'),t)}
 function floatNumber(h,t,c='damage'){const n=document.createElement('div');n.className=`floating ${c}`;n.textContent=t;h.appendChild(n);setTimeout(()=>n.remove(),timing().float)}async function actFlash(u){const e=unitEl(u.uid);if(e){e.classList.add('acting');await delay(Math.round(timing().action*.33))}}function clearActing(){document.querySelectorAll('.unit.acting').forEach(x=>x.classList.remove('acting'))}async function enemyHitFeedback(d){enemyArt.classList.add('hit');floatNumber(stage,`-${d}`);await delay(Math.round(timing().action*.62));enemyArt.classList.remove('hit')}async function allyHitFeedback(u,d){const e=unitEl(u.uid);if(e){e.classList.add('target');floatNumber(e,`-${d}`)}await delay(Math.round(timing().action*.62));if(e)e.classList.remove('target')}
-function adjustedGaugeGain(u,base){const breakthroughPenalty=equippedUniqueCountSlot(u,'breakthrough','weapon')?-50:0;return Math.max(0,Math.round(base*(1+(gearStat(u,'skillGainPct')+pinkSkillGainBonus()+crystalSkillGainBonus()+breakthroughPenalty)/100)))}function gainGaugeAttack(u){const gain=adjustedGaugeGain(u,10);u.gauge=Math.min(skillMax(u),u.gauge+gain);return gain}function gaugeFromIncoming(u,d){const r=d/u.maxHp,base=r>=.75?50:r>=.5?25:10;return adjustedGaugeGain(u,base)}function enemyDamageReduction(){return enemyStatus('硬化')?50:0}
+function adjustedGaugeGain(u,base){const breakthroughPenalty=equippedUniqueCountSlot(u,'breakthrough','weapon')?-50:0;return Math.max(0,Math.round(base*(1+(gearStat(u,'skillGainPct')+pinkSkillGainBonus()+crystalSkillGainBonus()+breakthroughPenalty)/100)))}function gainGaugeAttack(u){const gain=adjustedGaugeGain(u,10);u.gauge=Math.min(skillMax(u),u.gauge+gain);return gain}function gaugeFromIncoming(u,d){const r=d/u.maxHp,base=r>=.75?50:r>=.5?25:10;return adjustedGaugeGain(u,base)}function enemyDamageReduction(){let r=enemyStatus('硬化')?50:0;if(state.enemy?.unique&&state.enemy.uniqueGearId==='ironwall')r+=30;if(state.enemy?.unique&&state.enemy.uniqueGearId==='indomitable'&&enemyHasStatusAilment())r+=20;return Math.min(95,r)}
 async function damageEnemy(u,base,source,type='physical',gauge=false,finishOnKill=true){
  if(state.enemy.dead)return {hit:false,actual:0};
  const normalStrike=['通常攻撃','連撃','反撃'].includes(source),gambler=normalStrike&&equippedUniqueCountSlot(u,'gambler','weapon')>0;
  let gambleMult=1;
  if(gambler){if(Math.random()<.5){gambleMult=2;addLog(`【博打の】：${u.name}の${source}は大当たり！`,'system')}else{const gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`【博打の】：${u.name}の${source}は攻撃失敗！`,'system');showBanner('博打の','攻撃失敗');render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await delay(Math.round(timing().action*.65));return {hit:false,actual:0,gambleFail:true}}}
- const crit=Math.random()<Math.max(0,gearStat(u,'critRate')+totalPartyCritRateBuff())/100,bonus=conditionalDamageBonusPct(u),critMult=1.5+totalPartyCritDamageBuff()/100;let raw=base*gambleMult*(crit?critMult:1)*(1+bonus/100)*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100);const dmg=Math.max(0,ceil(raw)),before=state.enemy.hp;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const actual=before-state.enemy.hp,gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}${gambler?'【博打成功】':''}${crit?'【会心】':''}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');showBanner(`${u.name}の${source}${crit?'【会心】':''}！`,`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);const steal=gearStat(u,'lifeStealPct');if(steal>0&&actual>0&&!u.dead){const {actual:healed}=applyHealing(u,u,actual*steal/100);if(healed>0){if(state.stats&&state.stats.current)state.stats.current.healing+=healed;addLog(`HP吸収：${u.name}が${healed}回復。`,'heal');render();feedbackHp(u,`+${healed}`)}}await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){state.enemy.dead=true;if(finishOnKill)await finishBattle()}return {hit:true,actual,dmg,crit}
+ const crit=Math.random()<Math.max(0,gearStat(u,'critRate')+totalPartyCritRateBuff())/100,bonus=conditionalDamageBonusPct(u),critMult=1.5+totalPartyCritDamageBuff()/100;let raw=base*gambleMult*(crit?critMult:1)*(1+bonus/100)*(1+totalEnemyAmp()/100)*(1-enemyDamageReduction()/100)*uniqueEnemyIncomingGambleMultiplier();let dmg=Math.max(0,ceil(raw));const grit=applyUniqueEnemyGrit(dmg);dmg=grit.dmg;const before=state.enemy.hp;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);const actual=before-state.enemy.hp,gaugeGain=gauge?gainGaugeAttack(u):0;addLog(`${u.name}の${source}${gambler?'【博打成功】':''}${crit?'【会心】':''}！ 敵に${dmg}${typeJP(type)}ダメージ。`,'damage');if(grit.grit)addLog(`【ど根性の】：${state.enemy.name}はHP1で耐えた！（${state.enemy._uniqueGritUses}/5）`,'system');showBanner(grit.grit?'ど根性で耐えた！':`${u.name}の${source}${crit?'【会心】':''}！`,grit.grit?`${state.enemy.name} HP1`:`${dmg}ダメージ`);render();if(gauge)feedbackGauge(u,`+${gaugeGain}`);await enemyHitFeedback(dmg);const steal=gearStat(u,'lifeStealPct');if(steal>0&&actual>0&&!u.dead){const {actual:healed}=applyHealing(u,u,actual*steal/100);if(healed>0){if(state.stats&&state.stats.current)state.stats.current.healing+=healed;addLog(`HP吸収：${u.name}が${healed}回復。`,'heal');render();feedbackHp(u,`+${healed}`)}}await delay(Math.round(timing().action*.45));if(state.enemy.hp<=0){if(await resolveUniqueEnemyZeroHp())return {hit:true,actual,dmg,crit,revived:true};state.enemy.dead=true;if(finishOnKill)await finishBattle()}return {hit:true,actual,dmg,crit}
 }
 async function performCounter(u){
  if(!u||u.dead||state.enemy?.dead)return;
@@ -1537,7 +1586,7 @@ async function damageAlly(u,base,source,type='physical',crit=false){
  if(invincibleStatus(u)){addLog(`【無敵】：${u.name}は${source}のダメージを無効化。`,'system');showBanner('無敵',`${u.name} ダメージ0`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.45));return {hit:false,actual:0,blocked:'invincible'}};
  const evade=Math.max(0,Math.min(100,gearStat(u,'evasionRate')+totalPartyEvasionBuff()));if(evade>0&&Math.random()<evade/100){addLog(`${source} → ${u.name}は回避した！`,'system');showBanner('回避！',u.name);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.55));return {hit:false,actual:0,blocked:'evade'}}
  const guard=Math.max(0,Math.min(100,gearStat(u,'critGuardRate')));if(crit&&guard>0&&Math.random()<guard/100){addLog(`${source}【会心】 → ${u.name}の会心ガード！ ダメージを無効化。`,'system');showBanner('会心ガード！',`${u.name} ダメージ0`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().action*.55));return {hit:false,actual:0,blocked:'critGuard'}}
- let dmg=base*(state.enemy?.damageMult||1)*(crit?1.5:1)*(1+incomingAmp(u)/100)*enemyCurseOutgoingMult();
+ let dmg=base*(state.enemy?.damageMult||1)*uniqueEnemyOutgoingMultiplier(u)*(crit?1.5:1)*(1+incomingAmp(u)/100)*enemyCurseOutgoingMult();
  if(enemyStatus('炎上'))dmg*=.8;
  dmg*=Math.max(0,1-totalPartyDamageReductionPct()/100);
  dmg*=Math.max(0,1-(gearStat(u,'damageReductionPct')+uniqueDamageReductionPct(u))/100);
@@ -1560,42 +1609,58 @@ async function damageAlly(u,base,source,type='physical',crit=false){
  return {hit:true,actual,ko:false}
 }
 function normalizeStatus(st){const out={...st};if(ACTION_DISABLE_STATUS_NAMES.has(out.name)&&out.decay===undefined)out.decay=10;return out}
-function addEnemyStatus(st){st=normalizeStatus(st);const o=state.enemy.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else state.enemy.statuses.push({...st});if((st.kind||'debuff')==='debuff')markBossDebuffApplied()}
+function addEnemyStatus(st){st=normalizeStatus(st);if(state.enemy?.unique&&state.enemy.uniqueGearId==='holy'&&st.name==='呪い'){addLog(`【神聖な】：${state.enemy.name}は【呪い】を無効化した。`,'system');return false}const o=state.enemy.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else state.enemy.statuses.push({...st});if((st.kind||'debuff')==='debuff')markBossDebuffApplied();return true}
 function addAllyStatus(u,st){st=normalizeStatus(st);const o=u.statuses.find(x=>x.name===st.name);if(o){const x=Math.max(o.x,st.x);Object.assign(o,st,{x})}else u.statuses.push({...st})}
 function mountStatus(u){return u?.statuses?.find(s=>s.name==='マウント'&&s.x>0)}
-async function tryEnemyNegativeEffect(u,st,{baseChance=100,isStatus=false}={}){if(!u||u.dead)return false;if(invincibleStatus(u)){addLog(`【無敵】：${u.name}は敵の不利効果を無効化。`,'system');showBanner('無敵',`${u.name} 不利効果無効`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().ability*.35));return false}if(isStatus&&Math.random()>=enemyStatusChance(u,baseChance)/100)return false;const token=state.enemyActionToken||0;if(u._mountBlockedActionToken===token)return false;const mount=mountStatus(u);if(mount){mount.x=Math.max(0,mount.x-1);u._mountBlockedActionToken=token;if(mount.x<=0)u.statuses=u.statuses.filter(s=>s!==mount);addLog(`【マウント】：${u.name}は敵の不利効果を無効化。`,'system');showBanner('マウント',`${u.name} 不利効果無効`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().ability*.45));return false}addAllyStatus(u,st);return true}
+async function tryEnemyNegativeEffect(u,st,{baseChance=100,isStatus=false}={}){if(!u||u.dead)return false;if(st?.name==='呪い'&&equippedUniqueCountSlot(u,'holy','armor')){addLog(`【聖なる】：${u.name}は【呪い】を無効化。`,'system');showBanner('聖なる',`${u.name} 呪い無効`);render();await delay(Math.round(timing().ability*.35));return false}if(invincibleStatus(u)){addLog(`【無敵】：${u.name}は敵の不利効果を無効化。`,'system');showBanner('無敵',`${u.name} 不利効果無効`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().ability*.35));return false}if(isStatus&&Math.random()>=enemyStatusChance(u,baseChance)/100)return false;const token=state.enemyActionToken||0;if(u._mountBlockedActionToken===token)return false;const mount=mountStatus(u);if(mount){mount.x=Math.max(0,mount.x-1);u._mountBlockedActionToken=token;if(mount.x<=0)u.statuses=u.statuses.filter(s=>s!==mount);addLog(`【マウント】：${u.name}は敵の不利効果を無効化。`,'system');showBanner('マウント',`${u.name} 不利効果無効`);render();pulseElement(unitEl(u.uid),'feedback-good');await delay(Math.round(timing().ability*.45));return false}addAllyStatus(u,st);return true}
 async function normalAttack(u){if(u.dead||state.enemy.dead||allyActionDisabled(u))return;if(equippedUniqueCountSlot(u,'obsession','weapon')&&u._obsessionLastTurn!==state.turn){u._obsessionLastTurn=state.turn;u._obsessionStacks=(u._obsessionStacks||0)+1;addLog(`【執念の】：${u.name}の攻撃力+${u._obsessionStacks*10}%。`,'system')}await actFlash(u);await damageEnemy(u,effectiveAtk(u),'通常攻撃',u.type,true);if(state.enemy.dead){clearActing();return}if(u.id==='dog'&&state.turn%3===0){state.enemy.timedAmp.push({value:10,turns:2});markBossDebuffApplied();state.reason=Math.min(10,state.reason+1);addLog(`噛みつき：敵の被ダメージ+10%（2T） / 理力+1（${state.reason}）`,'system');showBanner('噛みつき発動','被ダメ+10% / 理力+1');render();feedbackEnemyStatus('+10%');feedbackReason('+1');await delay(timing().ability)}if(u.id==='slug'){state.enemy.permanentAmp=Math.min(30,state.enemy.permanentAmp+2);markBossDebuffApplied();addLog(`ぬめぬめ：敵の被ダメージ+2%（累積${state.enemy.permanentAmp}%）`,'system');showBanner('ぬめぬめ','敵の被ダメ+2%');render();feedbackEnemyStatus('+2%');await delay(timing().ability)}if(u.id==='demon'){const burn=enemyStatus('炎上');if(burn){u.wisdom+=2;addLog(`ファイア：炎上中なので叡智+2（${u.wisdom}）`,'system');showBanner('ファイア','叡智+2');render();popNear(unitEl(u.uid),'+2叡智');await delay(timing().ability)}else if(Math.random()<playerStatusChance(u,40)/100){addEnemyStatus({name:'炎上',x:3,decay:1,kind:'debuff',short:'炎上'});addLog('ファイア：敵に【炎上3】を付与。','system');showBanner('ファイア','炎上3');render();feedbackEnemyStatus('炎上3');await delay(timing().ability)}else{}}
  if(!state.enemy.dead){const rate=multiHitRate(u);if(rate>0&&Math.random()<rate/100){addLog(`${u.name}の連撃！`,'system');showBanner('連撃！',u.name);await delay(Math.round(timing().ability*.45));await damageEnemy(u,effectiveAtk(u),'連撃',u.type,true)}}clearActing()}
 async function gluttonDogNormalAction(){
- const e=state.enemy,idx=e.actionIndex;
- e.actionIndex=(e.actionIndex+1)%3;
- if(idx===0){
-   await damageAlly(randomAlive(),23,'食いしん坊の犬娘の攻撃','physical')
+ const e=state.enemy,baseId=e.baseEnemyId||'dog',cycles={slime:3,dog:3,arachne:3,golem:4},cycle=cycles[baseId]||3,idx=e.actionIndex;
+ e.actionIndex=(e.actionIndex+1)%cycle;
+ const target=(ex=[])=>uniqueObsessiveTarget(ex),name=e.name;
+ if(baseId==='slime'){
+   if(idx===0)await damageAlly(target(),10,`${name}の攻撃`,'physical');
+   if(idx===1){if(state.stats&&state.stats.current)state.stats.current.enemyNoAction++;addLog(`${name}は様子を見ている。`,'system');showBanner('様子を見る','何もしない');await delay(timing().ability)}
+   if(idx===2)await damageAlly(target(),12,`${name}のぬるぬる粘液`,'pleasure')
  }
- if(idx===1){
-   const t=randomAlive();
-   const hit=await damageAlly(t,20,'食いしん坊の犬娘の噛みつき','physical');
-   if(t&&!t.dead&&!state.enemy.dead&&hit?.hit&&await tryEnemyNegativeEffect(t,{name:'被ダメ+20%',x:3,decay:1,damageTakenAmp:20,kind:'debuff',short:'被↑20'})){
-     addLog(`${t.name}に被ダメージ+20%【3】。`,'system');
-     showBanner('噛みつき追加効果',`${t.name} 被ダメ+20%`);render();pulseElement(unitEl(t.uid));popNear(unitEl(t.uid),'被ダメ+20%');await delay(timing().ability)
-   }
+ if(baseId==='dog'){
+   if(idx===0)await damageAlly(target(),15,`${name}の攻撃`,'physical');
+   if(idx===1){const t=target(),hit=await damageAlly(t,13,`${name}の噛みつき`,'physical');if(t&&!t.dead&&!state.enemy.dead&&hit?.hit&&await tryEnemyNegativeEffect(t,{name:'被ダメ+20%',x:3,decay:1,damageTakenAmp:20,kind:'debuff',short:'被↑20'})){addLog(`${t.name}に被ダメージ+20%【3】。`,'system');showBanner('噛みつき追加効果',`${t.name} 被ダメ+20%`);render();pulseElement(unitEl(t.uid));popNear(unitEl(t.uid),'被ダメ+20%');await delay(timing().ability)}}
+   if(idx===2){const a=target();if(a)await damageAlly(a,8,`${name}の駆け回る`,'physical');const b=target(a?[a.uid]:[]);if(b)await damageAlly(b,8,`${name}の駆け回る`,'physical')}
  }
- if(idx===2){
-   const a=randomAlive();if(a)await damageAlly(a,12,'食いしん坊の犬娘の駆け回る','physical');
-   const b=randomAlive(a?[a.uid]:[]);if(b)await damageAlly(b,12,'食いしん坊の犬娘の駆け回る','physical')
+ if(baseId==='arachne'){
+   if(idx===0)await damageAlly(target(),14,`${name}の攻撃`,'physical');
+   if(idx===1){const t=target(),hit=await damageAlly(t,8,`${name}のスロウ`,'magic');if(t&&!t.dead&&!state.enemy.dead&&hit?.hit){const beforeGauge=t.gauge;t.gauge=Math.max(0,t.gauge-30);const drained=beforeGauge-t.gauge;if(state.stats&&state.stats.current)state.stats.current.gaugeDrain+=drained;addLog(`スロウ：${t.name}のスキルゲージ-${drained}。`,'system');showBanner('スロウ',`${t.name} ゲージ-${drained}`);render();feedbackGauge(t,`-${drained}`);await delay(timing().ability)}}
+   if(idx===2){const t=target(),hit=await damageAlly(t,15,`${name}のダーク`,'magic');if(t&&!t.dead&&!state.enemy.dead&&hit?.hit&&await tryEnemyNegativeEffect(t,{name:'封印',x:3,decay:1,kind:'debuff',short:'封印'},{baseChance:20,isStatus:true})){addLog(`${t.name}に【封印3】。`,'system');showBanner('ダーク追加効果',`${t.name} 封印3`);render();pulseElement(unitEl(t.uid));popNear(unitEl(t.uid),'封印3');await delay(timing().ability)}}
  }
+ if(baseId==='golem'){
+   if(idx===0||idx===2)await damageAlly(target(),18,`${name}の攻撃`,'physical');
+   if(idx===1){await damageAlly(target(),12,`${name}のストーンバッシュ`,'physical');if(!e.dead&&aliveParty().length){addEnemyStatus({name:'硬化',x:2,decay:1,kind:'buff',short:'硬化'});addLog(`${name}：次のターン終了時まで被ダメージ-50%。`,'system');showBanner('ストーンバッシュ','被ダメージ-50%');render();feedbackEnemyStatus('被ダメ-50%');await delay(timing().ability)}}
+   if(idx===3){if(Math.random()<.5){if(state.stats&&state.stats.current)state.stats.current.enemyNoAction++;addLog(`${name}のゴーレムパンチは失敗した！`,'system');showBanner('ゴーレムパンチ','失敗');await delay(timing().ability)}else await damageAlly(target(),20,`${name}のゴーレムパンチ`,'physical',true)}
+ }
+}
+async function uniqueParallelBurstAfterEffect(){
+ const e=state.enemy,id=e.uniqueGearId;
+ if(id==='glutton'){const before=e.hp;e.hp=Math.min(e.maxHp,e.hp+ceil(e.maxHp*.15));const actual=e.hp-before;addLog(`【食いしん坊な】：パラレルバースト後にHP${actual}回復。`,'heal');showBanner('食いしん坊な',`HP +${actual}`);render();await delay(Math.round(timing().ability*.55))}
+ if(id==='reason_title'){const before=state.reason;state.reason=Math.max(0,state.reason-2);addLog(`【理を司る】：理力 ${before} → ${state.reason}。`,'system');showBanner('理を司る',`理力 -${before-state.reason}`);render();await delay(Math.round(timing().ability*.45))}
+ if(id==='wisdom_title'){let total=0;state.party.forEach(u=>{const b=u.wisdom||0;u.wisdom=Math.max(0,b-2);total+=b-u.wisdom});addLog(`【賢そうな】：味方全員の叡智を合計${total}減少。`,'system');showBanner('賢そうな','叡智 -2');render();await delay(Math.round(timing().ability*.45))}
+ if(id==='charm_title'){const before=e.charm||0;e.charm=Math.max(0,before-3);addLog(`【誘惑的な】：魅了 ${before} → ${e.charm}。`,'system');showBanner('誘惑的な',`魅了 -${before-e.charm}`);render();await delay(Math.round(timing().ability*.45))}
+ if(id==='holy'){const text=removeHolyBurstBuffs();addLog(`【神聖な】：${text}。`,'system');showBanner('神聖な',text);render();await delay(Math.round(timing().ability*.45))}
 }
 async function gluttonDogAction(){
  const e=state.enemy;
  if(e.activeOmen==='parallelBurst'){
    if(e.omenBroken){
-     addLog('【パラレルバースト】は解除されているため、食いしん坊の犬娘は通常行動へ移行。','system');
+     addLog(`【パラレルバースト】は解除されているため、${e.name}は通常行動へ移行。`,'system');
      await gluttonDogNormalAction()
    }else{
-     addLog('食いしん坊の犬娘の予兆行動【パラレルバースト】！ 味方全員に30無属性ダメージ。','damage');
-     showBanner('パラレルバースト','味方全員 30無属性');render();await delay(timing().ability);
+     const burstBase=20*(e.uniqueGearId==='breakthrough'?1.3:1),shown=ceil(burstBase*(e.damageMult||1));
+     addLog(`${e.name}の予兆行動【パラレルバースト】！ 味方全員に無属性ダメージ。`,'damage');
+     showBanner('パラレルバースト',`味方全員 基礎${shown}`);render();await delay(timing().ability);
      const targets=[...aliveParty()];
-     for(const t of targets){if(t&&!t.dead)await damageAlly(t,30,'パラレルバースト','neutral')}
+     for(const t of targets){if(t&&!t.dead)await damageAlly(t,burstBase,'パラレルバースト','neutral')}
+     if(!e.dead)await uniqueParallelBurstAfterEffect()
    }
    e.charge=0;
    return
@@ -1661,7 +1726,7 @@ async function enemyAction(){
      if(e.activeOmen==='rock')e.charge=0;else e.charge=Math.min(enemyChargeMax(e),e.charge+1);
      e.activeOmen=null;e.omenBroken=false
    }
-   if(e.id==='gluttonDog'){
+   if(e.unique){
      if(e.activeOmen==='parallelBurst')e.charge=0;else e.charge=Math.min(enemyChargeMax(e),e.charge+1);
      e.activeOmen=null;e.omenBroken=false
    }
@@ -1672,17 +1737,17 @@ async function enemyAction(){
  if(e.id==='dog'){if(idx===0)await damageAlly(randomAlive(),15,'敵・犬娘の攻撃','physical');if(idx===1){const t=randomAlive(),hit=await damageAlly(t,13,'敵・犬娘の噛みつき','physical');if(t&&!t.dead&&!state.enemy.dead&&hit?.hit&&await tryEnemyNegativeEffect(t,{name:'被ダメ+20%',x:3,decay:1,damageTakenAmp:20,kind:'debuff',short:'被↑20'})){addLog(`${t.name}に被ダメージ+20%【3】。`,'system');showBanner('噛みつき追加効果',`${t.name} 被ダメ+20%`);render();pulseElement(unitEl(t.uid));popNear(unitEl(t.uid),'被ダメ+20%');await delay(timing().ability)}}if(idx===2){const a=randomAlive();if(a)await damageAlly(a,8,'敵・犬娘の駆け回る','physical');const b=randomAlive(a?[a.uid]:[]);if(b)await damageAlly(b,8,'敵・犬娘の駆け回る','physical')}}
  if(e.id==='arachne'){if(idx===0)await damageAlly(randomAlive(),14,'アラクネの攻撃','physical');if(idx===1){const t=randomAlive(),hit=await damageAlly(t,8,'スロウ','magic');if(t&&!t.dead&&!state.enemy.dead&&hit?.hit){const beforeGauge=t.gauge;t.gauge=Math.max(0,t.gauge-30);const drained=beforeGauge-t.gauge;if(state.stats&&state.stats.current)state.stats.current.gaugeDrain+=drained;addLog(`スロウ：${t.name}のスキルゲージ-${drained}。`,'system');showBanner('スロウ',`${t.name} ゲージ-${drained}`);render();feedbackGauge(t,`-${drained}`);await delay(timing().ability)}}if(idx===2){const t=randomAlive(),hit=await damageAlly(t,15,'ダーク','magic');if(t&&!t.dead&&!state.enemy.dead&&hit?.hit&&await tryEnemyNegativeEffect(t,{name:'封印',x:3,decay:1,kind:'debuff',short:'封印'},{baseChance:20,isStatus:true})){addLog(`${t.name}に【封印3】。`,'system');showBanner('ダーク追加効果',`${t.name} 封印3`);render();pulseElement(unitEl(t.uid));popNear(unitEl(t.uid),'封印3');await delay(timing().ability)}}}
  if(e.id==='golem'){if(idx===0||idx===2)await damageAlly(randomAlive(),18,'ゴーレム娘の攻撃','physical');if(idx===1){await damageAlly(randomAlive(),12,'ストーンバッシュ','physical');if(state.enemy.dead)return;addEnemyStatus({name:'硬化',x:2,decay:1,kind:'buff',short:'硬化'});addLog('ゴーレム娘：次のターン終了時まで被ダメージ-50%。','system');showBanner('ストーンバッシュ','被ダメージ-50%');render();feedbackEnemyStatus('被ダメ-50%');await delay(timing().ability)}if(idx===3){if(Math.random()<.5){if(state.stats&&state.stats.current)state.stats.current.enemyNoAction++;addLog('ゴーレムパンチは失敗した！','system');showBanner('ゴーレムパンチ','失敗');await delay(timing().ability)}else await damageAlly(randomAlive(),20,'ゴーレムパンチ','physical',true)}}
- if(e.id==='gluttonDog')await gluttonDogAction();
+ if(e.unique)await gluttonDogAction();
  if(e.id==='crusher')await crusherAction();
- if(e.id==='crusher'||e.id==='gluttonDog'){e.activeOmen=null;e.omenBroken=false}
+ if(e.id==='crusher'||e.unique){e.activeOmen=null;e.omenBroken=false}
  if(!aliveParty().length)await finishRun(false)
 }
 function enemyDotMultiplier(){const count=state.party.reduce((n,u)=>n+(!u.dead?equippedUniqueCountSlot(u,'alchemist','weapon'):0),0);return Math.pow(2,count)}
 function applyGritToRawDamage(u,dmg){if(equippedUniqueCountSlot(u,'grit','armor')&&!u._gritUsed&&dmg>=u.hp){u._gritUsed=true;return {dmg:Math.max(0,u.hp-1),grit:true}}return {dmg,grit:false}}
 function expireTurnOneUniqueBonuses(){if(state.turn!==1)return;const r=state._turnOneReasonBonus||0,c=state._turnOneCharmBonus||0;if(r)state.reason=Math.max(0,state.reason-r);state.party.forEach(u=>{const w=u._turnOneWisdomBonus||0;if(w)u.wisdom=Math.max(0,(u.wisdom||0)-w);u._turnOneWisdomBonus=0});if(state.enemy&&c)state.enemy.charm=Math.max(0,(state.enemy.charm||0)-c);state._turnOneReasonBonus=0;state._turnOneCharmBonus=0;if(r||c)addLog('1ターン目終了：二つ名による一時的な理力・叡智・魅了が減少。','system')}
 async function tickStatuses(){
- const burn=enemyStatus('炎上');if(burn&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*burn.x/100*enemyDotMultiplier()*(1+enemyCurseAmp()/100));if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【炎上${burn.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`炎上${burn.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
- const poison=enemyStatus('毒');if(poison&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*poison.x/100*enemyDotMultiplier()*(1+enemyCurseAmp()/100));if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【毒${poison.x}】：敵に${dmg}ダメージ。`,'damage');showBanner(`毒${poison.x}`,`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65))}
+ const burn=enemyStatus('炎上');if(burn&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*burn.x/100*enemyDotMultiplier()*(1+enemyCurseAmp()/100));if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));dmg=ceil(dmg*uniqueEnemyIncomingGambleMultiplier());const grit=applyUniqueEnemyGrit(dmg);dmg=grit.dmg;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【炎上${burn.x}】：敵に${dmg}ダメージ。`,'damage');if(grit.grit)addLog(`【ど根性の】：${state.enemy.name}はHP1で耐えた！（${state.enemy._uniqueGritUses}/5）`,'system');showBanner(grit.grit?'ど根性で耐えた！':`炎上${burn.x}`,grit.grit?`${state.enemy.name} HP1`:`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65));if(state.enemy.hp<=0)await resolveUniqueEnemyZeroHp()}
+ const poison=enemyStatus('毒');if(poison&&state.enemy.hp>0){let dmg=ceil(state.enemy.maxHp*poison.x/100*enemyDotMultiplier()*(1+enemyCurseAmp()/100));if(enemyDamageReduction())dmg=ceil(dmg*(1-enemyDamageReduction()/100));dmg=ceil(dmg*uniqueEnemyIncomingGambleMultiplier());const grit=applyUniqueEnemyGrit(dmg);dmg=grit.dmg;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`【毒${poison.x}】：敵に${dmg}ダメージ。`,'damage');if(grit.grit)addLog(`【ど根性の】：${state.enemy.name}はHP1で耐えた！（${state.enemy._uniqueGritUses}/5）`,'system');showBanner(grit.grit?'ど根性で耐えた！':`毒${poison.x}`,grit.grit?`${state.enemy.name} HP1`:`${dmg}ダメージ`);render();floatNumber(stage,`-${dmg}`);await delay(Math.round(timing().ability*.65));if(state.enemy.hp<=0)await resolveUniqueEnemyZeroHp()}
  for(const u of state.party){const ap=(u.statuses||[]).find(x=>x.name==='毒');if(!ap||u.dead)continue;if(invincibleStatus(u)){addLog(`【無敵】：${u.name}は毒ダメージを無効化。`,'system');showBanner('無敵',`${u.name} 毒ダメージ0`);render();await delay(Math.round(timing().ability*.3));continue}const amount=ceil(u.maxHp*ap.x/100);if(u.id==='poison_slime'){const {actual}=applyHealing(u,u,u.maxHp*ap.x/100);if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`ポイズンジェル：【毒${ap.x}】が反転し、${u.name}が${actual}回復。`,'heal');showBanner(`毒${ap.x}反転`,`${u.name} HP+${actual}`);render();feedbackHp(u,`+${actual}`)}else{const before=u.hp,cap=(u.statuses||[]).reduce((m,st)=>st.damageCap?Math.min(m,st.damageCap):m,Infinity),capped=Number.isFinite(cap)?Math.min(amount,cap):amount,g=applyGritToRawDamage(u,capped),dmg=g.dmg;u.hp=Math.max(0,u.hp-dmg);const actual=before-u.hp;if(state.stats&&state.stats.current)state.stats.current.damageTaken+=actual;addLog(`【毒${ap.x}】：${u.name}に${actual}ダメージ。`,'damage');if(g.grit)addLog(`【気合の】：${u.name}は毒ダメージをHP1で耐えた！`,'system');showBanner(g.grit?'気合で耐えた！':`毒${ap.x}`,g.grit?`${u.name} HP1`:`${u.name} -${actual}`);render();await allyHitFeedback(u,actual);if(u.hp<=0)await resolveCombatDeath(u,'毒')}await delay(Math.round(timing().ability*.55))}
  for(const u of state.party){const rg=(u.statuses||[]).find(s=>s.name==='再生'&&s.x>0);if(rg&&!u.dead&&!recoveryBlocked()){const {actual}=applyHealing(null,u,u.maxHp*.08,{sourceBoost:false});if(actual>0){if(state.stats&&state.stats.current)state.stats.current.healing+=actual;addLog(`【再生${rg.x}】：${u.name}が${actual}回復。`,'heal');render();feedbackHp(u,`+${actual}`);await delay(Math.round(timing().ability*.35))}}}
  state.party.forEach(u=>{u.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));u.statuses=u.statuses.filter(s=>s.x>0)});state.enemy.statuses.forEach(s=>s.x=Math.max(0,s.x-(s.decay??1)));state.enemy.statuses=state.enemy.statuses.filter(s=>s.x>0);if(state.enemy?.chargeMax)state.enemy.charge=Math.min(state.enemy.charge,enemyChargeMax(state.enemy));state.enemy.timedAmp.forEach(s=>s.turns--);state.enemy.timedAmp=state.enemy.timedAmp.filter(s=>s.turns>0);state.partyBuffs.forEach(b=>b.turns--);state.partyBuffs=state.partyBuffs.filter(b=>b.turns>0);if(state.enemy.hp<=0)state.enemy.dead=true
@@ -1773,7 +1838,7 @@ async function activateReasonJewel(n){const empowered=state.reason>=5;if(await b
 async function activateSturdyJewel(n){if(await basicJewelHit('堅牢の宝珠',.5,'magic'))return;const pct=n*30;refreshPartyBuff('堅牢の宝珠',{damageReductionPct:pct,turns:1,name:`被ダメージ-${pct}%`,kind:'buff',short:`被↓${pct}`});addLog(`堅牢の宝珠：1ターン、味方全員の被ダメージ-${pct}%。`,'system');showBanner('堅牢の宝珠',`被ダメージ-${pct}% / 1T`);render();await delay(timing().ability)}
 async function activateSkyJewel(n){if(await basicJewelHit('天空の宝珠',.5,'magic'))return;const pct=n*15;refreshPartyBuff('天空の宝珠',{evasionRate:pct,turns:3,name:`回避率+${pct}%`,kind:'buff',short:`回避↑${pct}`});addLog(`天空の宝珠：3ターン、味方全員の回避率+${pct}%。`,'system');showBanner('天空の宝珠',`回避率+${pct}% / 3T`);render();await delay(timing().ability)}
 async function activateThirtyJewel(n,sel){if(await basicJewelHit('三十の宝珠',.5,'magic'))return;sel.forEach(u=>addAllyStatus(u,{name:'被ダメ上限30',x:1,decay:1,damageCap:30,kind:'buff',short:'上限30'}));addLog('三十の宝珠：1ターン、チェイン参加者が受ける1回の被ダメージ最大値を30にした。','system');showBanner('三十の宝珠','参加者：被ダメ上限30 / 1T');render();await delay(timing().ability)}
-async function activateCurseJewel(n){if(await basicJewelHit('呪詛の宝珠',1,'magic'))return;const x=n*10+10;addEnemyStatus({name:'呪い',x,decay:10,kind:'debuff',short:'呪い'});addLog(`呪詛の宝珠：敵に【呪い${x}】。与ダメージ-${x}%・被ダメージ+${x}%。`,'system');showBanner('呪詛の宝珠',`呪い${x}`);render();await delay(timing().ability)}
+async function activateCurseJewel(n){if(await basicJewelHit('呪詛の宝珠',1,'magic'))return;const x=n*10+10;if(!addEnemyStatus({name:'呪い',x,decay:10,kind:'debuff',short:'呪い'})){showBanner('神聖な','呪い無効');render();await delay(timing().ability);return}addLog(`呪詛の宝珠：敵に【呪い${x}】。与ダメージ-${x}%・被ダメージ+${x}%。`,'system');showBanner('呪詛の宝珠',`呪い${x}`);render();await delay(timing().ability)}
 async function activatePoisonFangJewel(n){if(await basicJewelHit('毒牙の宝珠',1,'magic'))return;const x=n+1;addEnemyStatus({name:'毒',x,decay:1,kind:'debuff',short:'毒'});addLog(`毒牙の宝珠：敵に【毒${x}】。`,'system');showBanner('毒牙の宝珠',`毒${x}`);render();await delay(timing().ability)}
 async function activateScorchingJewel(n){if(await basicJewelHit('灼熱の宝珠',1,'magic'))return;const x=n+1;addEnemyStatus({name:'炎上',x,decay:1,kind:'debuff',short:'炎上'});addLog(`灼熱の宝珠：敵に【炎上${x}】。`,'system');showBanner('灼熱の宝珠',`炎上${x}`);render();await delay(timing().ability)}
 async function activatePressureJewel(n){if(await basicJewelHit('重圧の宝珠',.5,'magic'))return;const x=n+1;addEnemyStatus({name:'重圧',x,decay:1,kind:'debuff',short:'重圧'});addLog(`重圧の宝珠：敵に【重圧${x}】。持続中CHARGE最大値+1。`,'system');showBanner('重圧の宝珠',`重圧${x} / CHARGE最大+1`);render();await delay(timing().ability)}
@@ -2262,7 +2327,7 @@ function triggerCollapse(){
 function spawnUnique(){
  const map=currentMap(),cur=currentNode();let candidates=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&!n.secretEntrance&&n.id!==cur.id);
  candidates.sort((a,b)=>(Math.abs(b.x-cur.x)+Math.abs(b.y-cur.y))-(Math.abs(a.x-cur.x)+Math.abs(a.y-cur.y)));
- const pool=candidates.slice(0,Math.max(1,Math.ceil(candidates.length/2)));const n=rand(pool.length?pool:candidates);if(!n)return null;n.type='unique';n.uniqueGearId=rand(UNIQUE_GEAR_IDS);n.infected=true;explore.lastInfected=n.id;return n
+ const pool=candidates.slice(0,Math.max(1,Math.ceil(candidates.length/2)));const n=rand(pool.length?pool:candidates);if(!n)return null;n.type='unique';n.uniqueGearId=rand(UNIQUE_GEAR_IDS);n.uniqueEnemyId=rand(uniqueEnemyBasePool());n.alwaysRevealed=true;n.infected=true;explore.lastInfected=n.id;return n
 }
 function maybeInfect(){
  if(inTreasureVault())return;
@@ -2293,14 +2358,15 @@ function triggerTrap(n){
  if(!n||n.type!=='trap')return;const id=ensureTrapId(n),def=trapDef(id);n.type='empty';delete n.trapId;let html='',after=null;
  if(id==='mine'||id==='large_mine'){
    const pct=id==='mine'?.30:.60,u=randomTrapTarget();
-   if(!u)html='<div class="trap-result-message">生存している味方がおらず、不発。</div>';
+   if(partyHasEquippedUnique('cleaner','armor'))html='<div class="trap-result-message"><b>【掃除屋の】</b>装備の効果で地雷系罠のダメージを無効化した。</div>';
+   else if(!u)html='<div class="trap-result-message">生存している味方がおらず、不発。</div>';
    else{const before=u.hp,wanted=Math.ceil(u.maxHp*pct),actual=Math.min(wanted,Math.max(0,u.hp-1));u.hp=Math.max(1,u.hp-actual);html=trapTargetHtml(u,`最大HPの${Math.round(pct*100)}%ダメージ。HPは0にはならない。`)+trapMeterHtml('HP',before,u.hp,u.maxHp,'hp')}
  }
  else if(id==='exhaustion'){
    const rows=state.party.map(u=>{const before=u.gauge;u.gauge=Math.max(0,u.gauge-30);return {u,before,after:u.gauge}});html='<div class="trap-result-message">味方全員のスキルゲージが30減少した。</div>'+trapPartyGaugeHtml(rows)
  }
  else if(id==='item_curse'){
-   const pool=state.items.filter(x=>!x.cursed);if(!pool.length)html='<div class="trap-result-message">呪えるアイテムを所持しておらず、不発。</div>';else{const inst=rand(pool),name=itemDef(inst.itemId).name;inst.cursed=true;html=`<div class="trap-change"><div class="trap-change-card"><small>対象</small><b>${name}</b></div><div class="trap-change-arrow">→</div><div class="trap-change-card"><small>状態</small><b>呪い</b></div></div><div class="trap-result-message">解呪するまで使用・効果発揮できない。</div>`}
+   const pool=state.items.filter(x=>!x.cursed);if(partyHasEquippedUnique('holy','armor'))html='<div class="trap-result-message"><b>【聖なる】</b>装備の効果で、アイテムへの呪いを無効化した。</div>';else if(!pool.length)html='<div class="trap-result-message">呪えるアイテムを所持しておらず、不発。</div>';else{const inst=rand(pool),name=itemDef(inst.itemId).name;inst.cursed=true;html=`<div class="trap-change"><div class="trap-change-card"><small>対象</small><b>${name}</b></div><div class="trap-change-arrow">→</div><div class="trap-change-card"><small>状態</small><b>呪い</b></div></div><div class="trap-result-message">解呪するまで使用・効果発揮できない。</div>`}
  }
  else if(id==='alarm'){
    const map=currentMap(),ids=neighborsOf(map,n.id),beforeInfo=monsterHouseInfo(),targets=ids.map(x=>map.nodes[x]).filter(x=>x&&!x.hidden&&!x.isLarge&&x.type==='empty'&&!x.secretEntrance);targets.forEach(x=>{x.type='enemy';x.infected=true});const afterInfo=monsterHouseInfo();html=targets.length?`<div class="trap-result-message">周囲の無マス <b>${targets.length}個</b> が戦闘マスに変化した。${beforeInfo&&afterInfo&&!afterInfo.released?`<br>残りの敵 ${beforeInfo.remaining} → ${afterInfo.remaining}`:''}</div>`:'<div class="trap-result-message">周囲に変化させられる無マスがなく、不発。</div>'
@@ -2398,6 +2464,10 @@ function buyShopProduct(n,index){const stock=ensureShopStock(n),p=stock[index];i
  state.gold-=p.price;p.sold=true;if(p.kind==='item'){const d=itemDef(p.itemId);state.items.push(createItemInstance(p.itemId));toast(`${d.name}を購入`);renderItemTab();renderExplore();renderShop(n);return}
  const inst=p.gear;addGearToInventory(inst);const dlg=$('#shopDialog');if(dlg.open)dlg.close();renderExplore();openGearPickup(inst,'shop')
 }
+function openUniqueInfo(n){
+ if(!n||n.type!=='unique')return;const d=uniqueEnemyNodeData(n);$('#uniqueInfoImg').src=d.base.img;$('#uniqueInfoName').textContent=d.name;$('#uniqueInfoMeta').innerHTML=`<span>HP ${d.maxHp}</span><span>与ダメ ×${d.damageMult}</span><span>ベース：${d.base.name}</span>`;$('#uniqueInfoTraitTitle').textContent=`固有能力：${d.tr.title}`;$('#uniqueInfoTraitText').textContent=d.tr.text;$('#uniqueInfoReward').textContent=`撃破すると「${d.gear.prefix}」装備を1つ獲得し、崩壊が解除される。`;const dlg=$('#uniqueInfoDialog');if(!dlg.open)dlg.showModal()
+}
+function closeUniqueInfo(){const dlg=$('#uniqueInfoDialog');if(dlg.open)dlg.close()}
 function resolveExploreNode(){
  const n=currentNode();
  if(explore.lastMessage){const m=explore.lastMessage;explore.lastMessage=null;showEvent(m.title,m.text);return}
@@ -2424,15 +2494,17 @@ function resolveExploreNode(){
    let total=0;state.party.forEach(u=>{if(u.dead)return;const {actual}=applyHealing(null,u,u.maxHp*.3,{sourceBoost:false});total+=actual});n.type='empty';showEvent('休憩',`生存中の味方が最大HPの30%回復（実回復${total}）。使用済みマスは「無」になった。`);toast(`HP +${total}`);return
  }
  if(n.type==='enemy'){showEvent('敵','通常敵が待ち構えている。', '戦闘開始',()=>startExploreBattle(n.id,rand(['slime','dog','arachne']),'enemy'));return}
- if(n.type==='unique'){const uniqueId=n.uniqueGearId||'glutton',ud=UNIQUE_GEAR_DEFS[uniqueId]||UNIQUE_GEAR_DEFS.glutton;showEvent('ユニーク敵',`崩壊から現れた「${ud.enemyName}」。撃破すると崩壊度が0へ戻り、対応する二つ名装備を獲得できる。`,'戦闘開始',()=>startExploreBattle(n.id,'gluttonDog','unique',uniqueId));return}
+ if(n.type==='unique'){const d=uniqueEnemyNodeData(n);showEvent('ユニーク敵',`崩壊から現れた「${d.name}」。固有能力：${d.tr.title}。撃破すると崩壊度が0へ戻り、「${d.gear.prefix}」装備を獲得できる。`,'戦闘開始',()=>startExploreBattle(n.id,'gluttonDog','unique',d.uniqueId));return}
  if(n.type==='vault_exit'){showEvent('宝物庫の出口',`${explore.floor+1}Fへ続く通路。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`,'宝物庫を出る',leaveTreasureVault);return}
  if(n.type==='exit'){showEvent('次階への道',`${explore.floor+1}Fへ進める。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`,'次の階へ',advanceFloor);return}
  if(n.type==='boss'){showEvent('最奥','クラッシャーが待ち構えている。','ボス戦開始',()=>startExploreBattle(n.id,'crusher','boss'));return}
 }
 function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;clearPendingTrapBattleStatuses();const released=advanceSeizedItems();explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}const releaseNote=released.length?` 差し押さえ解除：${released.join('・')}。`:'';if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}。出口から撤退することもできる。${releaseNote}`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。${releaseNote}`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。${releaseNote}`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
 function applyPendingTrapStatusesForBattle(){const notes=[];state.party.forEach(u=>{const pending=[...(u.pendingBattleStatuses||[])];u.pendingBattleStatuses=[];pending.forEach(st=>{addAllyStatus(u,st);notes.push(`${u.name}：罠の影響で【${st.name}${st.x}】`);if(!u.dead&&ACTION_DISABLE_STATUS_NAMES.has(st.name)&&Math.random()<Math.max(0,Math.min(100,st.x))/100){u._actionDisabledTurn=state.turn;u._actionDisabledBy=st.name;notes.push(`${u.name}は【${st.name}${st.x}】により、このターン行動不能`)}})});return notes}
+function configureUniqueBattleEnemy(nodeId,uniqueGearId){const n=currentMap()?.nodes?.[nodeId],baseId=n?.uniqueEnemyId||'dog',base=ENEMIES[baseId]||ENEMIES.dog,tr=uniqueTrait(uniqueGearId);const e=state.enemy;e.unique=true;e.uniqueGearId=uniqueGearId;e.baseEnemyId=baseId;e.name=uniqueEnemyDisplayName(uniqueGearId,baseId);e.img=base.img;e.maxHp=ceil(base.maxHp*tr.hpMult);e.hp=e.maxHp;e.damageMult=tr.damageMult||1.5;e.chargeMax=3;e.charge=0;e.actionIndex=0;e._uniqueGritUses=0;e._uniqueRebirthUsed=false;e._uniqueObsessTarget=null;if(uniqueGearId==='breakthrough')e.charge=3}
+function applyUniqueBattleOpening(){const e=state.enemy,notes=[];if(!e?.unique)return notes;if(e.uniqueGearId==='obsession'){const t=randomAlive();e._uniqueObsessTarget=t?.uid||null;if(t)notes.push(`【しつこい】：${t.name}を執着対象に定めた。`)}if(e.uniqueGearId==='breakthrough')notes.push('【猛進する】：戦闘開始時CHARGE+3。');if(e.uniqueGearId==='lone'&&!uniqueOtherBattleNodesRemain())notes.push('【孤高の】：このフロアに他の戦闘マスがないため、与ダメージ+50%。');if(e.uniqueGearId==='alchemist'){const st=rand([{name:'毒',x:3,decay:1,kind:'debuff',short:'毒'},{name:'炎上',x:3,decay:1,kind:'debuff',short:'炎上'},{name:'封印',x:2,decay:1,kind:'debuff',short:'封印'}]);let applied=0,blocked=0;aliveParty().forEach(u=>{const m=mountStatus(u);if(m){m.x=Math.max(0,m.x-1);if(m.x<=0)u.statuses=u.statuses.filter(x=>x!==m);blocked++;return}addAllyStatus(u,st);applied++});notes.push(`【錬金術師の】：味方全員へ【${st.name}${st.x}】。付与${applied}人${blocked?` / マウントで無効${blocked}人`:''}。`)}return notes}
 function startExploreBattle(nodeId,enemyId,kind,uniqueGearId=null){
- state.battleNo++;state.turn=1;state.battleItemUsedTurn=0;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId&&UNIQUE_GEAR_DEFS[uniqueGearId])state.enemy.name=UNIQUE_GEAR_DEFS[uniqueGearId].enemyName;state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0;clearAllyActionDisable(u)});startBattleResources();const trapNotes=applyPendingTrapStatusesForBattle();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');trapNotes.forEach(t=>addLog(t,'system'));showBattle();render()
+ state.battleNo++;state.turn=1;state.battleItemUsedTurn=0;state.enemy=freshEnemy(enemyId);state.battleOver=false;state.battleContext={nodeId,kind,uniqueGearId};if(kind==='unique'&&uniqueGearId)configureUniqueBattleEnemy(nodeId,uniqueGearId);state.party.forEach(u=>{u.statuses=[];u.dead=u.hp<=0;clearAllyActionDisable(u)});startBattleResources();const trapNotes=applyPendingTrapStatusesForBattle(),uniqueNotes=applyUniqueBattleOpening();beginBattleStats();selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);logEl.innerHTML='';hideBanner();addLog(`探索戦闘 ${state.battleNo}：${state.enemy.name}`,'turnline');trapNotes.forEach(t=>addLog(t,'system'));uniqueNotes.forEach(t=>addLog(t,'system'));showBattle();render()
 }
 function returnFromBattle(){if(state.runOver){resetRun();return}const ctx=state.battleContext;state.battleContext=null;state.enemy=null;intermission.classList.remove('show');showExplore();if(ctx?.largeParentId){if(!explore.suppressLargeCompleteMessageOnce)explore.lastMessage=null;renderExplore();if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst){setTimeout(()=>openGearPickup(inst,'large'),60);return}}setTimeout(()=>continueLargeNode(ctx.largeParentId),30);return}else{resolveExploreNode();renderExplore()}if(explore.pendingGearPickupUid){const uid=explore.pendingGearPickupUid;explore.pendingGearPickupUid=null;const inst=state.inventory.find(x=>x.uid===uid);if(inst)setTimeout(()=>openGearPickup(inst),80)}}
 function centerMapOnCurrent(smooth=false){
@@ -2752,7 +2824,7 @@ function renderExplore(){
  mapLinesEl.innerHTML='';map.edges.forEach(k=>{const [a,b]=k.split('|'),na=map.nodes[a],nb=map.nodes[b],line=document.createElementNS('http://www.w3.org/2000/svg','line');const px=n=>8+n.x*(84/(EXPLORE_CFG.w-1)),py=n=>8+n.y*(84/(EXPLORE_CFG.h-1)),point=(n,otherId)=>n?.isLarge&&n.largePorts?.[otherId]?n.largePorts[otherId]:n,pa=point(na,b),pb=point(nb,a);line.setAttribute('x1',px(pa));line.setAttribute('y1',py(pa));line.setAttribute('x2',px(pb));line.setAttribute('y2',py(pb));line.setAttribute('class',`map-line ${(na.visited&&nb.visited)?'visited':''}`);mapLinesEl.appendChild(line)});
  mapNodesEl.innerHTML='';const reachable=new Set(neighborsOf(map,explore.current));const visitedIds=new Set(Object.values(map.nodes).filter(x=>!x.hidden&&x.visited).map(x=>x.id));
  const isRevealed=n=>n.alwaysRevealed||n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
- Object.values(map.nodes).filter(n=>!n.hidden).forEach(n=>{const revealed=isRevealed(n),displayType=revealed?(n.type==='trap'?'empty':n.type):'unknown';const b=document.createElement('button');b.type='button';const mhSeal=n.monsterHouseSealed?' monster-house-sealed':(n.monsterHouseReady?' monster-house-ready':'');b.className=`map-node${n.isLarge?' large-node':''} type-${displayType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${reachable.has(n.id)?' reachable':''}${n.infected&&revealed&&n.type!=='trap'?' infected':''}${mhSeal}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;const label=n.monsterHouseSealed?'封印中':(n.isLarge&&n.type==='large'&&revealed?largeMapProgressLabel(n):nodeLabel(displayType)),hideEmptyLabel=revealed&&displayType==='empty';b.innerHTML=revealed?`<span>${nodeIcon(displayType)}</span>${hideEmptyLabel?'':`<small>${label}</small>`}`:'<span>?</span>';b.disabled=!!explore.largeSession||!reachable.has(n.id)||n.id===explore.current;b.addEventListener('click',()=>moveToNode(n.id));mapNodesEl.appendChild(b);n.infected=false});
+ Object.values(map.nodes).filter(n=>!n.hidden).forEach(n=>{const revealed=isRevealed(n),displayType=revealed?(n.type==='trap'?'empty':n.type):'unknown',canMove=reachable.has(n.id),canInspect=revealed&&n.type==='unique';const b=document.createElement('button');b.type='button';const mhSeal=n.monsterHouseSealed?' monster-house-sealed':(n.monsterHouseReady?' monster-house-ready':'');b.className=`map-node${n.isLarge?' large-node':''} type-${displayType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${canMove?' reachable':''}${n.infected&&revealed&&n.type!=='trap'?' infected':''}${mhSeal}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;const label=n.monsterHouseSealed?'封印中':(n.isLarge&&n.type==='large'&&revealed?largeMapProgressLabel(n):nodeLabel(displayType)),hideEmptyLabel=revealed&&displayType==='empty';b.innerHTML=revealed?`<span>${nodeIcon(displayType)}</span>${hideEmptyLabel?'':`<small>${label}</small>`}`:'<span>?</span>';if(canInspect){const info=document.createElement('span');info.className='unique-info-mark';info.textContent='i';info.setAttribute('role','button');info.setAttribute('aria-label','ユニーク敵の詳細');info.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openUniqueInfo(n)});b.appendChild(info)}b.disabled=!!explore.largeSession||n.id===explore.current||(!canMove&&!canInspect);b.addEventListener('click',()=>{if(canInspect&&!canMove){openUniqueInfo(n);return}moveToNode(n.id)});mapNodesEl.appendChild(b);n.infected=false});
  renderExploreParty();requestAnimationFrame(()=>centerMapOnCurrent(false));if(!$('#exploreEventTitle').textContent)resolveExploreNode()
 }
 function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力のリング</label></div>`;p.appendChild(b)})}
@@ -2762,7 +2834,7 @@ $('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').add
 $('#battleItemBtn').addEventListener('click',openBattleItemSheet);$('#battleItemCloseBtn').addEventListener('click',closeBattleItemSheet);$('#battleItemDialog').addEventListener('cancel',e=>{e.preventDefault();closeBattleItemSheet()});
 $('#statsToggle').addEventListener('click',()=>{const b=$('#statsBody'),o=b.classList.toggle('show');$('#statsMark').textContent=o?'閉じる ▴':'開く ▾'});
 $('#resetCumulativeBtn').addEventListener('click',()=>{delete cumulativeByConfig[configKey()];renderStats()});
-$('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});$('#bossMechanic').addEventListener('click',openBossDetail);$('#bossDetailCloseBtn').addEventListener('click',()=>$('#bossDetailDialog').close());
+$('#uniqueInfoCloseBtn').addEventListener('click',closeUniqueInfo);$('#uniqueInfoDialog').addEventListener('cancel',e=>{e.preventDefault();closeUniqueInfo()});$('#setupToggle').addEventListener('click',()=>{const b=$('#setupBody'),o=b.classList.toggle('show');$('#setupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#applySetup').addEventListener('click',()=>{readSetup();resetRun();$('#setupBody').classList.remove('show');$('#setupMark').textContent='開く ▾'});$('#bossMechanic').addEventListener('click',openBossDetail);$('#bossDetailCloseBtn').addEventListener('click',()=>$('#bossDetailDialog').close());
 $('#treasureConfirmBtn').addEventListener('click',()=>{if(treasureSelectedIndex===null)return;const n=treasureNodeById(treasureSelectedNodeId)||currentNode();if(!isTreasureNode(n)){toast('宝箱を確認できません',true);return}takeTreasureReward(n,treasureSelectedIndex)});$('#treasureCloseBtn').addEventListener('click',()=>{const id=treasureSelectedNodeId,n=treasureNodeById(id);treasureSelectedIndex=null;treasureSelectedNodeId=null;const dlg=$('#treasureDialog');if(dlg.open)dlg.close();if(n){if(largeChild(n)&&largeSessionMatches(n)){renderExplore();continueLargeNode(n.largeParentId)}else if(n.type==='locked_treasure')showEvent('カギ付き宝箱','開封済み。選ぶまで中身は変わらない。','中身を見る',()=>openTreasure(n));else showEvent(treasureTitle(n),'中身はそのまま残っている。','もう一度見る',()=>openTreasure(n))}});$('#treasureDialog').addEventListener('cancel',e=>{e.preventDefault();$('#treasureCloseBtn').click()});$('#gearPickupBackBtn').addEventListener('click',()=>{const mode=gearPickupReturnMode;$('#gearPickupDialog').close();gearPickupUid=null;gearPickupReturnMode='explore';if(mode==='shop')setTimeout(()=>openShop(currentNode()),40);else if(mode==='large'&&explore?.largeSession)setTimeout(()=>continueLargeNode(explore.largeSession.nodeId),40)});$('#gearPickupOpenBtn').addEventListener('click',openPickedGearTab);$('#itemDetailUseBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(inst)useItemFromSource(inst.itemId,{kind:'inventory',uid:inst.uid})});$('#itemDetailDropBtn').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);$('#itemDetailDiscardText').textContent=`「${d.name}」を完全に捨てますか？`;$('#itemDetailDiscard').classList.remove('screen-hidden')});$('#itemDetailDiscardCancel').addEventListener('click',()=>$('#itemDetailDiscard').classList.add('screen-hidden'));$('#itemDetailDiscardConfirm').addEventListener('click',()=>{const inst=state.items.find(x=>x.uid===itemDetailUid);if(!inst)return;const d=itemDef(inst.itemId);removeItemInstance(inst.uid);toast(`${d.name}を捨てた`);closeItemDetail();renderItemTab();renderExplore()});$('#itemDetailCloseBtn').addEventListener('click',closeItemDetail);$('#itemDetailDialog').addEventListener('cancel',e=>{e.preventDefault();closeItemDetail()});$('#itemTargetConfirmBtn').addEventListener('click',()=>{if(itemUseContext&&itemTargetUid)finishItemUse(itemUseContext.itemId,itemUseContext,itemTargetUid)});$('#itemTargetCancelBtn').addEventListener('click',cancelItemTarget);$('#itemTargetDialog').addEventListener('cancel',e=>{e.preventDefault();cancelItemTarget()});$('#enhanceConfirmBtn').addEventListener('click',()=>{if(enhanceSelection)applyEnhancement(enhanceSelection.nodeId,enhanceSelection.uid)});$('#centerMapBtn').addEventListener('click',()=>centerMapOnCurrent(true));$('#exploreTabBtn').addEventListener('click',()=>switchExploreTab('explore'));$('#itemManageBtn').addEventListener('click',()=>switchExploreTab('item'));$('#gearManageBtn').addEventListener('click',()=>switchExploreTab('gear'));$('#jewelManageBtn').addEventListener('click',()=>switchExploreTab('jewel'));$('#manageCloseBtn').addEventListener('click',()=>$('#exploreManageDialog').close());$('#shopBuyTab').addEventListener('click',()=>setShopMode('buy'));$('#shopSellTab').addEventListener('click',()=>setShopMode('sell'));$('#shopSellCancelBtn').addEventListener('click',closeShopSellConfirm);$('#shopSellConfirmBtn').addEventListener('click',confirmShopSell);$('#shopSellConfirmDialog').addEventListener('cancel',e=>{e.preventDefault();closeShopSellConfirm()});$('#shopCloseBtn').addEventListener('click',closeShop);$('#shopDialog').addEventListener('cancel',e=>{e.preventDefault();closeShop()});$('#charSheetCloseBtn').addEventListener('click',()=>$('#exploreCharacterDialog').close());$('#parallelDriveBtn').addEventListener('click',()=>{const uid=$('#parallelDriveBtn').dataset.uid;if(uid)openParallelDrive(uid)});$('#parallelBackBtn').addEventListener('click',()=>closeParallelDrive(true));$('#parallelCloseBtn').addEventListener('click',()=>closeParallelDrive(false));$('#parallelCancelBtn').addEventListener('click',()=>{parallelPendingId=null;$('#parallelConfirm').classList.add('screen-hidden')});$('#parallelExecuteBtn').addEventListener('click',applyParallelDrive);$('#parallelDriveDialog').addEventListener('cancel',e=>{e.preventDefault();closeParallelDrive(false)});
 const jewelTabPage=$('#jewelTabPage');
 let jewelTouchY=null;
