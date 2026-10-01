@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.26.2 宝珠インライン変更・宝箱UI調整</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.26.3 所持宝珠コンパクト化・天秤アイコン調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -563,7 +563,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .jewel-tab-intro-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .jewel-tab-intro b{font-size:13px}.jewel-tab-intro strong{font-size:12px;color:#e6c9ff}.jewel-tab-intro p{margin:5px 0 0;font-size:10px;line-height:1.55;color:#9da8bc}
 .jewel-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:3px 3px 7px;font-size:12px;font-weight:950;color:#e8edf7}.jewel-section-title span{font-size:9px;font-weight:800;color:#9aa6ba}
-.jewel-set-list,.jewel-owned-list{display:grid;gap:8px}.jewel-set-list{flex:0 0 auto}.jewel-owned-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:1px 3px 6px 0;scrollbar-gutter:stable}
+.jewel-set-list,.jewel-owned-list{display:grid;gap:8px}.jewel-set-list{flex:0 0 auto}.jewel-owned-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:1px 3px 6px 0;scrollbar-gutter:stable;align-content:start;grid-auto-rows:max-content}
 .jewel-slot{appearance:none;width:100%;display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:11px;align-items:center;padding:12px 12px;border-radius:14px;background:linear-gradient(135deg,#1d1828,#121824);border:1px solid #5a466d;color:#eef2f8;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s,background .15s,transform .1s}
 .jewel-slot.editing{border-color:#a86bd2;background:linear-gradient(135deg,#30203f,#171523);box-shadow:0 0 0 2px rgba(168,107,210,.24),0 0 18px rgba(132,71,170,.18)}
 .jewel-slot:active,.jewel-owned.selectable:active{transform:scale(.992)}
@@ -924,7 +924,7 @@ const ITEM_CATALOG={
  balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',price:100,text:'崩壊度-20。崩壊度0では使用できない。',battleUsable:false},
  salvation_scale:{id:'salvation_scale',name:'救世の天秤',icon:'⚖️',price:1500,text:'崩壊を解除し、現在のユニークマスを消滅させ、崩壊度を0にする。',battleUsable:false},
  imbalance_scale:{id:'imbalance_scale',name:'不均衡の天秤',icon:'⚖️',price:100,text:'崩壊度+30。上限に達した場合は崩壊が発生する。',battleUsable:false},
- disaster_scale:{id:'disaster_scale',name:'災厄の天秤',icon:'☣️',price:1500,text:'崩壊度+100。さらにユニークマスを追加で1個発生させる。',battleUsable:false},
+ disaster_scale:{id:'disaster_scale',name:'災厄の天秤',icon:'⚖️',price:1500,text:'崩壊度+100。さらにユニークマスを追加で1個発生させる。',battleUsable:false},
  parallel_jewel:{id:'parallel_jewel',name:'パラレルジュエル',icon:'💎',price:5000,text:'使用するとパラレルポイントを30獲得。所持したままなら、一部の特殊パラレルドライブの鍵になる。',battleUsable:false}
 };
 const ITEM_IDS=Object.keys(ITEM_CATALOG);
