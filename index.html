@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.32.1 罠結果パネル</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.32.2 通常フロア罠配置</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -585,7 +585,7 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 @media(max-width:380px){.explore-dock button{font-size:8px}.jewel-slot{grid-template-columns:48px minmax(0,1fr) auto;padding:10px 9px;gap:9px}.jewel-slot-icon{width:48px;height:48px;font-size:20px}.jewel-slot-label{font-size:8.5px;margin-top:-3px}.jewel-slot-name{font-size:12.5px}.jewel-slot-text{font-size:9px}.jewel-slot-change{padding:6px 7px;font-size:9px}.jewel-section-title{font-size:11px}.jewel-section-title span{font-size:8px}}
 
 
-/* ===== Trap result panel v13.32.1 ===== */
+/* ===== Trap result panel v13.32.2 ===== */
 #trapResultDialog{width:min(92vw,460px);max-height:88vh;box-sizing:border-box;overflow:hidden}
 .trap-result-panel{padding:16px;max-height:88vh;box-sizing:border-box;display:flex;flex-direction:column;background:linear-gradient(180deg,#17121a,#0e121b);border:1px solid #593847;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.48)}
 .trap-result-kicker{font-size:9px;font-weight:950;letter-spacing:.12em;color:#d993aa;text-align:center}
@@ -945,6 +945,7 @@ const JEWEL_TREASURE_SPECIAL_RATE=.15; // 仮値：宝珠宝箱で特殊宝珠�
 const MONSTER_HOUSE_RANDOM_START_FLOOR=5;
 const MONSTER_HOUSE_RANDOM_RATE=.04;
 const MONSTER_HOUSE_COOLDOWN=0;
+const NORMAL_FLOOR_TRAP_RATE=.05; // 通常フロア：通常ノード全体を基準に約5%。入口→出口には罠なし経路を最低1本保証。
 const MONSTER_HOUSE_NODE_WEIGHTS=[{id:'enemy',weight:58},{id:'item',weight:18},{id:'equipment',weight:15},{id:'trap',weight:6},{id:'empty',weight:3}];
 const TREASURE_VAULT_SECRET_RATE=.04; // 通常フロアごとに4%。当選時は無マス1つへ秘密入口を仕込む。
 const TREASURE_VAULT_NODE_WEIGHTS=[{id:'item',weight:45},{id:'equipment',weight:45},{id:'empty',weight:10}];
@@ -1964,6 +1965,17 @@ function neighborsOf(map,id){const out=[];map.edges.forEach(k=>{const [a,b]=k.sp
 function gridNeighborsOf(map,id){const n=map.nodes[id];if(!n)return[];return [[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>nodeKey(n.x+dx,n.y+dy)).filter(k=>map.nodes[k])}
 function graphDistances(map,start){const dist={[start]:0},q=[start];for(let i=0;i<q.length;i++){const id=q[i];neighborsOf(map,id).forEach(n=>{if(dist[n]!==undefined)return;dist[n]=dist[id]+1;q.push(n)})}return dist}
 function shortestPathIds(map,start,end){const prev={[start]:null},q=[start];for(let i=0;i<q.length;i++){const id=q[i];if(id===end)break;neighborsOf(map,id).forEach(n=>{if(prev[n]!==undefined)return;prev[n]=id;q.push(n)})}if(prev[end]===undefined)return[start];const path=[];for(let cur=end;cur!==null;cur=prev[cur])path.push(cur);return path.reverse()}
+function placeNormalFloorTraps(map,candidates){
+ // 罠は見えている危険。通常フロアでは、入口→出口に最低1本だけでも「罠を踏まずに進める」経路を必ず残す。
+ const safePath=new Set(shortestPathIds(map,map.start,map.end));
+ // 5%を固定1個へ丸めず、各通常ノードぶん独立抽選して0〜2個程度の揺らぎを残す。
+ let wanted=0;for(let i=0;i<candidates.length;i++)if(Math.random()<NORMAL_FLOOR_TRAP_RATE)wanted++;
+ const pool=shuffle(candidates.filter(n=>n.type==='empty'&&!safePath.has(n.id)));
+ const count=Math.min(wanted,pool.length);
+ for(let i=0;i<count;i++){const n=pool[i];n.type='trap';n.trapId=rollTrapId(false)}
+ map.normalTrapCount=count;map.trapSafePath=[...safePath];
+ return count
+}
 function addLoopConnections(map){
  // まず完全な行き止まりを減らす。隣接している既存ノードへ横道を通し、短いループを作る。
  let guard=0;
@@ -2175,6 +2187,9 @@ function generateFloor(floor,hasShop=false,hasTreasure=false,isMonsterHouse=fals
    const rewards=[...((hasTreasure&&!largeNodes.length)?['treasure']:[]),...Array(itemCount).fill('item'),'equipment','equipment','enhance','rest'];
    rewards.forEach(type=>{const n=takeFree();if(n)n.type=type});
    largeNodes.forEach((n,i)=>createLargeEvents(map,n,hasTreasure&&i===0));
+   // 通常フロアの自然罠。報酬などを配置した後、残った無マスだけを候補にする。
+   // shortestPathIds() で確保した1経路上には置かないため、罠回避ルートが最低1本残る。
+   placeNormalFloorTraps(map,candidates);
  }
 
  map.nodes[map.start].visited=true;return map
