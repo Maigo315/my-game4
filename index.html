@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.34.1 アイテム・ショップUI調整</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.34.2 アイテム出現率調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -973,15 +973,15 @@ const TRAP_CATALOG={
 };
 const TRAP_IDS=Object.keys(TRAP_CATALOG);
 const ITEM_CATALOG={
- potion:{id:'potion',name:'ポーション',icon:'🧪',price:50,rarity:'C',dropWeight:2,text:'味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。',battleUsable:true},
+ potion:{id:'potion',name:'ポーション',icon:'🧪',price:50,rarity:'C',dropWeight:2.5,text:'味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。',battleUsable:true},
  high_potion:{id:'high_potion',name:'ハイポーション',icon:'🧪',price:100,rarity:'U',dropWeight:2,text:'味方1人のHPを最大HPの60%回復。戦闘不能者には使用できない。',battleUsable:true},
  ex_potion:{id:'ex_potion',name:'エクスポーション',icon:'🧪',price:200,rarity:'R',dropWeight:2,text:'味方1人のHPを最大HPの90%回復。戦闘不能者には使用できない。',battleUsable:true},
  elixir:{id:'elixir',name:'エリクサー',icon:'✨',price:1000,rarity:'SR',dropWeight:2,text:'味方1人のHPを100%回復し、SKILLを最大まで充填。戦闘不能者には使用できない。',battleUsable:true},
  panacea:{id:'panacea',name:'万能薬',icon:'💊',price:80,rarity:'C',dropWeight:2,text:'味方1人のデバフ・状態異常をすべて解除。戦闘不能者には使用できない。',battleUsable:true},
- skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',price:100,rarity:'C',dropWeight:2,text:'味方全員のSKILL+20。戦闘不能者には効果なし。',battleUsable:true},
+ skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',price:100,rarity:'C',dropWeight:2.5,text:'味方全員のSKILL+20。戦闘不能者には効果なし。',battleUsable:true},
  skill_injection:{id:'skill_injection',name:'スキルインジェクション',icon:'💉',price:200,rarity:'U',dropWeight:2,text:'味方1人のSKILL+100。戦闘不能者には使用できない。',battleUsable:true},
  skill_capsule_omega:{id:'skill_capsule_omega',name:'スキルカプセルΩ',icon:'◎',price:800,rarity:'SR',dropWeight:2,text:'味方全員のSKILLを最大まで充填。戦闘不能者には効果なし。',battleUsable:true},
- balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',price:100,rarity:'C',dropWeight:2,text:'崩壊度-20。崩壊度0では使用できない。',battleUsable:false},
+ balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',price:100,rarity:'C',dropWeight:2.5,text:'崩壊度-20。崩壊度0では使用できない。',battleUsable:false},
  salvation_scale:{id:'salvation_scale',name:'救世の天秤',icon:'⚖️',price:1500,rarity:'SR',dropWeight:2,text:'崩壊を解除し、現在のユニークマスを消滅させ、崩壊度を0にする。',battleUsable:false},
  imbalance_scale:{id:'imbalance_scale',name:'不均衡の天秤',icon:'⚖️',price:100,rarity:'C',dropWeight:1,text:'崩壊度+30。上限に達した場合は崩壊が発生する。',battleUsable:false},
  disaster_scale:{id:'disaster_scale',name:'災厄の天秤',icon:'⚖️',price:1500,rarity:'SR',dropWeight:2,text:'崩壊度+100。さらにユニークマスを追加で1個発生させる。',battleUsable:false},
