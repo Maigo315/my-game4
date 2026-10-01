@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.33.1 ユニーク調整</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.34 アイテム完全実装</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -961,44 +961,65 @@ const TREASURE_VAULT_NODE_WEIGHTS=[{id:'item',weight:45},{id:'equipment',weight:
 const TREASURE_VAULT_JEWEL_RATE=.50;
 const TREASURE_VAULT_NORMAL_CHEST_RATE=.30;
 const TREASURE_VAULT_LOCKED_CHEST_RATE=.20;
-const TREASURE_ITEM_IDS=['ex_potion','elixir','skill_injection','skill_capsule_omega','salvation_scale','disaster_scale'];
 const REWARD_CFG={enemy:{gold:50,pp:1},unique:{gold:250,pp:10},boss:{gold:500,pp:10}};
 const ENHANCE_EFFECTS=[
  {id:'hp',name:'生命強化',text:'最大HP +5 / HP 5回復'},
  {id:'atk',name:'攻撃強化',text:'攻撃力 +1'},
  {id:'gauge',name:'技能充填',text:'スキルゲージ +30'}
 ];
-const ITEM_LIMIT=12;
+const ITEM_LIMIT=12; // 基本所持上限。異次元サバイバルブックでラン中のみ増加。
 const TRAP_CATALOG={
  mine:{id:'mine',name:'地雷',weight:11},large_mine:{id:'large_mine',name:'大地雷',weight:4},exhaustion:{id:'exhaustion',name:'虚脱の罠',weight:9},item_curse:{id:'item_curse',name:'呪いの罠',weight:6},alarm:{id:'alarm',name:'警報の罠',weight:7},poison_gas:{id:'poison_gas',name:'毒ガスの罠',weight:8},seal:{id:'seal',name:'封印の罠',weight:6},fear:{id:'fear',name:'恐怖の罠',weight:6},sheep:{id:'sheep',name:'羊の罠',weight:8},swap_gear:{id:'swap_gear',name:'すり替えの罠',weight:4},kitsune:{id:'kitsune',name:'妖狐の罠',weight:5},warp:{id:'warp',name:'ワープの罠',weight:7},oxidation:{id:'oxidation',name:'酸化の罠',weight:3},collapse:{id:'collapse',name:'崩壊の罠',weight:7},seizure:{id:'seizure',name:'差し押さえの罠',weight:5},forced_transfer:{id:'forced_transfer',name:'強制転移の罠',weight:4}
 };
 const TRAP_IDS=Object.keys(TRAP_CATALOG);
 const ITEM_CATALOG={
- potion:{id:'potion',name:'ポーション',icon:'🧪',price:50,text:'味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。',battleUsable:true},
- high_potion:{id:'high_potion',name:'ハイポーション',icon:'🧪',price:100,text:'味方1人のHPを最大HPの60%回復。戦闘不能者には使用できない。',battleUsable:true},
- ex_potion:{id:'ex_potion',name:'エクスポーション',icon:'🧪',price:200,text:'味方1人のHPを最大HPの90%回復。戦闘不能者には使用できない。',battleUsable:true},
- elixir:{id:'elixir',name:'エリクサー',icon:'✨',price:1000,text:'味方1人のHPを100%回復し、SKILLを最大まで充填。戦闘不能者には使用できない。',battleUsable:true},
- panacea:{id:'panacea',name:'万能薬',icon:'💊',price:80,text:'味方1人のデバフ・状態異常をすべて解除。戦闘不能者には使用できない。',battleUsable:true},
- skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',price:100,text:'味方全員のSKILL+20。戦闘不能者には効果なし。',battleUsable:true},
- skill_injection:{id:'skill_injection',name:'スキルインジェクション',icon:'💉',price:200,text:'味方1人のSKILL+100。戦闘不能者には使用できない。',battleUsable:true},
- skill_capsule_omega:{id:'skill_capsule_omega',name:'スキルカプセルΩ',icon:'◎',price:800,text:'味方全員のSKILLを最大まで充填。戦闘不能者には効果なし。',battleUsable:true},
- balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',price:100,text:'崩壊度-20。崩壊度0では使用できない。',battleUsable:false},
- salvation_scale:{id:'salvation_scale',name:'救世の天秤',icon:'⚖️',price:1500,text:'崩壊を解除し、現在のユニークマスを消滅させ、崩壊度を0にする。',battleUsable:false},
- imbalance_scale:{id:'imbalance_scale',name:'不均衡の天秤',icon:'⚖️',price:100,text:'崩壊度+30。上限に達した場合は崩壊が発生する。',battleUsable:false},
- disaster_scale:{id:'disaster_scale',name:'災厄の天秤',icon:'⚖️',price:1500,text:'崩壊度+100。さらにユニークマスを追加で1個発生させる。',battleUsable:false},
- parallel_jewel:{id:'parallel_jewel',name:'パラレルジュエル',icon:'💎',price:5000,text:'使用するとパラレルポイントを30獲得。所持したままなら、一部の特殊パラレルドライブの鍵になる。',battleUsable:false},
- treasure_key:{id:'treasure_key',name:'財宝のカギ',icon:'🗝️',price:2000,text:'迷宮の特殊な宝箱を開けられる鍵。使用しても効果無し。',battleUsable:false},
- decursing_scroll:{id:'decursing_scroll',name:'解呪の書',icon:'📜',price:300,text:'味方全員の【呪い】を解除。アイテムの呪いを全て解除。',battleUsable:true},
- inari_sushi:{id:'inari_sushi',name:'いなり寿司',icon:'🍣',price:150,text:'味方1人のHPを20%回復。スキルゲージ+20%。',battleUsable:true}
+ potion:{id:'potion',name:'ポーション',icon:'🧪',price:50,rarity:'C',dropWeight:4,text:'味方1人のHPを最大HPの30%回復。戦闘不能者には使用できない。',battleUsable:true},
+ high_potion:{id:'high_potion',name:'ハイポーション',icon:'🧪',price:100,rarity:'U',dropWeight:4,text:'味方1人のHPを最大HPの60%回復。戦闘不能者には使用できない。',battleUsable:true},
+ ex_potion:{id:'ex_potion',name:'エクスポーション',icon:'🧪',price:200,rarity:'R',dropWeight:4,text:'味方1人のHPを最大HPの90%回復。戦闘不能者には使用できない。',battleUsable:true},
+ elixir:{id:'elixir',name:'エリクサー',icon:'✨',price:1000,rarity:'SR',dropWeight:4,text:'味方1人のHPを100%回復し、SKILLを最大まで充填。戦闘不能者には使用できない。',battleUsable:true},
+ panacea:{id:'panacea',name:'万能薬',icon:'💊',price:80,rarity:'C',dropWeight:2,text:'味方1人のデバフ・状態異常をすべて解除。戦闘不能者には使用できない。',battleUsable:true},
+ skill_capsule:{id:'skill_capsule',name:'スキルカプセル',icon:'◉',price:100,rarity:'C',dropWeight:3,text:'味方全員のSKILL+20。戦闘不能者には効果なし。',battleUsable:true},
+ skill_injection:{id:'skill_injection',name:'スキルインジェクション',icon:'💉',price:200,rarity:'U',dropWeight:3,text:'味方1人のSKILL+100。戦闘不能者には使用できない。',battleUsable:true},
+ skill_capsule_omega:{id:'skill_capsule_omega',name:'スキルカプセルΩ',icon:'◎',price:800,rarity:'SR',dropWeight:3,text:'味方全員のSKILLを最大まで充填。戦闘不能者には効果なし。',battleUsable:true},
+ balance_scale:{id:'balance_scale',name:'均衡の天秤',icon:'⚖️',price:100,rarity:'C',dropWeight:2,text:'崩壊度-20。崩壊度0では使用できない。',battleUsable:false},
+ salvation_scale:{id:'salvation_scale',name:'救世の天秤',icon:'⚖️',price:1500,rarity:'SR',dropWeight:2,text:'崩壊を解除し、現在のユニークマスを消滅させ、崩壊度を0にする。',battleUsable:false},
+ imbalance_scale:{id:'imbalance_scale',name:'不均衡の天秤',icon:'⚖️',price:100,rarity:'C',dropWeight:1,text:'崩壊度+30。上限に達した場合は崩壊が発生する。',battleUsable:false},
+ disaster_scale:{id:'disaster_scale',name:'災厄の天秤',icon:'⚖️',price:1500,rarity:'SR',dropWeight:2,text:'崩壊度+100。さらにユニークマスを追加で1個発生させる。',battleUsable:false},
+ life_stone:{id:'life_stone',name:'命の石',icon:'🔷',price:500,rarity:'R',dropWeight:3,text:'味方1人の戦闘不能を解除して、HP50%で復活。',battleUsable:true},
+ phoenix_feather:{id:'phoenix_feather',name:'フェニックスの羽',icon:'🪶',price:1500,rarity:'SR',dropWeight:3,text:'味方1人の戦闘不能を解除して、HP100%で復活。',battleUsable:true},
+ emergency_escape:{id:'emergency_escape',name:'緊急脱出パック',icon:'🎒',price:300,rarity:'U',dropWeight:2,text:'ボス以外の戦闘を強制終了し、戦闘中の敵マスを無マスにする。撃破報酬は得られない。',battleUsable:true,battleOnly:true},
+ reason_potion:{id:'reason_potion',name:'理力のポーション',icon:'🔵',price:300,rarity:'U',dropWeight:2,text:'「理力」を2獲得。',battleUsable:true,battleOnly:true},
+ wisdom_potion:{id:'wisdom_potion',name:'叡智のポーション',icon:'🟣',price:300,rarity:'U',dropWeight:2,text:'味方1人に「叡智」3付与。',battleUsable:true,battleOnly:true},
+ charm_potion:{id:'charm_potion',name:'魅了のポーション',icon:'💗',price:300,rarity:'U',dropWeight:2,text:'敵に「魅了」3付与。',battleUsable:true,battleOnly:true},
+ bomb:{id:'bomb',name:'爆弾',icon:'💣',price:200,rarity:'C',dropWeight:2,text:'敵に100の固定無属性ダメージ。',battleUsable:true,battleOnly:true},
+ poison_medicine:{id:'poison_medicine',name:'毒薬',icon:'☠️',price:200,rarity:'C',dropWeight:2,text:'敵に【毒4】を付与。',battleUsable:true,battleOnly:true},
+ molotov:{id:'molotov',name:'火炎瓶',icon:'🔥',price:200,rarity:'C',dropWeight:2,text:'敵に【炎上4】を付与。',battleUsable:true,battleOnly:true},
+ light_scroll:{id:'light_scroll',name:'光の書',icon:'📖',price:300,rarity:'U',dropWeight:2,text:'現在フロアのマップを全て解放する。罠と、生成済みの秘密の階段も表示する。',battleUsable:false},
+ transfer_scroll:{id:'transfer_scroll',name:'転移の書',icon:'📘',price:300,rarity:'U',dropWeight:2,text:'隣接する全ての戦闘マス・ユニークマスを、フロア内のランダムな無マスへ転移させる。',battleUsable:false},
+ blast_scroll:{id:'blast_scroll',name:'爆散の書',icon:'📕',price:300,rarity:'U',dropWeight:2,text:'隣接する通常マスを無マスに変える。敵・罠・アイテム・通常宝箱なども消滅する。ボス・大型ノード・移動用特殊マス・封印宝箱には無効。味方全員に現在HPの50%ダメージ。',battleUsable:false},
+ decursing_scroll:{id:'decursing_scroll',name:'解呪の書',icon:'📜',price:300,rarity:'U',dropWeight:2,text:'味方全員の【呪い】を解除。アイテムの呪いを全て解除。',battleUsable:true},
+ cleaning_scroll:{id:'cleaning_scroll',name:'大掃除の書',icon:'🧹',price:300,rarity:'U',dropWeight:2,text:'現在フロアの罠を全て消去する。',battleUsable:false},
+ demon_seed:{id:'demon_seed',name:'魔界の火種',icon:'🔥',price:500,rarity:'R',dropWeight:2,text:'フロア内のランダムな無マスを2〜3個、戦闘マスに変える。',battleUsable:false},
+ treasure_map:{id:'treasure_map',name:'財宝の地図',icon:'🗺️',price:500,rarity:'R',dropWeight:2,text:'フロア内のランダムな無マスを2〜3個、アイテムまたは装備マスに変える。',battleUsable:false},
+ change_cube:{id:'change_cube',name:'チェンジキューブ',icon:'🎲',price:500,rarity:'SR',dropWeight:2,text:'現在の通常フロアを完全に再生成して入口へ戻る。崩壊度は維持。ボス階・宝物庫・モンスターハウスでは使用できない。',battleUsable:false},
+ survival_book:{id:'survival_book',name:'異次元サバイバルブック',icon:'📚',price:5000,rarity:'UR',dropWeight:1,text:'使用すると、このラン中のアイテム最大所持数+1。',battleUsable:false},
+ delicious_milk:{id:'delicious_milk',name:'おいしいミルク',icon:'🥛',price:1000,rarity:'SR',dropWeight:2,text:'味方1人のHPを全回復し、デバフ・状態異常を全て解除。機能可能な状態で所持していると、次に入る通常フロアの通常敵マス+2。複数所持しても重複しない。',battleUsable:true},
+ supreme_nectar:{id:'supreme_nectar',name:'至高の甘露',icon:'🍯',price:5000,rarity:'UR',dropWeight:1,text:'手動使用不可。全滅時、機能可能なものを1個自動消費し、味方全員をHP50%で復活する。',battleUsable:false,manualUse:false},
+ parallel_ticket:{id:'parallel_ticket',name:'パラレルチケット',icon:'🎫',price:1500,rarity:'R',dropWeight:2,text:'使用するとパラレルポイント30獲得。崩壊度+50。',battleUsable:false},
+ parallel_jewel:{id:'parallel_jewel',name:'パラレルジュエル',icon:'💎',price:5000,rarity:'SR',dropWeight:2,text:'使用するとパラレルポイント30獲得。機能可能な状態で所持していれば、一部の特殊パラレルドライブの鍵になる。',battleUsable:false},
+ treasure_key:{id:'treasure_key',name:'財宝のカギ',icon:'🗝️',price:2000,rarity:'R',dropWeight:1,text:'カギ付き宝箱を開ける際、機能可能なものを1個自動消費する。',battleUsable:false,manualUse:false,treasureDrop:false},
+ inari_sushi:{id:'inari_sushi',name:'いなり寿司',icon:'🍣',price:150,rarity:'U',dropWeight:1,text:'味方1人のHPを20%回復。SKILL+20。',battleUsable:true}
 };
 const ITEM_IDS=Object.keys(ITEM_CATALOG);
-// 床アイテムは第1段階の4種を維持。上位・特殊品はまずショップでテストする。
-const ITEM_DROP_TABLE=[
- {id:'potion',weight:40},
- {id:'skill_capsule',weight:20},
- {id:'balance_scale',weight:20},
- {id:'panacea',weight:20}
-];
+const ITEM_RARITY_ORDER=['C','U','R','SR','UR'];
+const ITEM_RARITY_TABLES={
+ floor:[{id:'C',weight:72},{id:'U',weight:22},{id:'R',weight:5},{id:'SR',weight:.9},{id:'UR',weight:.1}],
+ shop:[{id:'C',weight:45},{id:'U',weight:35},{id:'R',weight:15},{id:'SR',weight:4.5},{id:'UR',weight:.5}],
+ treasure:[{id:'R',weight:60},{id:'SR',weight:35},{id:'UR',weight:5}]
+};
+function itemCapacity(){return ITEM_LIMIT+(state?.itemCapacityBonus||0)}
+function itemPoolForRarity(rarity,source='floor',exclude=[]){const ex=new Set(exclude);return ITEM_IDS.map(id=>ITEM_CATALOG[id]).filter(d=>d.rarity===rarity&&!ex.has(d.id)&&(source!=='treasure'||d.treasureDrop!==false)&&(source!=='shop'||d.shopDrop!==false)&&(source!=='floor'||d.floorDrop!==false))}
+function rollItemBySource(source='floor',exclude=[]){const table=ITEM_RARITY_TABLES[source]||ITEM_RARITY_TABLES.floor;const available=table.filter(r=>itemPoolForRarity(r.id,source,exclude).length);const rarity=weightedPick(available.length?available:table).id,pool=itemPoolForRarity(rarity,source,exclude);return weightedPick(pool.map(d=>({id:d.id,weight:d.dropWeight||1}))).id}
 const JEWEL_CATALOG={
  attack:{id:'attack',name:'攻撃の宝珠',icon:'攻',tone:'red',text:'敵に攻撃力平均の物理ダメージ。その後、攻撃力平均×0.2×参加人数の物理ダメージ。'},
  defense:{id:'defense',name:'防御の宝珠',icon:'防',tone:'blue',text:'敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。'},
@@ -1040,11 +1061,6 @@ function addOwnedJewel(id){if(!jewelDef(id)||state.jewels.includes(id))return fa
 function isSpecialJewel(id){return SPECIAL_JEWEL_IDS.includes(id)}
 function unownedSpecialJewels(exclude=[]){const ex=new Set(exclude);return SPECIAL_JEWEL_IDS.filter(id=>!state.jewels.includes(id)&&!ex.has(id))}
 
-const SHOP_ITEM_GROUPS={
- normal:['potion','panacea','skill_capsule','balance_scale','imbalance_scale','decursing_scroll'],
- upper:['high_potion','ex_potion','skill_injection'],
- rare:['elixir','skill_capsule_omega','salvation_scale','disaster_scale','parallel_jewel']
-};
 const SHOP_WEAPON_PRICES=[70,220,450,780,1200,1850,2700];
 const SHOP_ARMOR_PRICES=[60,200,400,650,1000,1500,2200];
 const SHOP_ACCESSORY_PRICES={ring:500,wisdom_ring:500,charm_ring:500,offense_ring:500,defense_ring:500,technique_ring:500,efficiency_ring:500,charge_ring:500,critical_ring:800,evasion_ring:800,protection_ring:1000,multi_hit_ring:1000,counter_ring:800,vampire_ring:800,full_power_ring:2000,last_stand_ring:2000,misfortune_ring:1000,pursuit_ring:1000,rest_ring:1000,block_ring:1500,rich_ring:2000,parallel_ring:3000};
@@ -1414,7 +1430,7 @@ function startBattleResources(){
  const charm=living.reduce((sum,u)=>sum+gearStat(u,'startCharm'),0),charmUnique=living.reduce((sum,u)=>sum+equippedUniqueCountSlot(u,'charm_title','weapon')*5,0);state._turnOneCharmBonus=charmUnique;if(state.enemy&&(charm||charmUnique))state.enemy.charm=Math.min(10,(state.enemy.charm||0)+charm+charmUnique)
 }
 function resetRun(){
- gearSerial=0;itemSerial=0;state={battleNo:0,turn:1,reason:0,gold:0,parallelPoints:0,parallelUnlocks:{},enemyActionToken:0,inventory:[],items:[],jewels:[...INITIAL_JEWELS],jewelSet:[...INITIAL_JEWELS],battleJewelUses:{},party:makeParty(),enemy:null,partyBuffs:[],battleOver:true,runOver:false,battleContext:null,battleItemUsedTurn:0,stats:{battles:[],current:null,recorded:false,lastWin:null}};
+ gearSerial=0;itemSerial=0;state={battleNo:0,turn:1,reason:0,gold:0,parallelPoints:0,parallelUnlocks:{},itemCapacityBonus:0,enemyActionToken:0,inventory:[],items:[],jewels:[...INITIAL_JEWELS],jewelSet:[...INITIAL_JEWELS],battleJewelUses:{},party:makeParty(),enemy:null,partyBuffs:[],battleOver:true,runOver:false,battleContext:null,battleItemUsedTurn:0,stats:{battles:[],current:null,recorded:false,lastWin:null}};
  initializeEquippedInstances();gearPickerSlot=null;itemPickupNodeId=null;itemUseContext=null;itemTargetUid=null;itemDetailUid=null;battleItemSelectedUid=null;battleItemTargetUid=null;
  explore=createExploreRun();
  selectedDetailId=null;detailPanel.classList.remove('show');intermission.classList.remove('show');renderBattleReward(null);if(jewelDialog.open)jewelDialog.close();const jewelSetDlg=$('#jewelSetDialog');if(jewelSetDlg&&jewelSetDlg.open)jewelSetDlg.close();jewelEditSlot=null;const enhanceDlg=$('#enhanceDialog');if(enhanceDlg&&enhanceDlg.open)enhanceDlg.close();const treasureDlg=$('#treasureDialog');if(treasureDlg&&treasureDlg.open)treasureDlg.close();const itemPickupDlg=$('#itemPickupDialog');if(itemPickupDlg&&itemPickupDlg.open)itemPickupDlg.close();const itemTargetDlg=$('#itemTargetDialog');if(itemTargetDlg&&itemTargetDlg.open)itemTargetDlg.close();const itemDetailDlg=$('#itemDetailDialog');if(itemDetailDlg&&itemDetailDlg.open)itemDetailDlg.close();const battleItemDlg=$('#battleItemDialog');if(battleItemDlg&&battleItemDlg.open)battleItemDlg.close();const parallelDlg=$('#parallelDriveDialog');if(parallelDlg&&parallelDlg.open)parallelDlg.close();unlockParallelScroll();parallelDriveUid=null;parallelPendingId=null;logEl.innerHTML='';hideBanner();
@@ -1744,7 +1760,7 @@ async function enemyAction(){
  if(e.unique)await gluttonDogAction();
  if(e.id==='crusher')await crusherAction();
  if(e.id==='crusher'||e.unique){e.activeOmen=null;e.omenBroken=false}
- if(!aliveParty().length)await finishRun(false)
+ if(!aliveParty().length){if(!trySupremeNectar())await finishRun(false)}
 }
 function enemyDotMultiplier(){const count=state.party.reduce((n,u)=>n+(!u.dead?equippedUniqueCountSlot(u,'alchemist','weapon'):0),0);return Math.pow(2,count)}
 function applyGritToRawDamage(u,dmg){if(equippedUniqueCountSlot(u,'grit','armor')&&!u._gritUsed&&dmg>=u.hp){u._gritUsed=true;return {dmg:Math.max(0,u.hp-1),grit:true}}return {dmg,grit:false}}
@@ -1895,6 +1911,7 @@ async function playTurn(chain,jewel=null){
  await enemyAction();
  if(state.battleOver||state.runOver){animating=false;render();return}
  await tickStatuses();
+ if(!aliveParty().length){if(!trySupremeNectar()){await finishRun(false);animating=false;render();return}}
  expireTurnOneUniqueBonuses();
  if(state.enemy.dead){render();await delay(timing().ability);await finishBattle();animating=false;render();return}
  prepareBossHpTrigger();
@@ -1903,46 +1920,60 @@ async function playTurn(chain,jewel=null){
 function battleItemAlreadyUsed(){return state.battleItemUsedTurn===state.turn}
 function battleUsableItems(){return state.items.filter(inst=>itemDef(inst.itemId).battleUsable)}
 function closeBattleItemSheet(){battleItemSelectedUid=null;battleItemTargetUid=null;const dlg=$('#battleItemDialog');if(dlg?.open)dlg.close()}
-function battleItemTargetEligible(itemId,u){if(!u||u.dead)return false;if(itemId==='panacea')return removableAllyStatuses(u).length>0;if(itemPartyGauge(itemId))return true;return itemHealPct(itemId)>0||itemId==='skill_injection'}
+function battleItemTargetEligible(itemId,u){
+ if(!u)return false;if(itemRevivePct(itemId))return !!u.dead;if(u.dead)return false;if(itemId==='panacea')return removableAllyStatuses(u).length>0;if(itemId==='wisdom_potion'||itemId==='delicious_milk')return true;if(itemPartyGauge(itemId))return true;return itemHealPct(itemId)>0||itemId==='skill_injection'
+}
+function battleItemCanUse(itemId){
+ if(itemId==='emergency_escape')return state.battleContext?.kind!=='boss';
+ if(itemId==='reason_potion')return state.reason<10;
+ if(itemId==='charm_potion')return !!state.enemy&&!state.enemy.dead&&(state.enemy.charm||0)<10;
+ if(['bomb','poison_medicine','molotov'].includes(itemId))return !!state.enemy&&!state.enemy.dead;
+ if(itemRevivePct(itemId))return state.party.some(u=>u.dead);
+ if(itemId==='decursing_scroll')return state.items.some(x=>x.cursed)||state.party.some(u=>!u.dead&&hasAllyStatus(u,'呪い'));
+ if(itemId==='panacea')return state.party.some(u=>battleItemTargetEligible(itemId,u));
+ if(itemPartyWide(itemId))return state.party.some(u=>!u.dead);
+ return battleItemNoTarget(itemId)||state.party.some(u=>battleItemTargetEligible(itemId,u))
+}
+function battleItemUnavailableReason(itemId){if(itemId==='emergency_escape'&&state.battleContext?.kind==='boss')return'ボス戦では使用不可';if(itemId==='reason_potion'&&state.reason>=10)return'理力が最大';if(itemId==='charm_potion'&&(state.enemy?.charm||0)>=10)return'魅了が最大';return'使用できる対象なし'}
 function renderBattleItemList(){
  const title=$('#battleItemTitle'),lead=$('#battleItemLead'),body=$('#battleItemBody');if(!body)return;title.textContent='アイテム';lead.textContent=battleItemAlreadyUsed()?'このターンはすでにアイテムを使用しました。':'戦闘中は1ターンに1個まで。使用後も攻撃・スキルチェインを選べます。';body.innerHTML='';
  const list=document.createElement('div');list.className='battle-item-list';const items=battleUsableItems();
- if(!items.length){list.innerHTML='<div class="battle-item-empty">戦闘中に使用できるアイテムを所持していません。<br>回復・SKILL・万能薬系の所持品がここに表示されます</div>';body.appendChild(list);return}
- items.forEach(inst=>{const d=itemDef(inst.itemId),row=document.createElement('button');row.type='button';row.className='battle-item-row';const blocked=itemBlockedReason(inst),anyTarget=itemPartyWide(inst.itemId)?itemUsable(inst.itemId):state.party.some(u=>battleItemTargetEligible(inst.itemId,u));row.disabled=battleItemAlreadyUsed()||!!blocked||!anyTarget;row.innerHTML=`<span class="battle-item-row-icon">${d.icon}</span><span class="battle-item-row-copy"><b>${d.name}</b><small>${d.text}${blocked?` / ${blocked}で使用不可`:!anyTarget?' / 使用できる対象なし':''}</small></span><span class="battle-item-row-arrow">›</span>`;if(!row.disabled)row.addEventListener('click',()=>renderBattleItemTargets(inst.uid));list.appendChild(row)});body.appendChild(list)
+ if(!items.length){list.innerHTML='<div class="battle-item-empty">戦闘中に使用できるアイテムを所持していません。</div>';body.appendChild(list);return}
+ items.forEach(inst=>{const d=itemDef(inst.itemId),row=document.createElement('button');row.type='button';row.className='battle-item-row';const blocked=itemBlockedReason(inst),usable=battleItemCanUse(inst.itemId);row.disabled=battleItemAlreadyUsed()||!!blocked||!usable;row.innerHTML=`<span class="battle-item-row-icon">${d.icon}</span><span class="battle-item-row-copy"><b>${d.name}</b><small>${d.text}${blocked?` / ${blocked}で使用不可`:!usable?` / ${battleItemUnavailableReason(inst.itemId)}`:''}</small></span><span class="battle-item-row-arrow">›</span>`;if(!row.disabled)row.addEventListener('click',()=>renderBattleItemTargets(inst.uid));list.appendChild(row)});body.appendChild(list)
 }
 function renderBattleItemTargets(uid){
  const inst=state.items.find(x=>x.uid===uid);if(!inst)return renderBattleItemList();const d=itemDef(inst.itemId);battleItemSelectedUid=uid;battleItemTargetUid=null;const title=$('#battleItemTitle'),lead=$('#battleItemLead'),body=$('#battleItemBody');title.textContent=d.name;lead.innerHTML='';body.innerHTML='';
  const back=document.createElement('button');back.type='button';back.className='battle-item-back';back.textContent='← アイテム一覧';back.addEventListener('click',renderBattleItemList);body.appendChild(back);
  const selected=document.createElement('div');selected.className='battle-item-selected';selected.innerHTML=`<div class="icon">${d.icon}</div><div><b>${d.name}</b><small>${d.text}</small></div>`;body.appendChild(selected);
  if(itemPartyWide(inst.itemId)){
-   const living=state.party.filter(u=>!u.dead),usable=itemUsable(inst.itemId);const status=document.createElement('div');status.className='battle-item-status';status.textContent=inst.itemId==='decursing_scroll'?'味方全員の【呪い】と、所持アイテムの呪いを解除します。':'味方全員に使用します。戦闘不能者には効果がありません。';body.appendChild(status);
+   const living=state.party.filter(u=>!u.dead),usable=battleItemCanUse(inst.itemId);const status=document.createElement('div');status.className='battle-item-status';status.textContent=inst.itemId==='decursing_scroll'?'味方全員の【呪い】と、所持アイテムの呪いを解除します。':'味方全員に使用します。戦闘不能者には効果がありません。';body.appendChild(status);
    const confirm=document.createElement('button');confirm.type='button';confirm.className='battle-item-confirm';confirm.disabled=!usable||(itemPartyGauge(inst.itemId)&&!living.length);confirm.textContent=confirm.disabled?'使用できる対象がありません':inst.itemId==='decursing_scroll'?'解呪する':'全員に使う';confirm.addEventListener('click',useSelectedBattleItem);body.appendChild(confirm);return
  }
- const targets=document.createElement('div');targets.className='battle-item-targets';state.party.forEach(u=>{const eligible=battleItemTargetEligible(inst.itemId,u),removable=removableAllyStatuses(u),b=document.createElement('button');b.type='button';b.className='battle-item-target';b.dataset.uid=u.uid;b.disabled=!eligible;let note;if(u.dead)note='戦闘不能';else if(inst.itemId==='inari_sushi')note=`HP ${u.hp}/${u.maxHp} / SKILL ${u.gauge}/${skillMax(u)}`;else if(itemHealPct(inst.itemId))note=`HP ${u.hp}/${u.maxHp}`;else if(inst.itemId==='skill_injection')note=`SKILL ${u.gauge}/${skillMax(u)}`;else note=removable.length?removable.map(s=>s.short||s.name).join('・'):'解除対象なし';b.innerHTML=`<img src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><small>${note}</small>`;if(eligible)b.addEventListener('click',()=>{battleItemTargetUid=u.uid;targets.querySelectorAll('.battle-item-target').forEach(x=>x.classList.toggle('selected',x.dataset.uid===u.uid));confirm.disabled=false;confirm.textContent=`${u.name}に使う`});targets.appendChild(b)});body.appendChild(targets);
+ if(battleItemNoTarget(inst.itemId)){
+   const status=document.createElement('div');status.className='battle-item-status';status.textContent=inst.itemId==='emergency_escape'?'この戦闘から離脱します。敵の撃破報酬は得られません。':'敵または戦闘リソースへ直接使用します。';body.appendChild(status);const confirm=document.createElement('button');confirm.type='button';confirm.className='battle-item-confirm';confirm.disabled=!battleItemCanUse(inst.itemId);confirm.textContent=inst.itemId==='emergency_escape'?'戦闘から離脱する':'使用する';confirm.addEventListener('click',useSelectedBattleItem);body.appendChild(confirm);return
+ }
+ const targets=document.createElement('div');targets.className='battle-item-targets';state.party.forEach(u=>{const eligible=battleItemTargetEligible(inst.itemId,u),removable=removableAllyStatuses(u),b=document.createElement('button');b.type='button';b.className='battle-item-target';b.dataset.uid=u.uid;b.disabled=!eligible;let note;if(itemRevivePct(inst.itemId))note=u.dead?`復活後HP ${Math.ceil(u.maxHp*itemRevivePct(inst.itemId))}/${u.maxHp}`:'戦闘可能：対象外';else if(u.dead)note='戦闘不能';else if(inst.itemId==='inari_sushi')note=`HP ${u.hp}/${u.maxHp} / SKILL ${u.gauge}/${skillMax(u)}`;else if(inst.itemId==='delicious_milk')note=`HP ${u.hp}/${u.maxHp} / 不利効果 ${removable.length}個`;else if(itemHealPct(inst.itemId))note=`HP ${u.hp}/${u.maxHp}`;else if(inst.itemId==='skill_injection')note=`SKILL ${u.gauge}/${skillMax(u)}`;else if(inst.itemId==='wisdom_potion')note=`叡智 ${u.wisdom||0}`;else note=removable.length?removable.map(s=>s.short||s.name).join('・'):'解除対象なし';b.innerHTML=`<img src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><small>${note}</small>`;if(eligible)b.addEventListener('click',()=>{battleItemTargetUid=u.uid;targets.querySelectorAll('.battle-item-target').forEach(x=>x.classList.toggle('selected',x.dataset.uid===u.uid));confirm.disabled=false;confirm.textContent=`${u.name}に使う`});targets.appendChild(b)});body.appendChild(targets);
  const confirm=document.createElement('button');confirm.type='button';confirm.className='battle-item-confirm';confirm.disabled=true;confirm.textContent='対象を選択してください';confirm.addEventListener('click',useSelectedBattleItem);body.appendChild(confirm)
 }
-function openBattleItemSheet(){
- if(animating||state.battleOver||battleItemAlreadyUsed())return;battleItemSelectedUid=null;battleItemTargetUid=null;renderBattleItemList();const dlg=$('#battleItemDialog');if(!dlg.open)dlg.showModal()
-}
+function openBattleItemSheet(){if(animating||state.battleOver||battleItemAlreadyUsed())return;battleItemSelectedUid=null;battleItemTargetUid=null;renderBattleItemList();const dlg=$('#battleItemDialog');if(!dlg.open)dlg.showModal()}
 function playBattleItemFeedback(result){
- if(result?.effect==='gauge'){
-   (result.targetUids||[]).forEach(uid=>{const u=state.party.find(x=>x.uid===uid),el=unitEl(uid);if(!u||!el)return;pulseElement(el,'feedback-gauge');const gauge=document.querySelector(`[data-unit="${uid}"] [data-gauge-fill]`);pulseElement(gauge,'feedback-gauge');const gain=result.actualGains?.[uid]??result.amount??0;floatNumber(el,gain>0?`+${gain}`:'MAX','info')});return
- }
+ if(result?.effect==='gauge'){(result.targetUids||[]).forEach(uid=>{const u=state.party.find(x=>x.uid===uid),el=unitEl(uid);if(!u||!el)return;pulseElement(el,'feedback-gauge');const gauge=document.querySelector(`[data-unit="${uid}"] [data-gauge-fill]`);pulseElement(gauge,'feedback-gauge');const gain=result.actualGains?.[uid]??result.amount??0;floatNumber(el,gain>0?`+${gain}`:'MAX','info')});return}
  if(result?.effect==='gaugeSingle'){const u=state.party.find(x=>x.uid===result.targetUid),el=u?unitEl(u.uid):null;if(el){pulseElement(el,'feedback-gauge');const gauge=document.querySelector(`[data-unit="${u.uid}"] [data-gauge-fill]`);pulseElement(gauge,'feedback-gauge');floatNumber(el,result.amount>0?`+${result.amount}`:'MAX','info')}return}
- const u=state.party.find(x=>x.uid===result?.targetUid);if(!u)return;const el=unitEl(u.uid);if(!el)return;
- pulseElement(el,'feedback-good');
- if(result.effect==='heal'||result.effect==='healGauge'){
-   const hp=document.querySelector(`[data-unit="${u.uid}"] [data-hp-fill]`);pulseElement(hp,'feedback-good');
-   floatNumber(el,result.amount>0?`+${result.amount}`:'HP MAX','heal');if(result.effect==='healGauge'){const gauge=document.querySelector(`[data-unit="${u.uid}"] [data-gauge-fill]`);pulseElement(gauge,'feedback-gauge')}
- }else if(result.effect==='cleanse'){
-   floatNumber(el,'状態解除','info');
- }
+ const u=state.party.find(x=>x.uid===result?.targetUid);if(!u)return;const el=unitEl(u.uid);if(!el)return;pulseElement(el,'feedback-good');
+ if(['heal','healGauge','healCleanse','revive'].includes(result.effect)){const hp=document.querySelector(`[data-unit="${u.uid}"] [data-hp-fill]`);pulseElement(hp,'feedback-good');floatNumber(el,result.effect==='revive'?'復活！':result.amount>0?`+${result.amount}`:'HP MAX','heal');if(result.effect==='healGauge'){const gauge=document.querySelector(`[data-unit="${u.uid}"] [data-gauge-fill]`);pulseElement(gauge,'feedback-gauge')}}else if(result.effect==='cleanse')floatNumber(el,'状態解除','info');else if(result.effect==='wisdom')floatNumber(el,'叡智+3','info')
 }
-function useSelectedBattleItem(){
- if(animating||state.battleOver||battleItemAlreadyUsed())return;const inst=state.items.find(x=>x.uid===battleItemSelectedUid);if(!inst)return;const d=itemDef(inst.itemId);if(!d.battleUsable)return;
- const blocked=itemBlockedReason(inst);if(blocked){toast(`${blocked}のため使用できません`,true);renderBattleItemList();return}
- if(!itemPartyWide(inst.itemId)){if(!battleItemTargetUid)return;const target=state.party.find(u=>u.uid===battleItemTargetUid);if(!battleItemTargetEligible(inst.itemId,target)){renderBattleItemTargets(inst.uid);return}}
- const result=itemResultMessage(inst.itemId,battleItemTargetUid);if(!result)return;removeItemInstance(inst.uid);state.battleItemUsedTurn=state.turn;if(state.stats&&state.stats.current&&result.amount&&['heal','healGauge'].includes(result.effect))state.stats.current.healing+=Math.max(0,result.amount);addLog(`アイテム【${d.name}】：${result.text}`,'system');showBanner(`${d.icon} ${d.name}`,result.toast);closeBattleItemSheet();render();requestAnimationFrame(()=>playBattleItemFeedback(result));toast(result.toast)
+async function finishBattleEscape(){
+ if(state.battleOver)return;state.battleOver=true;finalizeBattleStats(false);const ctx=state.battleContext,n=ctx?.nodeId?currentMap().nodes[ctx.nodeId]:null,r=eliminateNodeWithoutReward(n);if(r.released&&ctx?.largeParentId)explore.suppressLargeCompleteMessageOnce=true;const extra=r.kind==='unique'?' ユニークを排除したため崩壊度は0になった。':r.released?' モンスターハウスの封印が解けた。':'';queueExploreMessage('戦闘離脱',`緊急脱出パックで戦闘から離脱した。撃破報酬は得られない。${extra}`);renderBattleReward(null);$('#intermissionTitle').textContent='戦闘離脱';$('#intermissionText').textContent=`敵マスを無マスにして離脱した。撃破報酬なし。${extra}`;$('#nextBattleBtn').textContent='探索へ戻る';intermission.classList.add('show');showBanner('緊急脱出','報酬なし');render()
+}
+async function useSelectedBattleItem(){
+ if(animating||state.battleOver||battleItemAlreadyUsed())return;const inst=state.items.find(x=>x.uid===battleItemSelectedUid);if(!inst)return;const d=itemDef(inst.itemId);if(!d.battleUsable)return;const blocked=itemBlockedReason(inst);if(blocked){toast(`${blocked}のため使用できません`,true);renderBattleItemList();return}if(!battleItemCanUse(inst.itemId)){renderBattleItemList();return}
+ if(!itemPartyWide(inst.itemId)&&!battleItemNoTarget(inst.itemId)){if(!battleItemTargetUid)return;const target=state.party.find(u=>u.uid===battleItemTargetUid);if(!battleItemTargetEligible(inst.itemId,target)){renderBattleItemTargets(inst.uid);return}}
+ removeItemInstance(inst.uid);state.battleItemUsedTurn=state.turn;
+ if(inst.itemId==='emergency_escape'){closeBattleItemSheet();renderItemTab();await finishBattleEscape();toast('戦闘から離脱');return}
+ if(inst.itemId==='bomb'){
+   const before=state.enemy.hp,g=applyUniqueEnemyGrit(Math.min(100,before)),dmg=g.dmg;state.enemy.hp=Math.max(0,state.enemy.hp-dmg);addLog(`アイテム【${d.name}】：敵に${dmg}固定ダメージ。`,'damage');if(g.grit)addLog(`【ど根性の】：${state.enemy.name}はHP1で耐えた！`,'system');showBanner(`${d.icon} ${d.name}`,`${dmg}固定ダメージ`);closeBattleItemSheet();render();await enemyHitFeedback(dmg);if(state.enemy.hp<=0){if(!(await resolveUniqueEnemyZeroHp())){state.enemy.dead=true;render();await finishBattle();return}}render();toast(`敵に${dmg}ダメージ`);return
+ }
+ const result=itemResultMessage(inst.itemId,battleItemTargetUid);if(!result){state.items.push(inst);state.battleItemUsedTurn=0;renderBattleItemList();return}if(state.stats&&state.stats.current&&result.amount&&['heal','healGauge','healCleanse','revive'].includes(result.effect))state.stats.current.healing+=Math.max(0,result.amount);addLog(`アイテム【${d.name}】：${result.text}`,'system');showBanner(`${d.icon} ${d.name}`,result.toast);closeBattleItemSheet();render();requestAnimationFrame(()=>playBattleItemFeedback(result));toast(result.toast)
 }
 function battleRewardFor(kind){return REWARD_CFG[kind]||{gold:0,pp:0}}
 function grantBattleReward(kind){const base=battleRewardFor(kind),goldPct=state.party.reduce((s,u)=>s+gearStat(u,'goldBonusPct'),0),ppRings=state.party.reduce((s,u)=>s+gearStat(u,'parallelPpRing'),0);let ppBonus=0;for(let i=0;i<ppRings;i++)ppBonus+=rollInt(1,3);const r={gold:Math.round(base.gold*(1+goldPct/100)),pp:base.pp+ppBonus,baseGold:base.gold,goldBonusPct:goldPct,basePp:base.pp,ppBonus};state.gold+=r.gold;state.parallelPoints+=r.pp;return r}
@@ -2004,6 +2035,9 @@ async function finishBattle(){
  intermission.classList.add('show');render();
 }
 function nextBattle(){returnFromBattle()}
+function trySupremeNectar(){
+ if(aliveParty().length)return false;const inst=activeUsableItem('supreme_nectar');if(!inst)return false;removeItemInstance(inst.uid);state.party.forEach(u=>{u.dead=false;u.hp=Math.max(1,Math.ceil(u.maxHp*.5))});addLog('至高の甘露が自動発動！ 味方全員がHP50%で復活した。','heal');showBanner('至高の甘露','全員 HP50%で復活');renderItemTab();render();toast('至高の甘露が発動！');return true
+}
 function finishRun(win){
  if(state.runOver)return;
  if(!win)finalizeBattleStats(false);
@@ -2449,7 +2483,7 @@ function ensureShopStock(n){if(!n.shopStock)n.shopStock=generateShopStock(explor
 function shopProductHtml(p,index){if(p.kind==='item'){const d=itemDef(p.itemId);return `<div class="shop-icon">${d.icon}</div><div class="shop-copy"><b>${d.name}</b><small>アイテム</small><div class="shop-effects"><div class="shop-effect">${d.text}</div></div></div>${shopProductSideHtml(p,index)}`}
  const inst=p.gear,g=gearBase(inst);const base=(g.effects||[]).map(t=>`<div class="shop-effect">${t}</div>`).join('');const mystery=g.slot==='accessory'?'':`<div class="shop-effect hidden-affix">付加効果：？？？</div>`;return `<div class="shop-icon">${g.icon}</div><div class="shop-copy"><b>${g.name}</b><small>${gearMeta(inst)}</small><div class="shop-effects">${base}${mystery}</div></div>${shopProductSideHtml(p,index)}`
 }
-function shopProductSideHtml(p,index){if(p.sold)return `<div class="shop-side"><div class="shop-price">${p.price}G</div><div class="shop-sold-label">売り切れ</div></div>`;const full=p.kind==='item'&&state.items.length>=ITEM_LIMIT,poor=state.gold<p.price,disabled=full||poor;const label=full?'所持上限':poor?'G不足':'購入';return `<div class="shop-side"><div class="shop-price">${p.price}G</div><button class="shop-buy" type="button" data-shop-index="${index}" ${disabled?'disabled':''}>${label}</button></div>`}
+function shopProductSideHtml(p,index){if(p.sold)return `<div class="shop-side"><div class="shop-price">${p.price}G</div><div class="shop-sold-label">売り切れ</div></div>`;const full=p.kind==='item'&&state.items.length>=itemCapacity(),poor=state.gold<p.price,disabled=full||poor;const label=full?'所持上限':poor?'G不足':'購入';return `<div class="shop-side"><div class="shop-price">${p.price}G</div><button class="shop-buy" type="button" data-shop-index="${index}" ${disabled?'disabled':''}>${label}</button></div>`}
 function roundSellPrice(v){return Math.max(0,Math.round(v/5)*5)}
 function itemSellPrice(itemId){return roundSellPrice((itemDef(itemId)?.price||0)*.5)}
 function gearSellPrice(inst){return roundSellPrice(shopGearPrice(inst)*.1)}
@@ -2464,7 +2498,7 @@ function openShopSellConfirm(kind,uid){let name='',price=0;if(kind==='item'){con
 function closeShopSellConfirm(){shopSellTarget=null;const dlg=$('#shopSellConfirmDialog');if(dlg.open)dlg.close()}
 function confirmShopSell(){const t=shopSellTarget;if(!t)return closeShopSellConfirm();let name='',price=0;if(t.kind==='item'){const inst=state.items.find(x=>x.uid===t.uid);if(!inst)return closeShopSellConfirm();name=itemDef(inst.itemId).name;price=itemSellPrice(inst.itemId);removeItemInstance(inst.uid)}else{const i=state.inventory.findIndex(x=>x.uid===t.uid);if(i<0)return closeShopSellConfirm();const inst=state.inventory[i];name=gearDisplayName(inst);price=gearSellPrice(inst);state.inventory.splice(i,1)}state.gold+=price;closeShopSellConfirm();toast(`${name}を${price}Gで売却`);renderItemTab();renderExplore();renderShop(currentNode())}
 function closeShop(){const dlg=$('#shopDialog');if(dlg.open)dlg.close();showEvent('ショップ','品揃えは変わらない。必要ならこのマスへ戻ってまた利用できる。','商品を見る',()=>openShop(currentNode()))}
-function buyShopProduct(n,index){const stock=ensureShopStock(n),p=stock[index];if(!p||p.sold)return;if(state.gold<p.price){toast('Gが足りない',true);renderShop(n);return}if(p.kind==='item'&&state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);renderShop(n);return}
+function buyShopProduct(n,index){const stock=ensureShopStock(n),p=stock[index];if(!p||p.sold)return;if(state.gold<p.price){toast('Gが足りない',true);renderShop(n);return}if(p.kind==='item'&&state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);renderShop(n);return}
  state.gold-=p.price;p.sold=true;if(p.kind==='item'){const d=itemDef(p.itemId);state.items.push(createItemInstance(p.itemId));toast(`${d.name}を購入`);renderItemTab();renderExplore();renderShop(n);return}
  const inst=p.gear;addGearToInventory(inst);const dlg=$('#shopDialog');if(dlg.open)dlg.close();renderExplore();openGearPickup(inst,'shop')
 }
@@ -2503,7 +2537,7 @@ function resolveExploreNode(){
  if(n.type==='exit'){showEvent('次階への道',`${explore.floor+1}Fへ進める。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} はそのまま持ち越す。`,'次の階へ',advanceFloor);return}
  if(n.type==='boss'){showEvent('最奥','クラッシャーが待ち構えている。','ボス戦開始',()=>startExploreBattle(n.id,'crusher','boss'));return}
 }
-function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;clearPendingTrapBattleStatuses();const released=advanceSeizedItems();explore.largeSession=null;explore.floor++;explore.current=currentMap().start;currentMap().nodes[explore.current].visited=true;const f=explore.floorData[explore.floor];if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}const releaseNote=released.length?` 差し押さえ解除：${released.join('・')}。`:'';if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}。出口から撤退することもできる。${releaseNote}`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。${releaseNote}`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。${releaseNote}`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
+function advanceFloor(){if(explore.floor>=EXPLORE_CFG.floors)return;clearPendingTrapBattleStatuses();const released=advanceSeizedItems();explore.largeSession=null;explore.floor++;const f=explore.floorData[explore.floor],milkAdded=applyMilkEnemyBonusToFloor(f);explore.current=f.map.start;f.map.nodes[explore.current].visited=true;if(explore.collapsed&&!f.uniqueSpawned&&!f.uniqueDefeated){spawnUnique();f.uniqueSpawned=true}const releaseNote=(released.length?` 差し押さえ解除：${released.join('・')}。`:'')+(milkAdded?` おいしいミルクの効果で通常敵マス+${milkAdded}。`:'');if(f.isMonsterHouse){const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`敵の気配がひしめいている。中央付近の宝珠宝箱は封印中。敵を殲滅すれば開けられる。残りの敵 ${info.remaining}。出口から撤退することもできる。${releaseNote}`)}else if(explore.collapsed)showEvent(`${explore.floor}F 入口`,`崩壊状態を持ち越した。崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax}。${releaseNote}`);else showEvent(`${explore.floor}F 入口`,`崩壊度 ${explore.collapse}/${EXPLORE_CFG.collapseMax} を持ち越して次の階へ入った。${releaseNote}`);toast(f.isMonsterHouse?'モンスターハウス！':`${explore.floor}Fへ`,f.isMonsterHouse||explore.collapsed);renderExplore()}
 function applyPendingTrapStatusesForBattle(){const notes=[];state.party.forEach(u=>{const pending=[...(u.pendingBattleStatuses||[])];u.pendingBattleStatuses=[];pending.forEach(st=>{addAllyStatus(u,st);notes.push(`${u.name}：罠の影響で【${st.name}${st.x}】`);if(!u.dead&&ACTION_DISABLE_STATUS_NAMES.has(st.name)&&Math.random()<Math.max(0,Math.min(100,st.x))/100){u._actionDisabledTurn=state.turn;u._actionDisabledBy=st.name;notes.push(`${u.name}は【${st.name}${st.x}】により、このターン行動不能`)}})});return notes}
 function configureUniqueBattleEnemy(nodeId,uniqueGearId){const n=currentMap()?.nodes?.[nodeId],baseId=n?.uniqueEnemyId||'dog',base=ENEMIES[baseId]||ENEMIES.dog,tr=uniqueTrait(uniqueGearId);const e=state.enemy;e.unique=true;e.uniqueGearId=uniqueGearId;e.baseEnemyId=baseId;e.name=uniqueEnemyDisplayName(uniqueGearId,baseId);e.img=base.img;e.maxHp=ceil(base.maxHp*tr.hpMult);e.hp=e.maxHp;e.damageMult=tr.damageMult||1.5;e.chargeMax=3;e.charge=0;e.actionIndex=0;e._uniqueGritUses=0;e._uniqueRebirthUsed=false;e._uniqueObsessTarget=null;if(uniqueGearId==='breakthrough')e.charge=3}
 function applyUniqueBattleOpening(){const e=state.enemy,notes=[];if(!e?.unique)return notes;if(e.uniqueGearId==='obsession'){const t=randomAlive();e._uniqueObsessTarget=t?.uid||null;if(t)notes.push(`【しつこい】：${t.name}を執着対象に定めた。`)}if(e.uniqueGearId==='breakthrough')notes.push('【猛進する】：戦闘開始時CHARGE+3。');if(e.uniqueGearId==='lone'&&!uniqueOtherBattleNodesRemain())notes.push('【孤高の】：このフロアに他の戦闘マスがないため、与ダメージ+50%。');if(e.uniqueGearId==='alchemist'){const st=rand([{name:'毒',x:3,decay:1,kind:'debuff',short:'毒'},{name:'炎上',x:3,decay:1,kind:'debuff',short:'炎上'},{name:'封印',x:2,decay:1,kind:'debuff',short:'封印'}]);let applied=0,blocked=0;aliveParty().forEach(u=>{const m=mountStatus(u);if(m){m.x=Math.max(0,m.x-1);if(m.x<=0)u.statuses=u.statuses.filter(x=>x!==m);blocked++;return}addAllyStatus(u,st);applied++});notes.push(`【錬金術師の】：味方全員へ【${st.name}${st.x}】。付与${applied}人${blocked?` / マウントで無効${blocked}人`:''}。`)}return notes}
@@ -2519,7 +2553,7 @@ function centerMapOnCurrent(smooth=false){
 }
 function rollInt(min,max){return min+Math.floor(Math.random()*(max-min+1))}
 function weightedPick(items){const total=items.reduce((sum,x)=>sum+(x.weight||1),0);let r=Math.random()*total;for(const x of items){r-=x.weight||1;if(r<=0)return x}return items[items.length-1]}
-function rollItemId(){return weightedPick(ITEM_DROP_TABLE).id}
+function rollItemId(){return rollItemBySource('floor')}
 function rollGearAffix(base){const pool=GEAR_AFFIX_DEFS.filter(x=>x.slots.includes(base.slot)&&!(base.slot==='weapon'&&x.weaponTypes&&!x.weaponTypes.includes(base.weaponType))),d=weightedPick(pool),value=rollInt(d.min,d.max);return {id:d.id,value,stats:{[d.stat]:value}}}
 function affixText(id,value){const d=GEAR_AFFIX_DEFS.find(x=>x.id===id);return d?`${d.label} +${value}${d.suffix}`:`${id} +${value}`}
 function createGearInstance(baseId,withAffix=false,affixCountOverride=null){
@@ -2544,28 +2578,28 @@ function createTreasureGearInstance(depth=1){
 }
 function unownedNormalJewels(exclude=[]){const ex=new Set(exclude);return NORMAL_JEWEL_IDS.filter(id=>!state.jewels.includes(id)&&!ex.has(id))}
 function makeTreasureJewel(exclude=[]){const pool=unownedNormalJewels(exclude);return pool.length?{kind:'jewel',jewelId:rand(pool)}:null}
-function makeTreasureFallback(){return Math.random()<40/75?{kind:'gear',gear:createTreasureGearInstance(explore.floor)}:{kind:'item',itemId:rand(TREASURE_ITEM_IDS)}}
-function makeTreasureExtra(exclude=[]){const pool=unownedNormalJewels(exclude);const options=pool.length?[{kind:'gear',weight:40},{kind:'item',weight:35},{kind:'jewel',weight:25}]:[{kind:'gear',weight:40},{kind:'item',weight:35}],k=weightedPick(options).kind;if(k==='gear')return {kind:'gear',gear:createTreasureGearInstance(explore.floor)};if(k==='item')return {kind:'item',itemId:rand(TREASURE_ITEM_IDS)};return makeTreasureJewel(exclude)||makeTreasureFallback()}
+function makeTreasureFallback(){return Math.random()<40/75?{kind:'gear',gear:createTreasureGearInstance(explore.floor)}:{kind:'item',itemId:rollItemBySource('treasure')}}
+function makeTreasureExtra(exclude=[]){const pool=unownedNormalJewels(exclude);const options=pool.length?[{kind:'gear',weight:40},{kind:'item',weight:35},{kind:'jewel',weight:25}]:[{kind:'gear',weight:40},{kind:'item',weight:35}],k=weightedPick(options).kind;if(k==='gear')return {kind:'gear',gear:createTreasureGearInstance(explore.floor)};if(k==='item')return {kind:'item',itemId:rollItemBySource('treasure')};return makeTreasureJewel(exclude)||makeTreasureFallback()}
 function generateTreasureRewards(){const rewards=[],used=[];const first=makeTreasureJewel();if(first){rewards.push(first);used.push(first.jewelId)}else rewards.push(makeTreasureFallback());for(let i=1;i<3;i++){const r=makeTreasureExtra(used);rewards.push(r);if(r.kind==='jewel')used.push(r.jewelId)}return rewards}
-function premiumItemReward(exclude=[]){const pool=TREASURE_ITEM_IDS.filter(id=>!exclude.includes(id));return {kind:'item',itemId:rand(pool.length?pool:TREASURE_ITEM_IDS)}}
+function premiumItemReward(exclude=[]){return {kind:'item',itemId:rollItemBySource('treasure',exclude)}}
 function generateJewelTreasureRewards(){const rewards=[],usedJewels=[],usedItems=[];const specialPool=unownedSpecialJewels();if(specialPool.length&&Math.random()<JEWEL_TREASURE_SPECIAL_RATE){const id=rand(specialPool);rewards.push({kind:'jewel',jewelId:id});usedJewels.push(id)}while(rewards.length<3){const pool=unownedNormalJewels(usedJewels);if(pool.length){const id=rand(pool);rewards.push({kind:'jewel',jewelId:id});usedJewels.push(id);continue}const r=premiumItemReward(usedItems);rewards.push(r);usedItems.push(r.itemId)}return shuffle(rewards)}
-function generateLockedTreasureRewards(){const rewards=[],usedItems=[];const special=unownedSpecialJewels();if(special.length)rewards.push({kind:'jewel',jewelId:rand(special)});else{const r=premiumItemReward(usedItems);rewards.push(r);usedItems.push(r.itemId)}const normal=unownedNormalJewels();if(normal.length)rewards.push({kind:'jewel',jewelId:rand(normal)});else{const r=premiumItemReward(usedItems);rewards.push(r);usedItems.push(r.itemId)}rewards.push({kind:'item',itemId:'parallel_jewel'});return rewards}
+function generateLockedTreasureRewards(){const special=unownedSpecialJewels(),normal=unownedNormalJewels();return [{kind:'jewel',jewelId:rand(special.length?special:SPECIAL_JEWEL_IDS)},{kind:'jewel',jewelId:rand(normal.length?normal:NORMAL_JEWEL_IDS)},{kind:'item',itemId:'parallel_jewel'}]}
 function isTreasureNode(n){return !!n&&['treasure','jewel_treasure','locked_treasure'].includes(n.type)}
 function treasureTitle(n){return n?.type==='jewel_treasure'?'宝珠宝箱':n?.type==='locked_treasure'?'カギ付き宝箱':'宝箱'}
 function ensureTreasureRewards(n){if(!n.treasureRewards)n.treasureRewards=n.type==='jewel_treasure'?generateJewelTreasureRewards():n.type==='locked_treasure'?generateLockedTreasureRewards():generateTreasureRewards();return n.treasureRewards}
 function treasureRewardName(r){if(r.kind==='jewel')return jewelDef(r.jewelId)?.name||r.jewelId;if(r.kind==='item')return itemDef(r.itemId)?.name||r.itemId;return gearDisplayName(r.gear)}
 function treasureRewardHtml(r){if(r.kind==='jewel'){const d=jewelDef(r.jewelId),special=isSpecialJewel(r.jewelId);return `<div class="treasure-icon"><span class="jewel-owned-icon jewel-${d.tone||d.id}">${d.icon}</span></div><span class="treasure-copy"><span class="treasure-kind">${special?'特殊宝珠':'宝珠'}</span><b>${d.name}${special?'<span class="jewel-special-tag">特</span>':''}</b><small>${d.text}</small></span><span class="treasure-take">選択</span>`}if(r.kind==='item'){const d=itemDef(r.itemId);return `<div class="treasure-icon">${d.icon}</div><span class="treasure-copy"><span class="treasure-kind">アイテム</span><b>${d.name}</b><small>${d.text}</small></span><span class="treasure-take">選択</span>`}const inst=r.gear,g=gearBase(inst),ud=uniqueGearDef(inst),effects=[...(g?.effects||[]),...(ud?[`【${ud.prefix}】${uniqueDescription(inst)}`]:[]),...gearAffixLines(inst)];return `<div class="treasure-icon">${g?.icon||'◇'}</div><span class="treasure-copy"><span class="treasure-kind">${ud?'ユニーク武器':'装備'} / ${gearMeta(inst)}</span><b>${gearDisplayName(inst)}</b><span class="treasure-effects">${effects.map((x,i)=>`<span class="treasure-effect ${ud&&i===(g?.effects||[]).length?'unique':i>=(g?.effects||[]).length+(ud?1:0)?'affix':''}">${x}</span>`).join('')}</span></span><span class="treasure-take">選択</span>`}
 function updateTreasureSelectionUI(){const choices=[...document.querySelectorAll('#treasureChoices .treasure-choice')];choices.forEach((b,i)=>{const selected=i===treasureSelectedIndex;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',selected?'true':'false');const tag=b.querySelector('.treasure-take');if(tag&&!b.disabled)tag.textContent=selected?'選択中':'選択'});const confirm=$('#treasureConfirmBtn');if(confirm)confirm.disabled=treasureSelectedIndex===null}
-function selectTreasureReward(n,index){if(!isTreasureNode(n))return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}treasureSelectedNodeId=n.id;treasureSelectedIndex=index;updateTreasureSelectionUI()}
+function selectTreasureReward(n,index){if(!isTreasureNode(n))return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);return}treasureSelectedNodeId=n.id;treasureSelectedIndex=index;updateTreasureSelectionUI()}
 function treasureNodeById(id){const n=id?currentMap().nodes[id]:null;return isTreasureNode(n)?n:null}
 function treasureKeyInstance(){return state.items.find(x=>x.itemId==='treasure_key'&&itemCanFunction(x))||null}
 function blockedTreasureKeyInstance(){return state.items.find(x=>x.itemId==='treasure_key'&&!itemCanFunction(x))||null}
 function unlockLockedTreasure(n){if(!n||n.type!=='locked_treasure')return;if(n.lockedOpened){openTreasure(n);return}const key=treasureKeyInstance();if(!key){toast('財宝のカギがありません',true);return}removeItemInstance(key.uid);n.lockedOpened=true;ensureTreasureRewards(n);renderItemTab();renderExplore();toast('財宝のカギを使用');openTreasure(n)}
 function inspectLockedTreasure(n){if(!n||n.type!=='locked_treasure')return;if(n.lockedOpened){showEvent('カギ付き宝箱','カギは開いている。3つの中から1つ選べる。','中身を見る',()=>openTreasure(n));return}if(!treasureKeyInstance()){const blocked=blockedTreasureKeyInstance();showEvent('カギ付き宝箱',blocked?`財宝のカギはあるが、${itemBlockedReason(blocked)}のため使用できない。`:'財宝のカギがないため開けられない。');return}showEvent('カギ付き宝箱','財宝のカギを1個消費して開ける。','カギを使って開ける',()=>unlockLockedTreasure(n))}
-function openTreasure(n){if(!isTreasureNode(n))return;if(n.type==='jewel_treasure'&&n.monsterHouseSealed){showEvent('封印された宝珠宝箱',monsterHouseSealText());return}if(n.type==='locked_treasure'&&!n.lockedOpened){inspectLockedTreasure(n);return}treasureSelectedIndex=null;treasureSelectedNodeId=n.id;const title=$('#treasureDialogTitle');if(title)title.textContent=treasureTitle(n);const rewards=ensureTreasureRewards(n),box=$('#treasureChoices');box.innerHTML='';rewards.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='treasure-choice';b.dataset.treasureIndex=String(i);b.setAttribute('aria-pressed','false');b.innerHTML=treasureRewardHtml(r);if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){b.disabled=true;b.querySelector('.treasure-take').textContent='所持上限'}else b.addEventListener('click',()=>selectTreasureReward(n,i));box.appendChild(b)});updateTreasureSelectionUI();const dlg=$('#treasureDialog');if(!dlg.open)dlg.showModal()}
-function takeTreasureReward(n,index){if(!isTreasureNode(n))return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);openTreasure(n);return}const name=treasureRewardName(r),parentId=n.largeParentId,isLarge=largeChild(n)&&largeSessionMatches(n),wasLocked=n.type==='locked_treasure';if(r.kind==='jewel')addOwnedJewel(r.jewelId);else if(r.kind==='item')state.items.push(createItemInstance(r.itemId));else addGearToInventory(r.gear);n.type=wasLocked?'locked_treasure_opened':'empty';delete n.treasureRewards;delete n.monsterHouseSealed;delete n.monsterHouseReady;treasureSelectedIndex=null;treasureSelectedNodeId=null;const dlg=$('#treasureDialog');if(dlg.open)dlg.close();renderExplore();renderItemTab();renderJewelTab();if(r.kind==='jewel'){if(!isLarge)showEvent('宝珠入手',`「${name}」を入手した。宝珠タブからセットを変更できる。`,'宝珠を見る',()=>switchExploreTab('jewel'));toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}else if(r.kind==='gear'){if(!isLarge)showEvent('装備入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);openGearPickup(r.gear,isLarge?'large':'explore')}else{if(!isLarge)showEvent('アイテム入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}}
+function openTreasure(n){if(!isTreasureNode(n))return;if(n.type==='jewel_treasure'&&n.monsterHouseSealed){showEvent('封印された宝珠宝箱',monsterHouseSealText());return}if(n.type==='locked_treasure'&&!n.lockedOpened){inspectLockedTreasure(n);return}treasureSelectedIndex=null;treasureSelectedNodeId=n.id;const title=$('#treasureDialogTitle');if(title)title.textContent=treasureTitle(n);const rewards=ensureTreasureRewards(n),box=$('#treasureChoices');box.innerHTML='';rewards.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='treasure-choice';b.dataset.treasureIndex=String(i);b.setAttribute('aria-pressed','false');b.innerHTML=treasureRewardHtml(r);if(r.kind==='item'&&state.items.length>=itemCapacity()){b.disabled=true;b.querySelector('.treasure-take').textContent='所持上限'}else b.addEventListener('click',()=>selectTreasureReward(n,i));box.appendChild(b)});updateTreasureSelectionUI();const dlg=$('#treasureDialog');if(!dlg.open)dlg.showModal()}
+function takeTreasureReward(n,index){if(!isTreasureNode(n))return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);openTreasure(n);return}const name=treasureRewardName(r),parentId=n.largeParentId,isLarge=largeChild(n)&&largeSessionMatches(n),wasLocked=n.type==='locked_treasure';if(r.kind==='jewel')addOwnedJewel(r.jewelId);else if(r.kind==='item')state.items.push(createItemInstance(r.itemId));else addGearToInventory(r.gear);n.type=wasLocked?'locked_treasure_opened':'empty';delete n.treasureRewards;delete n.monsterHouseSealed;delete n.monsterHouseReady;treasureSelectedIndex=null;treasureSelectedNodeId=null;const dlg=$('#treasureDialog');if(dlg.open)dlg.close();renderExplore();renderItemTab();renderJewelTab();if(r.kind==='jewel'){if(!isLarge)showEvent('宝珠入手',`「${name}」を入手した。宝珠タブからセットを変更できる。`,'宝珠を見る',()=>switchExploreTab('jewel'));toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}else if(r.kind==='gear'){if(!isLarge)showEvent('装備入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);openGearPickup(r.gear,isLarge?'large':'explore')}else{if(!isLarge)showEvent('アイテム入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}}
 
-function rollShopItemId(){const group=weightedPick([{id:'normal',weight:70},{id:'upper',weight:25},{id:'rare',weight:5}]).id;return rand(SHOP_ITEM_GROUPS[group])}
+function rollShopItemId(){return rollItemBySource('shop')}
 function rollShopGearTier(depth=1){const center=Math.max(0,Math.min(6,(depth||1)-1));return weightedPick(Array.from({length:7},(_,tier)=>({tier,weight:[55,22,9,4,2,1,.5][Math.abs(tier-center)]||.25}))).tier}
 function createShopGearInstance(depth=1){const category=rollGearCategory();if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollShopGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
 function shopGearPrice(inst){const g=gearBase(inst);if(!g)return 0;if(g.slot==='weapon')return SHOP_WEAPON_PRICES[g.tier]||SHOP_WEAPON_PRICES[0];if(g.slot==='armor')return SHOP_ARMOR_PRICES[g.tier]||SHOP_ARMOR_PRICES[0];return SHOP_ACCESSORY_PRICES[g.id]||500}
@@ -2630,18 +2664,75 @@ function itemDef(id){return ITEM_CATALOG[id]||ITEM_CATALOG.potion}
 function createItemInstance(itemId){return {uid:`item${++itemSerial}`,itemId,cursed:false,seizedMoves:0}}
 function itemBlockedReason(inst){if(!inst)return'';if(inst.cursed)return'呪い';if((inst.seizedMoves||0)>0)return`差し押さえ：残り${inst.seizedMoves}回移動`;return''}
 function itemCanFunction(inst){return !!inst&&!inst.cursed&&(inst.seizedMoves||0)<=0}
+function activeUsableItem(itemId){return state.items.find(x=>x.itemId===itemId&&itemCanFunction(x))||null}
 function itemStateText(inst){const a=[];if(inst?.cursed)a.push('呪い：使用・効果発揮不可');if((inst?.seizedMoves||0)>0)a.push(`差し押さえ：残り${inst.seizedMoves}回のフロア移動`);return a.join(' / ')}
 function removableAllyStatuses(u){return (u?.statuses||[]).filter(s=>(s.kind||'debuff')==='debuff')}
 function skillMax(u){return u?.maxGauge||100}
 function itemHealPct(itemId){return {potion:.30,high_potion:.60,ex_potion:.90,elixir:1,inari_sushi:.20}[itemId]||0}
-function itemNeedsTarget(itemId){return ['potion','high_potion','ex_potion','elixir','panacea','skill_injection','inari_sushi'].includes(itemId)}
+function itemRevivePct(itemId){return itemId==='life_stone'?.50:itemId==='phoenix_feather'?1:0}
+function itemNeedsTarget(itemId){return ['potion','high_potion','ex_potion','elixir','panacea','skill_injection','life_stone','phoenix_feather','wisdom_potion','delicious_milk','inari_sushi'].includes(itemId)}
 function itemPartyGauge(itemId){return itemId==='skill_capsule'||itemId==='skill_capsule_omega'}
 function itemPartyWide(itemId){return itemPartyGauge(itemId)||itemId==='decursing_scroll'}
-function itemUsable(itemId){if(!explore)return false;if(itemId==='treasure_key')return false;if(itemId==='decursing_scroll')return state.items.some(x=>x.cursed)||state.party.some(u=>!u.dead&&hasAllyStatus(u,'呪い'));if(itemId==='balance_scale')return explore.collapse>0;if(itemId==='salvation_scale')return explore.collapse>0||explore.collapsed||Object.values(currentMap().nodes).some(n=>n.type==='unique');if(itemId==='panacea')return state.party.some(u=>!u.dead&&removableAllyStatuses(u).length>0);if(['imbalance_scale','disaster_scale','parallel_jewel'].includes(itemId))return true;return state.party.some(u=>!u.dead)}
+function battleItemNoTarget(itemId){return ['emergency_escape','reason_potion','charm_potion','bomb','poison_medicine','molotov'].includes(itemId)}
+function adjacentMapNodes(){const map=currentMap();return neighborsOf(map,explore.current).map(id=>map.nodes[id]).filter(Boolean)}
+function mapEmptyCandidates(excludeIds=[]){const ex=new Set(excludeIds),map=currentMap();return Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&!n.secretEntrance&&!ex.has(n.id)&&n.id!==map.start&&n.id!==map.end)}
+function clearUniqueNodeFields(n){if(!n)return;delete n.uniqueGearId;delete n.uniqueEnemyId;n.infected=false;delete n.alwaysRevealed}
+function eliminateNodeWithoutReward(n){
+ if(!n)return {removed:false,kind:null};const kind=n.type,f=currentFloorState();
+ if(kind==='enemy'){
+   n.type='empty';if(f?.isMonsterHouse&&!f.monsterHouseSealReleased)f.monsterHouseDefeated=(f.monsterHouseDefeated||0)+1;const released=f?.isMonsterHouse?releaseMonsterHouseTreasureIfReady():false;return {removed:true,kind,released}
+ }
+ if(kind==='unique'){
+   n.type='empty';clearUniqueNodeFields(n);explore.collapse=0;explore.collapsed=false;const remaining=Object.values(currentMap().nodes).some(x=>x.type==='unique');if(f&&!f.uniqueDefeated)f.uniqueSpawned=remaining;return {removed:true,kind,collapseCleared:true}
+ }
+ return {removed:false,kind}
+}
+function blastProtectedNode(n){return !n||n.isLarge||n.monsterHouseSealed||n.secretEntrance||['entrance','exit','vault_exit','secret_stairs','boss','shop','locked_treasure','locked_treasure_opened','large'].includes(n.type)}
+function applyBlastScroll(){
+ const targets=adjacentMapNodes().filter(n=>!blastProtectedNode(n));let removed=0,enemies=0,uniques=0;
+ targets.forEach(n=>{if(n.type==='enemy'||n.type==='unique'){const r=eliminateNodeWithoutReward(n);if(r.removed){removed++;if(r.kind==='enemy')enemies++;else uniques++}return}n.type='empty';delete n.itemId;delete n.treasureRewards;delete n.enhanceEffect;n.infected=false;removed++});
+ let damage=0;state.party.forEach(u=>{if(u.dead||u.hp<=0)return;const d=Math.floor(u.hp*.5);u.hp=Math.max(1,u.hp-d);damage+=d});
+ return {removed,enemies,uniques,damage}
+}
+function applyTransferScroll(){
+ const map=currentMap(),sources=adjacentMapNodes().filter(n=>n.type==='enemy'||n.type==='unique'),sourceIds=sources.map(n=>n.id),dests=shuffle(mapEmptyCandidates(sourceIds));let moved=0;
+ sources.forEach(src=>{const dest=dests.shift();if(!dest)return;const unique=src.type==='unique',payload=unique?{uniqueGearId:src.uniqueGearId,uniqueEnemyId:src.uniqueEnemyId,alwaysRevealed:true,infected:src.infected}:{};src.type='empty';if(unique)clearUniqueNodeFields(src);dest.type=unique?'unique':'enemy';Object.assign(dest,payload);moved++});return moved
+}
+function revealCurrentFloor(){const f=currentFloorState(),map=currentMap();f.mapRevealed=true;f.trapsRevealed=true;let secret=0;Object.values(map.nodes).forEach(n=>{if(n.secretEntrance&&n.type==='empty'){n.type='secret_stairs';n.secretEntranceDiscovered=true;n.alwaysRevealed=true;secret++}});return secret}
+function removeAllFloorTraps(){let count=0;Object.values(currentMap().nodes).forEach(n=>{if(n.type==='trap'){n.type='empty';delete n.trapId;count++}});return count}
+function createRandomCombatNodes(){const c=shuffle(mapEmptyCandidates()),want=rollInt(2,3),count=Math.min(want,c.length);for(let i=0;i<count;i++)c[i].type='enemy';return count}
+function createRandomRewardNodes(){const c=shuffle(mapEmptyCandidates()),want=rollInt(2,3),count=Math.min(want,c.length);for(let i=0;i<count;i++)c[i].type=Math.random()<.5?'item':'equipment';return count}
+function applyMilkEnemyBonusToFloor(f){
+ if(!f||f.milkBonusChecked)return 0;f.milkBonusChecked=true;if(f.isMonsterHouse||explore.floor>=EXPLORE_CFG.floors||!activeUsableItem('delicious_milk'))return 0;
+ const map=f.map,c=shuffle(Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&!n.secretEntrance&&n.id!==map.start&&n.id!==map.end));const count=Math.min(2,c.length);for(let i=0;i<count;i++)c[i].type='enemy';f.milkBonusApplied=count;return count
+}
+function resetCurrentFloorWithCube(){
+ if(inTreasureVault())return false;const f=explore.floorData[explore.floor];if(!f||f.isMonsterHouse||explore.floor>=EXPLORE_CFG.floors||explore.largeSession)return false;
+ f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,false);f.uniqueSpawned=false;f.uniqueDefeated=false;f.kills=0;f.treasureVaultUsed=false;f.mapRevealed=false;f.trapsRevealed=false;f.milkBonusChecked=false;f.milkBonusApplied=0;explore.lastMessage=null;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;f.map.nodes[explore.current].visited=true;applyMilkEnemyBonusToFloor(f);if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}return true
+}
+function itemUsable(itemId){
+ if(!explore)return false;const d=itemDef(itemId);if(d.manualUse===false||d.battleOnly)return false;
+ if(itemId==='decursing_scroll')return state.items.some(x=>x.cursed)||state.party.some(u=>!u.dead&&hasAllyStatus(u,'呪い'));
+ if(itemId==='balance_scale')return explore.collapse>0;
+ if(itemId==='salvation_scale')return explore.collapse>0||explore.collapsed||Object.values(currentMap().nodes).some(n=>n.type==='unique');
+ if(itemId==='panacea')return state.party.some(u=>!u.dead&&removableAllyStatuses(u).length>0);
+ if(itemRevivePct(itemId))return state.party.some(u=>u.dead);
+ if(itemId==='light_scroll'){const f=currentFloorState();return !f.mapRevealed||!f.trapsRevealed||Object.values(currentMap().nodes).some(n=>n.secretEntrance&&n.type==='empty')}
+ if(itemId==='transfer_scroll')return adjacentMapNodes().some(n=>n.type==='enemy'||n.type==='unique')&&mapEmptyCandidates(adjacentMapNodes().map(n=>n.id)).length>0;
+ if(itemId==='blast_scroll')return adjacentMapNodes().some(n=>!blastProtectedNode(n));
+ if(itemId==='cleaning_scroll')return Object.values(currentMap().nodes).some(n=>n.type==='trap');
+ if(itemId==='demon_seed'||itemId==='treasure_map')return mapEmptyCandidates().length>0;
+ if(itemId==='change_cube')return !inTreasureVault()&&!currentFloorState()?.isMonsterHouse&&explore.floor<EXPLORE_CFG.floors&&!explore.largeSession;
+ if(itemId==='survival_book')return true;
+ if(['imbalance_scale','disaster_scale','parallel_jewel','parallel_ticket'].includes(itemId))return true;
+ return state.party.some(u=>!u.dead)
+}
 function removeItemInstance(uid){const i=state.items.findIndex(x=>x.uid===uid);if(i<0)return null;return state.items.splice(i,1)[0]}
 function clearItemNode(nodeId){const n=currentMap().nodes[nodeId];if(!n||n.type!=='item')return;n.type='empty';delete n.itemId}
 function itemResultMessage(itemId,targetUid=null){
- const d=itemDef(itemId),healPct=itemHealPct(itemId);
+ const d=itemDef(itemId),healPct=itemHealPct(itemId),revivePct=itemRevivePct(itemId);
+ if(revivePct){const u=state.party.find(x=>x.uid===targetUid);if(!u||!u.dead)return null;const before=u.hp;u.dead=false;u.hp=Math.max(1,Math.ceil(u.maxHp*revivePct));return {title:d.name,text:`${u.name}が戦闘不能から復帰し、HPが${before} → ${u.hp}になった。`,toast:`${u.name} 復活 / HP ${Math.round(revivePct*100)}%`,targetUid:u.uid,effect:'revive',amount:u.hp}}
+ if(itemId==='delicious_milk'){const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const before=u.hp,removed=removableAllyStatuses(u).map(s=>s.short||s.name);u.statuses=(u.statuses||[]).filter(s=>(s.kind||'debuff')==='buff');clearAllyActionDisable(u);u.hp=u.maxHp;return {title:d.name,text:`${u.name}のHPが${before} → ${u.hp}になり、不利効果を${removed.length}個解除した。`,toast:`${u.name} HP全快 / 状態解除`,targetUid:u.uid,effect:'healCleanse',amount:u.hp-before,removedCount:removed.length}}
  if(itemId==='inari_sushi'){
    const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const beforeHp=u.hp,beforeGauge=u.gauge,{actual:gain}=applyHealing(null,u,u.maxHp*.20,{sourceBoost:false});u.gauge=Math.min(skillMax(u),u.gauge+20);return {title:d.name,text:`${u.name}のHPが${beforeHp} → ${u.hp}、SKILLが${beforeGauge} → ${u.gauge}になった。`,toast:`${u.name} HP +${gain} / SKILL +${u.gauge-beforeGauge}`,targetUid:u.uid,effect:'healGauge',amount:gain,gaugeGain:u.gauge-beforeGauge}
  }
@@ -2660,11 +2751,24 @@ function itemResultMessage(itemId,targetUid=null){
  if(itemId==='panacea'){
    const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const removed=removableAllyStatuses(u);if(!removed.length)return null;const removedNames=removed.map(s=>s.short||s.name);u.statuses=u.statuses.filter(s=>(s.kind||'debuff')==='buff');clearAllyActionDisable(u);return {title:d.name,text:`${u.name}の不利効果をすべて解除した（${removedNames.join('・')}）。`,toast:`${u.name} 状態解除`,targetUid:u.uid,effect:'cleanse',removedCount:removed.length}
  }
+ if(itemId==='reason_potion'){const before=state.reason;state.reason=Math.min(10,state.reason+2);return {title:d.name,text:`理力が${before} → ${state.reason}になった。`,toast:`理力 +${state.reason-before}`,effect:'reason'}}
+ if(itemId==='wisdom_potion'){const u=state.party.find(x=>x.uid===targetUid);if(!u||u.dead)return null;const before=u.wisdom||0;u.wisdom=before+3;return {title:d.name,text:`${u.name}の叡智が${before} → ${u.wisdom}になった。`,toast:`${u.name} 叡智 +3`,targetUid:u.uid,effect:'wisdom'}}
+ if(itemId==='charm_potion'){const gain=addCharm(3);return {title:d.name,text:`敵の魅了が+${gain}され、${state.enemy.charm}/10になった。`,toast:`魅了 +${gain}`,effect:'enemyStatus'}}
+ if(itemId==='poison_medicine'){addEnemyStatus({name:'毒',x:4,decay:1,kind:'debuff',short:'毒'});return {title:d.name,text:'敵に【毒4】を付与した。',toast:'敵：毒4',effect:'enemyStatus'}}
+ if(itemId==='molotov'){addEnemyStatus({name:'炎上',x:4,decay:1,kind:'debuff',short:'炎上'});return {title:d.name,text:'敵に【炎上4】を付与した。',toast:'敵：炎上4',effect:'enemyStatus'}}
+ if(itemId==='light_scroll'){const secret=revealCurrentFloor();return {title:d.name,text:`現在フロアの全マスと罠を可視化した。${secret?` 秘密の階段を${secret}個発見した。`:''}`,toast:secret?'全マップ解放 / 秘密の階段発見':'全マップ解放'}}
+ if(itemId==='transfer_scroll'){const moved=applyTransferScroll();return moved?{title:d.name,text:`隣接する戦闘・ユニークマスを${moved}個、ランダムな無マスへ転移した。`,toast:`敵マス ${moved}個転移`}:null}
+ if(itemId==='blast_scroll'){const r=applyBlastScroll();return r.removed?{title:d.name,text:`隣接する${r.removed}マスを爆散させた。味方全員は現在HPの50%ダメージを受けた。${r.uniques?' ユニーク排除により崩壊を解除した。':''}`,toast:`${r.removed}マス爆散 / HP50%ダメージ`}:null}
+ if(itemId==='cleaning_scroll'){const count=removeAllFloorTraps();return count?{title:d.name,text:`現在フロアの罠を${count}個消去した。`,toast:`罠 ${count}個消去`}:null}
+ if(itemId==='demon_seed'){const count=createRandomCombatNodes();return count?{title:d.name,text:`無マス${count}個が戦闘マスに変化した。`,toast:`戦闘マス +${count}`}:null}
+ if(itemId==='treasure_map'){const count=createRandomRewardNodes();return count?{title:d.name,text:`無マス${count}個がアイテムまたは装備マスに変化した。`,toast:`財宝マス +${count}`}:null}
+ if(itemId==='change_cube'){if(!resetCurrentFloorWithCube())return null;return {title:d.name,text:'現在フロアを完全に再生成し、入口へ戻った。崩壊度は維持される。',toast:'フロア再生成'}}
+ if(itemId==='survival_book'){state.itemCapacityBonus=(state.itemCapacityBonus||0)+1;return {title:d.name,text:`アイテム最大所持数が${itemCapacity()}個になった。`,toast:`所持上限 +1（${itemCapacity()}）`}}
  if(itemId==='balance_scale'){
    if(!explore||explore.collapse<=0)return null;const before=explore.collapse;explore.collapse=Math.max(0,explore.collapse-20);return {title:d.name,text:`崩壊度が${before} → ${explore.collapse}になった。`,toast:`崩壊度 -${before-explore.collapse}`}
  }
  if(itemId==='salvation_scale'){
-   if(!explore)return null;const before=explore.collapse,map=currentMap(),uniques=Object.values(map.nodes).filter(n=>n.type==='unique');uniques.forEach(n=>{n.type='empty';delete n.uniqueGearId;n.infected=false});explore.collapse=0;explore.collapsed=false;const f=currentFloorState();if(f&&!f.uniqueDefeated)f.uniqueSpawned=false;return {title:d.name,text:`崩壊度が${before} → 0になり、崩壊を解除。ユニークマスを${uniques.length}個消滅させた。`,toast:'崩壊解除 / 崩壊度 0'}
+   if(!explore)return null;const before=explore.collapse,map=currentMap(),uniques=Object.values(map.nodes).filter(n=>n.type==='unique');uniques.forEach(n=>{n.type='empty';clearUniqueNodeFields(n)});explore.collapse=0;explore.collapsed=false;const f=currentFloorState();if(f&&!f.uniqueDefeated)f.uniqueSpawned=false;return {title:d.name,text:`崩壊度が${before} → 0になり、崩壊を解除。ユニークマスを${uniques.length}個消滅させた。`,toast:'崩壊解除 / 崩壊度 0'}
  }
  if(itemId==='imbalance_scale'){
    const before=explore.collapse;addCollapse(30);explore.lastMessage=null;return {title:d.name,text:`崩壊度が${before} → ${explore.collapse}になった${explore.collapsed?'。崩壊が発生した。':'。'}`,toast:`崩壊度 +${explore.collapse-before}`}
@@ -2672,39 +2776,41 @@ function itemResultMessage(itemId,targetUid=null){
  if(itemId==='disaster_scale'){
    const before=explore.collapse;addCollapse(100);explore.lastMessage=null;const added=spawnUnique();return {title:d.name,text:`崩壊度が${before} → ${explore.collapse}になった。${added?'追加のユニークマスが発生した。':'空きマスがなく、追加ユニークは発生しなかった。'}`,toast:added?'災厄発生 / ユニーク追加':'災厄発生'}
  }
+ if(itemId==='parallel_ticket'){const beforePp=state.parallelPoints,beforeCollapse=explore.collapse;state.parallelPoints+=30;addCollapse(50);explore.lastMessage=null;return {title:d.name,text:`PPが${beforePp} → ${state.parallelPoints}、崩壊度が${beforeCollapse} → ${explore.collapse}になった${explore.collapsed?'。崩壊が発生した。':'。'}`,toast:'PP +30 / 崩壊度 +50'}}
  if(itemId==='parallel_jewel'){const before=state.parallelPoints;state.parallelPoints+=30;return {title:d.name,text:`パラレルポイントが${before} → ${state.parallelPoints}になった。`,toast:'PP +30'}}
  return null
 }
 function finishItemUse(itemId,source,targetUid=null){
- const result=itemResultMessage(itemId,targetUid);if(!result)return false;
- if(source.kind==='inventory')removeItemInstance(source.uid);else if(source.kind==='node')clearItemNode(source.nodeId);
+ const cubeNodeFirst=itemId==='change_cube'&&source.kind==='node';if(cubeNodeFirst)clearItemNode(source.nodeId);const result=itemResultMessage(itemId,targetUid);if(!result)return false;
+ if(source.kind==='inventory')removeItemInstance(source.uid);else if(source.kind==='node'&&!cubeNodeFirst)clearItemNode(source.nodeId);
  itemUseContext=null;itemTargetUid=null;const td=$('#itemTargetDialog');if(td?.open)td.close();const pd=$('#itemPickupDialog');if(pd?.open)pd.close();
- const srcNode=source.kind==='node'?currentMap().nodes[source.nodeId]:null,isLarge=srcNode&&largeChild(srcNode)&&largeSessionMatches(srcNode),parentId=srcNode?.largeParentId;if(!isLarge)showEvent('アイテム使用',`${result.title}：${result.text}`);toast(result.toast);renderExplore();renderItemTab();if(isLarge)continueLargeNode(parentId);return true
+ const srcNode=!cubeNodeFirst&&source.kind==='node'?currentMap().nodes[source.nodeId]:null,isLarge=srcNode&&largeChild(srcNode)&&largeSessionMatches(srcNode),parentId=srcNode?.largeParentId;if(!isLarge)showEvent('アイテム使用',`${result.title}：${result.text}`);toast(result.toast);renderExplore();renderItemTab();if(isLarge)continueLargeNode(parentId);return true
 }
 function useItemFromSource(itemId,source){
  const detail=$('#itemDetailDialog');if(detail?.open)detail.close();itemDetailUid=null;
  if(source?.kind==='inventory'){const inst=state.items.find(x=>x.uid===source.uid);const blocked=itemBlockedReason(inst);if(blocked){toast(`${blocked}のため使用できません`,true);return}}
- if(!itemUsable(itemId)){toast(itemId==='balance_scale'?'崩壊度0では使用できない':itemId==='panacea'?'解除できる不利効果がない':'使用できる対象がいない',true);return}
+ if(!itemUsable(itemId)){const d=itemDef(itemId);toast(d.battleOnly?'戦闘中のみ使用できます':itemId==='balance_scale'?'崩壊度0では使用できない':itemId==='panacea'?'解除できる不利効果がない':d.manualUse===false?'手動では使用できません':'今は使用できません',true);return}
  if(itemNeedsTarget(itemId)){openItemTarget(itemId,source);return}
  finishItemUse(itemId,source)
 }
+function exploreItemTargetEligible(itemId,u){if(!u)return false;if(itemRevivePct(itemId))return !!u.dead;if(u.dead)return false;if(itemId==='panacea')return removableAllyStatuses(u).length>0;return true}
 function openItemTarget(itemId,source){
  const d=itemDef(itemId);itemUseContext={...source,itemId};itemTargetUid=null;const pd=$('#itemPickupDialog');if(pd.open)pd.close();
  $('#itemTargetTitle').textContent=d.name;$('#itemTargetEffect').textContent=d.text;const box=$('#itemTargets');box.innerHTML='';
- state.party.forEach(u=>{const b=document.createElement('button');b.type='button';b.className='enhance-target';b.dataset.uid=u.uid;const removable=removableAllyStatuses(u),eligible=!u.dead&&(itemId!=='panacea'||removable.length>0);b.disabled=!eligible;let note;if(u.dead)note='戦闘不能：使用不可';else if(itemHealPct(itemId)){const hp=Math.min(u.maxHp,u.hp+healingAmount(null,u,u.maxHp*itemHealPct(itemId),{sourceBoost:false}));note=itemId==='elixir'?`HP ${u.hp}→${hp} / SKILL ${u.gauge}→${skillMax(u)}`:itemId==='inari_sushi'?`HP ${u.hp}→${hp} / SKILL ${u.gauge}→${Math.min(skillMax(u),u.gauge+20)}`:`HP ${u.hp}/${u.maxHp} → ${hp}/${u.maxHp}`}else if(itemId==='skill_injection')note=`SKILL ${u.gauge} → ${Math.min(skillMax(u),u.gauge+100)}`;else note=removable.length?`解除：${removable.map(s=>s.short||s.name).join('・')}`:'解除対象なし';b.innerHTML=`<img src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><small>${note}</small>`;if(eligible)b.addEventListener('click',()=>{itemTargetUid=u.uid;document.querySelectorAll('#itemTargets .enhance-target').forEach(x=>x.classList.toggle('selected',x.dataset.uid===u.uid));const c=$('#itemTargetConfirmBtn');c.disabled=false;c.textContent=`${u.name}に使う`});box.appendChild(b)});
+ state.party.forEach(u=>{const b=document.createElement('button');b.type='button';b.className='enhance-target';b.dataset.uid=u.uid;const removable=removableAllyStatuses(u),eligible=exploreItemTargetEligible(itemId,u);b.disabled=!eligible;let note;if(itemRevivePct(itemId))note=u.dead?`復活後HP ${Math.ceil(u.maxHp*itemRevivePct(itemId))}/${u.maxHp}`:'戦闘可能：対象外';else if(u.dead)note='戦闘不能：使用不可';else if(itemId==='delicious_milk')note=`HP ${u.hp}/${u.maxHp} / 不利効果 ${removable.length}個`;else if(itemHealPct(itemId)){const hp=Math.min(u.maxHp,u.hp+healingAmount(null,u,u.maxHp*itemHealPct(itemId),{sourceBoost:false}));note=itemId==='elixir'?`HP ${u.hp}→${hp} / SKILL ${u.gauge}→${skillMax(u)}`:itemId==='inari_sushi'?`HP ${u.hp}→${hp} / SKILL ${u.gauge}→${Math.min(skillMax(u),u.gauge+20)}`:`HP ${u.hp}/${u.maxHp} → ${hp}/${u.maxHp}`}else if(itemId==='skill_injection')note=`SKILL ${u.gauge} → ${Math.min(skillMax(u),u.gauge+100)}`;else note=removable.length?`解除：${removable.map(s=>s.short||s.name).join('・')}`:'解除対象なし';b.innerHTML=`<img src="${u.img}" alt=""><b>${u.name}${u.dead?' ☠':''}</b><small>${note}</small>`;if(eligible)b.addEventListener('click',()=>{itemTargetUid=u.uid;document.querySelectorAll('#itemTargets .enhance-target').forEach(x=>x.classList.toggle('selected',x.dataset.uid===u.uid));const c=$('#itemTargetConfirmBtn');c.disabled=false;c.textContent=`${u.name}に使う`});box.appendChild(b)});
  const c=$('#itemTargetConfirmBtn');c.disabled=true;c.textContent='魔物娘を選択してください';const dlg=$('#itemTargetDialog');if(!dlg.open){dlg.showModal();requestAnimationFrame(()=>dlg.focus())}
 }
 function cancelItemTarget(){const ctx=itemUseContext;itemUseContext=null;itemTargetUid=null;const dlg=$('#itemTargetDialog');if(dlg.open)dlg.close();if(ctx?.kind==='node'){const n=currentMap().nodes[ctx.nodeId];if(n&&n.type==='item')setTimeout(()=>openItemPickup(n),40)}}
 function pickupCurrentItem(){
- const n=currentMap().nodes[itemPickupNodeId];if(!n||n.type!=='item'||!n.itemId)return;if(state.items.length>=ITEM_LIMIT){toast('所持品がいっぱいです',true);openItemPickup(n);return}
- const inst=createItemInstance(n.itemId),name=itemDef(n.itemId).name;state.items.push(inst);clearItemNode(n.id);itemPickupNodeId=null;const dlg=$('#itemPickupDialog');if(dlg.open)dlg.close();const isLarge=largeChild(n)&&largeSessionMatches(n),parentId=n.largeParentId;if(!isLarge)showEvent('アイテム入手',`「${name}」を拾った。所持 ${state.items.length}/${ITEM_LIMIT}。使用済みマスは「無」になった。`);toast(`${name}を入手`);renderExplore();renderItemTab();if(isLarge)continueLargeNode(parentId)
+ const n=currentMap().nodes[itemPickupNodeId];if(!n||n.type!=='item'||!n.itemId)return;if(state.items.length>=itemCapacity()){toast('所持品がいっぱいです',true);openItemPickup(n);return}
+ const inst=createItemInstance(n.itemId),name=itemDef(n.itemId).name;state.items.push(inst);clearItemNode(n.id);itemPickupNodeId=null;const dlg=$('#itemPickupDialog');if(dlg.open)dlg.close();const isLarge=largeChild(n)&&largeSessionMatches(n),parentId=n.largeParentId;if(!isLarge)showEvent('アイテム入手',`「${name}」を拾った。所持 ${state.items.length}/${itemCapacity()}。使用済みマスは「無」になった。`);toast(`${name}を入手`);renderExplore();renderItemTab();if(isLarge)continueLargeNode(parentId)
 }
 function leaveCurrentItem(){
  const n=currentMap().nodes[itemPickupNodeId];const d=n?.itemId?itemDef(n.itemId):null;itemPickupNodeId=null;const dlg=$('#itemPickupDialog');if(dlg.open)dlg.close();const isLarge=n&&d&&largeChild(n)&&largeSessionMatches(n),parentId=n?.largeParentId;if(n&&d&&!isLarge)showEvent('アイテムを残した',`「${d.name}」はこのマスに残っている。後から戻って取得できる。`,'もう一度確認',()=>openItemPickup(n));renderExplore();if(isLarge)continueLargeNode(parentId)
 }
 function openItemPickup(n){
- if(!n||n.type!=='item')return;if(!n.itemId)n.itemId=rollItemId();itemPickupNodeId=n.id;const d=itemDef(n.itemId),full=state.items.length>=ITEM_LIMIT,isLarge=largeChild(n),place=isLarge?'この大型ノード':'このマス';
- $('#itemPickupIcon').textContent=d.icon;$('#itemPickupName').textContent=d.name;$('#itemPickupText').textContent=d.text;$('#itemPickupNote').textContent=full?`所持品 ${state.items.length}/${ITEM_LIMIT}。満杯です。今使うか、所持品を整理するか、この場に残せます。`:`所持品 ${state.items.length}/${ITEM_LIMIT}。拾わなければ、${place}に残ります。`;
+ if(!n||n.type!=='item')return;if(!n.itemId)n.itemId=rollItemId();itemPickupNodeId=n.id;const d=itemDef(n.itemId),full=state.items.length>=itemCapacity(),isLarge=largeChild(n),place=isLarge?'この大型ノード':'このマス';
+ $('#itemPickupIcon').textContent=d.icon;$('#itemPickupName').textContent=d.name;$('#itemPickupText').textContent=d.text;$('#itemPickupNote').textContent=full?`所持品 ${state.items.length}/${itemCapacity()}。満杯です。今使うか、所持品を整理するか、この場に残せます。`:`所持品 ${state.items.length}/${itemCapacity()}。拾わなければ、${place}に残ります。`;
  const actions=$('#itemPickupActions');actions.innerHTML='';
  const add=(label,cls,fn,disabled=false)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.className=cls;b.disabled=disabled;b.addEventListener('click',fn);actions.appendChild(b);return b};
  if(!full)add('拾う','primary',pickupCurrentItem);else add('所持品を整理','primary',()=>{const dlg=$('#itemPickupDialog');if(dlg.open)dlg.close();showEvent('アイテム整理',`「${d.name}」は${place}に残っている。空きを作ったら探索タブへ戻って取得できる。`,'もう一度確認',()=>openItemPickup(n));switchExploreTab('item')});
@@ -2715,12 +2821,12 @@ function openItemPickup(n){
 function openItemDetail(uid){
  const inst=state.items.find(x=>x.uid===uid);if(!inst)return;const d=itemDef(inst.itemId),blocked=itemBlockedReason(inst),stateText=itemStateText(inst);itemDetailUid=uid;$('#itemDetailIcon').textContent=d.icon;$('#itemDetailName').textContent=d.name;$('#itemDetailText').textContent=d.text+(stateText?`
 
-${stateText}`:'');const use=$('#itemDetailUseBtn');use.disabled=!!blocked||!itemUsable(inst.itemId);use.textContent=blocked?'使用不可':'使う';$('#itemDetailDiscard').classList.add('screen-hidden');const dlg=$('#itemDetailDialog');if(!dlg.open)dlg.showModal()
+${stateText}`:'');const use=$('#itemDetailUseBtn');use.disabled=!!blocked||!itemUsable(inst.itemId);use.textContent=blocked?'使用不可':d.battleOnly?'戦闘中のみ':d.manualUse===false?'自動・特殊効果':'使う';$('#itemDetailDiscard').classList.add('screen-hidden');const dlg=$('#itemDetailDialog');if(!dlg.open)dlg.showModal()
 }
 function closeItemDetail(){itemDetailUid=null;const dlg=$('#itemDetailDialog');if(dlg.open)dlg.close()}
 function renderItemTab(){
- const g=$('#itemGoldChip'),p=$('#itemPpChip'),c=$('#itemCountChip');if(g)g.textContent=`G ${state.gold}`;if(p)p.textContent=`PP ${state.parallelPoints}`;if(c)c.textContent=`${state.items.length} / ${ITEM_LIMIT}`;
- const list=$('#itemTabList');if(!list)return;list.innerHTML='';const intro=document.createElement('div');intro.className='item-tab-intro';intro.innerHTML=`<div class="item-tab-intro-row"><b>所持アイテム</b><strong>${state.items.length} / ${ITEM_LIMIT}</strong></div><p>アイテムをタップすると効果確認・使用・破棄ができます。装備と戦闘用の宝珠はこの12枠に含みません。パラレルジュエルはアイテム枠を使用します。</p>`;list.appendChild(intro);
+ const g=$('#itemGoldChip'),p=$('#itemPpChip'),c=$('#itemCountChip');if(g)g.textContent=`G ${state.gold}`;if(p)p.textContent=`PP ${state.parallelPoints}`;if(c)c.textContent=`${state.items.length} / ${itemCapacity()}`;
+ const list=$('#itemTabList');if(!list)return;list.innerHTML='';const intro=document.createElement('div');intro.className='item-tab-intro';intro.innerHTML=`<div class="item-tab-intro-row"><b>所持アイテム</b><strong>${state.items.length} / ${itemCapacity()}</strong></div><p>アイテムをタップすると効果確認・使用・破棄ができます。装備と戦闘用の宝珠はこのアイテム枠に含みません。パラレルジュエルはアイテム枠を使用します。</p>`;list.appendChild(intro);
  const box=document.createElement('div');box.className='item-list';if(!state.items.length){box.innerHTML='<div class="item-empty">アイテムを所持していません。<br>アイテムマスで見つけた道具を拾うと、ここへ1個ずつ並びます。</div>'}else state.items.forEach(inst=>{const d=itemDef(inst.itemId),row=document.createElement('button');row.type='button';row.className='item-row';const states=[];if(inst.cursed)states.push('<span class="cursed">呪い</span>');if((inst.seizedMoves||0)>0)states.push(`<span class="seized">差し押さえ 残り${inst.seizedMoves}移動</span>`);row.innerHTML=`<span class="item-row-icon">${d.icon}</span><span class="item-row-copy"><b>${d.name}</b>${states.length?`<small>${states.join(' / ')}</small>`:''}</span><span class="item-row-arrow">›</span>`;row.addEventListener('click',()=>openItemDetail(inst.uid));box.appendChild(row)});list.appendChild(box)
 }
 function renderJewelTab(){
@@ -2769,7 +2875,7 @@ function switchExploreTab(kind,resetGear=true){
 function openExploreManager(kind){
  const dlg=$('#exploreManageDialog'),title=$('#manageTitle'),intro=$('#manageIntro'),list=$('#manageList');list.innerHTML='';dlg.classList.toggle('gear-mode',kind==='gear');
  if(kind==='item'){
-   title.textContent='アイテム';intro.textContent=`アイテムは専用タブで管理します。所持上限は${ITEM_LIMIT}個です。`;
+   title.textContent='アイテム';intro.textContent=`アイテムは専用タブで管理します。所持上限は${itemCapacity()}個です。`;
    const r=document.createElement('div');r.className='manage-row';r.innerHTML='<b>所持アイテム</b><br>専用の所持品・使用システムは次段階で実装予定。';list.appendChild(r);
  }else{
    title.textContent='装備';intro.textContent='キャラとスロットを選び、同じ種類の装備を比較して付け替えます。装備は個体ごとに管理されます。';
@@ -2823,12 +2929,12 @@ function renderExploreParty(){
  })
 }
 function renderExplore(){
- if(!explore)return;const floorState=currentFloorState();if(floorState?.isMonsterHouse)releaseMonsterHouseTreasureIfReady();const map=currentMap();['goldChip','itemGoldChip','gearGoldChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`G ${state.gold}`});['ppChip','itemPpChip','gearPpChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`PP ${state.parallelPoints}`});const itemCount=$('#itemCountChip');if(itemCount)itemCount.textContent=`${state.items.length} / ${ITEM_LIMIT}`;$('#floorChip').textContent=inTreasureVault()?`${treasureVaultFloorLabel()} / 宝物庫`:`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=inTreasureVault()?'宝物庫':floorState?.isMonsterHouse?`モンスターハウス ${explore.floor}F`:`迷宮 ${explore.floor}F`;mapBoard.classList.toggle('treasure-vault-map',inTreasureVault());mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
+ if(!explore)return;const floorState=currentFloorState();if(floorState?.isMonsterHouse)releaseMonsterHouseTreasureIfReady();const map=currentMap();['goldChip','itemGoldChip','gearGoldChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`G ${state.gold}`});['ppChip','itemPpChip','gearPpChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`PP ${state.parallelPoints}`});const itemCount=$('#itemCountChip');if(itemCount)itemCount.textContent=`${state.items.length} / ${itemCapacity()}`;$('#floorChip').textContent=inTreasureVault()?`${treasureVaultFloorLabel()} / 宝物庫`:`${explore.floor}F / ${EXPLORE_CFG.floors}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=inTreasureVault()?'宝物庫':floorState?.isMonsterHouse?`モンスターハウス ${explore.floor}F`:`迷宮 ${explore.floor}F`;mapBoard.classList.toggle('treasure-vault-map',inTreasureVault());mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
  const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=explore.collapsed?(inTreasureVault()?'崩壊中：宝物庫では通常の敵マス侵食は発生しない。ユニーク敵撃破で0へ戻る。':'崩壊中：休憩不可。移動時20%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。'):'移動するたび+1。階をまたいで持ち越します。テスト用上限40（本番はもっと高い想定）。';
  mapLinesEl.innerHTML='';map.edges.forEach(k=>{const [a,b]=k.split('|'),na=map.nodes[a],nb=map.nodes[b],line=document.createElementNS('http://www.w3.org/2000/svg','line');const px=n=>8+n.x*(84/(EXPLORE_CFG.w-1)),py=n=>8+n.y*(84/(EXPLORE_CFG.h-1)),point=(n,otherId)=>n?.isLarge&&n.largePorts?.[otherId]?n.largePorts[otherId]:n,pa=point(na,b),pb=point(nb,a);line.setAttribute('x1',px(pa));line.setAttribute('y1',py(pa));line.setAttribute('x2',px(pb));line.setAttribute('y2',py(pb));line.setAttribute('class',`map-line ${(na.visited&&nb.visited)?'visited':''}`);mapLinesEl.appendChild(line)});
  mapNodesEl.innerHTML='';const reachable=new Set(neighborsOf(map,explore.current));const visitedIds=new Set(Object.values(map.nodes).filter(x=>!x.hidden&&x.visited).map(x=>x.id));
- const isRevealed=n=>n.alwaysRevealed||n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
- Object.values(map.nodes).filter(n=>!n.hidden).forEach(n=>{const revealed=isRevealed(n),displayType=revealed?(n.type==='trap'?'empty':n.type):'unknown',canMove=reachable.has(n.id),canInspect=revealed&&n.type==='unique';const b=document.createElement('button');b.type='button';const mhSeal=n.monsterHouseSealed?' monster-house-sealed':(n.monsterHouseReady?' monster-house-ready':'');b.className=`map-node${n.isLarge?' large-node':''} type-${displayType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${canMove?' reachable':''}${n.infected&&revealed&&n.type!=='trap'?' infected':''}${mhSeal}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;const label=n.monsterHouseSealed?'封印中':(n.isLarge&&n.type==='large'&&revealed?largeMapProgressLabel(n):nodeLabel(displayType)),hideEmptyLabel=revealed&&displayType==='empty';b.innerHTML=revealed?`<span>${nodeIcon(displayType)}</span>${hideEmptyLabel?'':`<small>${label}</small>`}`:'<span>?</span>';if(canInspect){const info=document.createElement('span');info.className='unique-info-mark';info.textContent='i';info.setAttribute('role','button');info.setAttribute('aria-label','ユニーク敵の詳細');info.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openUniqueInfo(n)});b.appendChild(info)}b.disabled=!!explore.largeSession||n.id===explore.current||(!canMove&&!canInspect);b.addEventListener('click',()=>{if(canInspect&&!canMove){openUniqueInfo(n);return}moveToNode(n.id)});mapNodesEl.appendChild(b);n.infected=false});
+ const isRevealed=n=>!!floorState?.mapRevealed||n.alwaysRevealed||n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
+ Object.values(map.nodes).filter(n=>!n.hidden).forEach(n=>{const revealed=isRevealed(n),displayType=revealed?(n.type==='trap'&&!floorState?.trapsRevealed?'empty':n.type):'unknown',canMove=reachable.has(n.id),canInspect=revealed&&n.type==='unique';const b=document.createElement('button');b.type='button';const mhSeal=n.monsterHouseSealed?' monster-house-sealed':(n.monsterHouseReady?' monster-house-ready':'');b.className=`map-node${n.isLarge?' large-node':''} type-${displayType}${n.visited?' visited':''}${n.id===explore.current?' current':''}${canMove?' reachable':''}${n.infected&&revealed&&n.type!=='trap'?' infected':''}${mhSeal}`;b.style.left=`${8+n.x*(84/(EXPLORE_CFG.w-1))}%`;b.style.top=`${8+n.y*(84/(EXPLORE_CFG.h-1))}%`;const label=n.monsterHouseSealed?'封印中':(n.isLarge&&n.type==='large'&&revealed?largeMapProgressLabel(n):nodeLabel(displayType)),hideEmptyLabel=revealed&&displayType==='empty';b.innerHTML=revealed?`<span>${nodeIcon(displayType)}</span>${hideEmptyLabel?'':`<small>${label}</small>`}`:'<span>?</span>';if(canInspect){const info=document.createElement('span');info.className='unique-info-mark';info.textContent='i';info.setAttribute('role','button');info.setAttribute('aria-label','ユニーク敵の詳細');info.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openUniqueInfo(n)});b.appendChild(info)}b.disabled=!!explore.largeSession||n.id===explore.current||(!canMove&&!canInspect);b.addEventListener('click',()=>{if(canInspect&&!canMove){openUniqueInfo(n);return}moveToNode(n.id)});mapNodesEl.appendChild(b);n.infected=false});
  renderExploreParty();requestAnimationFrame(()=>centerMapOnCurrent(false));if(!$('#exploreEventTitle').textContent)resolveExploreNode()
 }
 function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力のリング</label></div>`;p.appendChild(b)})}
@@ -2859,9 +2965,9 @@ if(jewelTabPage){
 }
 $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupBody'),o=b.classList.toggle('show');$('#exploreSetupMark').textContent=o?'閉じる ▴':'開く ▾'});$('#exploreApplySetup').addEventListener('click',()=>{readExploreSetup();resetRun();renderExploreSetup();$('#exploreSetupBody').classList.remove('show');$('#exploreSetupMark').textContent='開く ▾'});$('#exploreResetBtn').addEventListener('click',resetRun);$('#collapsePlusBtn').addEventListener('click',()=>{addCollapse(5);renderExplore()});$('#collapseNearBtn').addEventListener('click',()=>{explore.collapse=Math.max(0,EXPLORE_CFG.collapseMax-1);explore.collapsed=false;renderExplore();toast('崩壊度を上限-1へ')});$('#treasureVaultTestBtn').addEventListener('click',()=>{if(inTreasureVault()){toast('すでに宝物庫です',true);return}if(explore.floor>=EXPLORE_CFG.floors){toast('最終階からは宝物庫へ入れません',true);return}enterTreasureVault()});$('#trapPlusBtn').addEventListener('click',()=>{const map=currentMap(),c=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&!n.secretEntrance&&n.id!==explore.current&&n.id!==map.start&&n.id!==map.end);if(!c.length){toast('罠に変えられる無マスがありません',true);return}const n=rand(c);n.type='trap';n.trapId=rollTrapId(!!currentFloorState()?.isMonsterHouse);n.infected=true;renderExplore();toast('テスト用：罠を追加')});$('#treasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),large=Object.values(map.nodes).filter(n=>n.isLarge);if(large.length){const n=rand(large),id=`${n.id}__debug_${Date.now()}`,e={id,type:'treasure',visited:true,hidden:true,largeParentId:n.id,largeEventIndex:(n.largeEvents||[]).length};map.nodes[id]=e;(n.largeEvents||(n.largeEvents=[])).push(id);renderExplore();toast('テスト用：大型ノードに宝箱を追加');return}const c=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&n.id!==explore.current);if(!c.length){toast('宝箱に変えられる無マスがありません',true);return}const n=rand(c);n.type='treasure';n.infected=true;renderExplore();toast('テスト用：宝箱を追加')});$('#jewelTreasureTestBtn').addEventListener('click',()=>{const map=currentMap(),id=`debug_jewel_treasure_${Date.now()}`,n={id,type:'jewel_treasure',visited:true,hidden:true};map.nodes[id]=n;openTreasure(n)});
 $('#lockedTreasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),n=collapseBlockToLarge(map,explore.floor,`debug_${Date.now()}`,'locked_treasure',[explore.current]);if(!n){toast('カギ付き宝箱を置ける2×2領域がありません',true);return}renderExplore();toast('テスト用：カギ付き宝箱を追加')});
-$('#treasureKeyPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('treasure_key'));renderExplore();renderItemTab();toast('テスト用：財宝のカギ +1')});
+$('#treasureKeyPlusBtn').addEventListener('click',()=>{if(state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('treasure_key'));renderExplore();renderItemTab();toast('テスト用：財宝のカギ +1')});
 $('#trapResultConfirmBtn').addEventListener('click',closeTrapResult);$('#trapResultDialog').addEventListener('cancel',e=>{e.preventDefault()});
-$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{if(inTreasureVault()){const f=currentFloorState();f.map=generateTreasureVaultMap(f.fromFloor);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}showEvent('再生成','宝物庫をテスト用に再生成した。崩壊度は維持。');renderExplore();return}const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,!!f.isMonsterHouse);f.uniqueSpawned=false;f.uniqueDefeated=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=false;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;showEvent('再生成',f.isMonsterHouse?'現在階のモンスターハウスをテスト用に再生成した。':'現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
+$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{if(inTreasureVault()){const f=currentFloorState();f.map=generateTreasureVaultMap(f.fromFloor);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}showEvent('再生成','宝物庫をテスト用に再生成した。崩壊度は維持。');renderExplore();return}const f=explore.floorData[explore.floor];f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,!!f.isMonsterHouse);f.uniqueSpawned=false;f.uniqueDefeated=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=false;f.mapRevealed=false;f.trapsRevealed=false;f.milkBonusChecked=false;f.milkBonusApplied=0;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;applyMilkEnemyBonusToFloor(f);showEvent('再生成',f.isMonsterHouse?'現在階のモンスターハウスをテスト用に再生成した。':'現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
 $('#monsterHouseTestBtn').addEventListener('click',()=>{if(inTreasureVault()){toast('宝物庫内ではMH化できません',true);return}const f=explore.floorData[explore.floor];f.isMonsterHouse=true;f.hasShop=false;f.hasTreasure=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=true;f.map=generateFloor(explore.floor,false,false,true);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`テスト用に現在階をモンスターハウスへ変更した。残りの敵 ${info.remaining}。`);renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
