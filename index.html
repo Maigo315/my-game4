@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.26.1 宝箱選択・呪い実装</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.26.2 宝珠インライン変更・宝箱UI調整</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -556,15 +556,17 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 
 
 /* ===== Jewel management v13.25.2 ===== */
-.jewel-tab-page{padding-bottom:76px}
-.jewel-tab-shell{display:grid;gap:12px;padding:5px 0 14px}
+.jewel-tab-page{position:fixed;z-index:20;left:50%;top:7px;bottom:0;transform:translateX(-50%);width:min(calc(100% - 18px),542px);height:auto;min-height:0;padding-bottom:76px;overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(180deg,#0e0a16 0,#0a0c14 48%,#070910 100%)}
+.jewel-tab-page>.tab-page-topbar{flex:0 0 auto}
+.jewel-tab-shell{display:flex;flex:1 1 auto;min-height:0;flex-direction:column;gap:10px;padding:5px 0 8px;overflow:hidden}
 .jewel-tab-intro{padding:12px 13px;border-radius:14px;background:#121824;border:1px solid #2e394f}
 .jewel-tab-intro-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .jewel-tab-intro b{font-size:13px}.jewel-tab-intro strong{font-size:12px;color:#e6c9ff}.jewel-tab-intro p{margin:5px 0 0;font-size:10px;line-height:1.55;color:#9da8bc}
 .jewel-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:3px 3px 7px;font-size:12px;font-weight:950;color:#e8edf7}.jewel-section-title span{font-size:9px;font-weight:800;color:#9aa6ba}
-.jewel-set-list,.jewel-owned-list{display:grid;gap:8px}
-.jewel-slot{appearance:none;width:100%;display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:11px;align-items:center;padding:12px 12px;border-radius:14px;background:linear-gradient(135deg,#1d1828,#121824);border:1px solid #5a466d;color:#eef2f8;text-align:left;cursor:pointer}
-.jewel-slot:active,.jewel-owned:active{transform:scale(.992)}
+.jewel-set-list,.jewel-owned-list{display:grid;gap:8px}.jewel-set-list{flex:0 0 auto}.jewel-owned-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:1px 3px 6px 0;scrollbar-gutter:stable}
+.jewel-slot{appearance:none;width:100%;display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:11px;align-items:center;padding:12px 12px;border-radius:14px;background:linear-gradient(135deg,#1d1828,#121824);border:1px solid #5a466d;color:#eef2f8;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s,background .15s,transform .1s}
+.jewel-slot.editing{border-color:#a86bd2;background:linear-gradient(135deg,#30203f,#171523);box-shadow:0 0 0 2px rgba(168,107,210,.24),0 0 18px rgba(132,71,170,.18)}
+.jewel-slot:active,.jewel-owned.selectable:active{transform:scale(.992)}
 .jewel-slot-icon,.jewel-owned-icon,.jewel-icon{border-radius:50%;display:grid;place-items:center;font-weight:950;text-shadow:0 1px 2px rgba(0,0,0,.45)}
 .jewel-slot-icon{width:54px;height:54px;font-size:22px}.jewel-owned-icon{width:48px;height:48px;font-size:20px}
 .jewel-icon.jewel-red,.jewel-slot-icon.jewel-red,.jewel-owned-icon.jewel-red{background:radial-gradient(circle at 34% 28%,#ffd0d5 0,#ef6e79 34%,#a92f43 63%,#561523 100%);border:2px solid #ff9aa5;color:#fff2f3;box-shadow:inset 0 0 10px rgba(255,255,255,.18),0 0 10px rgba(218,66,87,.18)}
@@ -575,8 +577,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .jewel-icon.jewel-silver,.jewel-slot-icon.jewel-silver,.jewel-owned-icon.jewel-silver{background:radial-gradient(circle at 34% 28%,#fff 0,#cdd3dd 35%,#858e9d 65%,#3b424e 100%);border:2px solid #e7eaf0;color:#151922;text-shadow:none;box-shadow:inset 0 0 10px rgba(255,255,255,.35),0 0 10px rgba(210,220,235,.14)}
 .jewel-slot-icon:not(.jewel-red):not(.jewel-blue):not(.jewel-green):not(.jewel-purple):not(.jewel-pink):not(.jewel-silver),.jewel-owned-icon:not(.jewel-red):not(.jewel-blue):not(.jewel-green):not(.jewel-purple):not(.jewel-pink):not(.jewel-silver),.jewel-icon:not(.jewel-red):not(.jewel-blue):not(.jewel-green):not(.jewel-purple):not(.jewel-pink):not(.jewel-silver){background:radial-gradient(circle at 35% 30%,#ffe6a2,#e2913a 48%,#74391c 78%);border:2px solid #efc06c;color:#fff7df}
 .jewel-slot-copy,.jewel-owned-copy{min-width:0}.jewel-slot-copy{align-self:start;padding-top:0}.jewel-slot-label{display:block;margin-top:-4px;margin-bottom:1px;font-size:9px;line-height:1.1;color:#b8a7c9;font-weight:950;letter-spacing:.04em}.jewel-slot-name,.jewel-owned-name{display:block;margin-top:1px;font-size:14px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.jewel-slot-text,.jewel-owned-text{display:block;margin-top:5px;font-size:10px;line-height:1.45;color:#c3ccdc}
-.jewel-slot-change{padding:7px 10px;border-radius:9px;background:#30243f;border:1px solid #6a4e82;color:#f0e5f6;font-size:10px;font-weight:950}
-.jewel-owned{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px 12px;border-radius:13px;background:#111724;border:1px solid #2d374d;color:#eef2f8;text-align:left}
+.jewel-slot-change{padding:7px 10px;border-radius:9px;background:#30243f;border:1px solid #6a4e82;color:#f0e5f6;font-size:10px;font-weight:950}.jewel-slot.editing .jewel-slot-change{background:#6f3f8b;border-color:#b77bdb;color:#fff}
+.jewel-owned{appearance:none;width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px 12px;border-radius:13px;background:#111724;border:1px solid #2d374d;color:#eef2f8;text-align:left;transition:border-color .15s,background .15s,box-shadow .15s,transform .1s}.jewel-owned:disabled{opacity:1;cursor:default}.jewel-owned.selectable{cursor:pointer;border-color:#4a526c}.jewel-owned.selectable:hover{border-color:#76588e}.jewel-owned.selectable .jewel-edit-mark{color:#e6c9ff}.jewel-edit-mark{font-size:9px;font-weight:950;color:#6f7a90;white-space:nowrap}
 .jewel-owned-name{font-size:13px}.jewel-owned-text{font-size:9.5px}.jewel-equipped-badge{padding:5px 8px;border-radius:999px;background:#2e263a;border:1px solid #68527d;color:#e2c9f3;font-size:9px;font-weight:950;white-space:nowrap}.jewel-owned .jewel-not-equipped{color:#758096;border-color:#374156;background:#171d2b}
 .jewel-picker-list{display:grid;gap:8px;margin-top:11px}.jewel-picker-choice{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:74px;padding:10px;border-radius:13px;border:1px solid #3b465e;background:#171d2b;color:#eef2f8;text-align:left;cursor:pointer}.jewel-picker-choice.current{border-color:#8b68a6;background:#261f33}.jewel-picker-choice b{display:block;font-size:13px}.jewel-picker-choice small{display:block;margin-top:4px;font-size:9.5px;line-height:1.45;color:#b5bfd1}.jewel-picker-mark{font-size:9px;font-weight:950;color:#e0c9f2;white-space:nowrap}
 .jewel-battle-empty{padding:17px 11px;border:1px dashed #4a4058;border-radius:11px;background:#121622;color:#a8b1c2;text-align:center;font-size:10px;line-height:1.5}
@@ -613,8 +615,8 @@ dialog::backdrop{background:rgba(3,5,10,.66);backdrop-filter:blur(3px)}
 .treasure-list{display:grid;gap:9px;margin-top:12px}.treasure-choice{appearance:none;width:100%;display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px;border-radius:14px;border:1px solid #4b4434;background:linear-gradient(135deg,#1d1b16,#141923);color:#eef2f8;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s,background .15s}.treasure-choice:active{transform:scale(.993)}.treasure-choice.selected{border-color:#c69b43;background:linear-gradient(135deg,#2a2417,#171c27);box-shadow:0 0 0 2px rgba(198,155,67,.22)}.treasure-choice:disabled{opacity:.45;cursor:default}
 .treasure-icon{width:54px;height:54px;border-radius:12px;display:grid;place-items:center;background:#211d14;border:1px solid #655330;font-size:28px}.treasure-icon .jewel-owned-icon{width:50px;height:50px;font-size:20px}
 .treasure-copy{min-width:0}.treasure-kind{display:block;font-size:8px;font-weight:950;color:#c9a85d;letter-spacing:.04em}.treasure-copy b{display:block;margin-top:2px;font-size:13px}.treasure-copy small{display:block;margin-top:4px;font-size:9px;line-height:1.45;color:#b8c1d1}.treasure-effects{display:grid;gap:2px;margin-top:4px}.treasure-effect{font-size:8.5px;line-height:1.4;color:#d4dbe8}.treasure-effect.affix{color:#d8bdf0}.treasure-effect.unique{color:#ffe3a2}
-.treasure-take{box-sizing:border-box;min-width:62px;min-height:36px;padding:0 8px;border-radius:9px;border:1px solid #8a6b30;background:#392c12;color:#ffe3a2;font-size:9px;font-weight:950;display:grid;place-items:center;line-height:1;text-align:center;align-self:center}.treasure-choice.selected .treasure-take{border-color:#d8ad55;background:#5a4319;color:#fff1c8}.treasure-actions{display:grid;gap:7px;margin-top:12px}.treasure-confirm,.treasure-close{width:100%;min-height:42px;border-radius:10px;font-size:10px;font-weight:950;cursor:pointer}.treasure-confirm{border:1px solid #9b7837;background:linear-gradient(135deg,#5a4319,#3c2d12);color:#fff0bd}.treasure-confirm:disabled{opacity:.38;cursor:default}.treasure-close{border:1px solid #3b465e;background:#202737;color:#dfe5f0}
-@media(max-width:380px){.treasure-choice{grid-template-columns:48px minmax(0,1fr) auto;gap:8px;padding:9px}.treasure-icon{width:48px;height:48px;font-size:24px}.treasure-icon .jewel-owned-icon{width:44px;height:44px;font-size:18px}.treasure-copy b{font-size:12px}.treasure-copy small,.treasure-effect{font-size:8px}.treasure-take{min-width:56px;padding:0 6px}}
+.treasure-take{box-sizing:border-box;min-width:68px;min-height:40px;padding:0 9px;border-radius:9px;border:1px solid #8a6b30;background:#392c12;color:#ffe3a2;font-size:11.5px;font-weight:950;display:grid;place-items:center;line-height:1;text-align:center;align-self:center}.treasure-choice.selected .treasure-take{border-color:#d8ad55;background:#5a4319;color:#fff1c8}.treasure-actions{display:grid;gap:8px;margin-top:12px}.treasure-confirm,.treasure-close{width:100%;min-height:47px;border-radius:10px;font-size:12.5px;font-weight:950;cursor:pointer}.treasure-confirm{border:1px solid #9b7837;background:linear-gradient(135deg,#5a4319,#3c2d12);color:#fff0bd}.treasure-confirm:disabled{opacity:.38;cursor:default}.treasure-close{border:1px solid #3b465e;background:#202737;color:#dfe5f0}
+@media(max-width:380px){.treasure-choice{grid-template-columns:48px minmax(0,1fr) auto;gap:8px;padding:9px}.treasure-icon{width:48px;height:48px;font-size:24px}.treasure-icon .jewel-owned-icon{width:44px;height:44px;font-size:18px}.treasure-copy b{font-size:12px}.treasure-copy small,.treasure-effect{font-size:8px}.treasure-take{min-width:62px;min-height:38px;padding:0 6px;font-size:10.5px}.treasure-confirm,.treasure-close{min-height:45px;font-size:12px}}
 
 /* Battle item bottom sheet */
 .battle-item-dialog{
@@ -887,12 +889,6 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
 <p>SKILL ON・ゲージ100・封印されておらず、このターン行動可能な魔物娘が参加します。参加者はこのターン通常攻撃を行いません。</p>
 <div id="battleJewelChoices"></div>
 <button class="jewel-cancel" type="button" id="jewelCancelBtn">キャンセル</button>
-</div></dialog>
-<dialog id="jewelSetDialog"><div class="jewel-dialog">
-<h3 id="jewelSetDialogTitle">宝珠をセット</h3>
-<p id="jewelSetDialogLead">このスロットにセットする宝珠を選択します。</p>
-<div class="jewel-picker-list" id="jewelSetPicker"></div>
-<button class="jewel-cancel" type="button" id="jewelSetCancelBtn">キャンセル</button>
 </div></dialog>
 <dialog id="bossDetailDialog"><div class="jewel-dialog">
 <h3 id="bossDetailTitle">ボス行動詳細</h3>
@@ -2125,7 +2121,7 @@ function makeTreasureExtra(exclude=[]){const pool=unownedNormalJewels(exclude);c
 function generateTreasureRewards(){const rewards=[],used=[];const first=makeTreasureJewel();if(first){rewards.push(first);used.push(first.jewelId)}else rewards.push(makeTreasureFallback());for(let i=1;i<3;i++){const r=makeTreasureExtra(used);rewards.push(r);if(r.kind==='jewel')used.push(r.jewelId)}return rewards}
 function ensureTreasureRewards(n){if(!n.treasureRewards)n.treasureRewards=generateTreasureRewards();return n.treasureRewards}
 function treasureRewardName(r){if(r.kind==='jewel')return jewelDef(r.jewelId)?.name||r.jewelId;if(r.kind==='item')return itemDef(r.itemId)?.name||r.itemId;return gearDisplayName(r.gear)}
-function treasureRewardHtml(r){if(r.kind==='jewel'){const d=jewelDef(r.jewelId);return `<div class="treasure-icon"><span class="jewel-owned-icon jewel-${d.tone||d.id}">${d.icon}</span></div><span class="treasure-copy"><span class="treasure-kind">宝珠</span><b>${d.name}</b><small>${d.text}</small></span><span class="treasure-take">選択</span>`}if(r.kind==='item'){const d=itemDef(r.itemId);return `<div class="treasure-icon">${d.icon}</div><span class="treasure-copy"><span class="treasure-kind">上質アイテム</span><b>${d.name}</b><small>${d.text}</small></span><span class="treasure-take">選択</span>`}const inst=r.gear,g=gearBase(inst),ud=uniqueGearDef(inst),effects=[...(g?.effects||[]),...(ud?[`【${ud.prefix}】${uniqueDescription(inst)}`]:[]),...gearAffixLines(inst)];return `<div class="treasure-icon">${g?.icon||'◇'}</div><span class="treasure-copy"><span class="treasure-kind">${ud?'ユニーク武器':'上質装備'} / ${gearMeta(inst)}</span><b>${gearDisplayName(inst)}</b><span class="treasure-effects">${effects.map((x,i)=>`<span class="treasure-effect ${ud&&i===(g?.effects||[]).length?'unique':i>=(g?.effects||[]).length+(ud?1:0)?'affix':''}">${x}</span>`).join('')}</span></span><span class="treasure-take">選択</span>`}
+function treasureRewardHtml(r){if(r.kind==='jewel'){const d=jewelDef(r.jewelId);return `<div class="treasure-icon"><span class="jewel-owned-icon jewel-${d.tone||d.id}">${d.icon}</span></div><span class="treasure-copy"><span class="treasure-kind">宝珠</span><b>${d.name}</b><small>${d.text}</small></span><span class="treasure-take">選択</span>`}if(r.kind==='item'){const d=itemDef(r.itemId);return `<div class="treasure-icon">${d.icon}</div><span class="treasure-copy"><span class="treasure-kind">アイテム</span><b>${d.name}</b><small>${d.text}</small></span><span class="treasure-take">選択</span>`}const inst=r.gear,g=gearBase(inst),ud=uniqueGearDef(inst),effects=[...(g?.effects||[]),...(ud?[`【${ud.prefix}】${uniqueDescription(inst)}`]:[]),...gearAffixLines(inst)];return `<div class="treasure-icon">${g?.icon||'◇'}</div><span class="treasure-copy"><span class="treasure-kind">${ud?'ユニーク武器':'装備'} / ${gearMeta(inst)}</span><b>${gearDisplayName(inst)}</b><span class="treasure-effects">${effects.map((x,i)=>`<span class="treasure-effect ${ud&&i===(g?.effects||[]).length?'unique':i>=(g?.effects||[]).length+(ud?1:0)?'affix':''}">${x}</span>`).join('')}</span></span><span class="treasure-take">選択</span>`}
 function updateTreasureSelectionUI(){const choices=[...document.querySelectorAll('#treasureChoices .treasure-choice')];choices.forEach((b,i)=>{const selected=i===treasureSelectedIndex;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',selected?'true':'false');const tag=b.querySelector('.treasure-take');if(tag&&!b.disabled)tag.textContent=selected?'選択中':'選択'});const confirm=$('#treasureConfirmBtn');if(confirm)confirm.disabled=treasureSelectedIndex===null}
 function selectTreasureReward(n,index){if(!n||n.type!=='treasure')return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){toast('アイテム所持上限です',true);return}treasureSelectedNodeId=n.id;treasureSelectedIndex=index;updateTreasureSelectionUI()}
 function openTreasure(n){if(!n||n.type!=='treasure')return;treasureSelectedIndex=null;treasureSelectedNodeId=n.id;const rewards=ensureTreasureRewards(n),box=$('#treasureChoices');box.innerHTML='';rewards.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='treasure-choice';b.dataset.treasureIndex=String(i);b.setAttribute('aria-pressed','false');b.innerHTML=treasureRewardHtml(r);if(r.kind==='item'&&state.items.length>=ITEM_LIMIT){b.disabled=true;b.querySelector('.treasure-take').textContent='所持上限'}else b.addEventListener('click',()=>selectTreasureReward(n,i));box.appendChild(b)});updateTreasureSelectionUI();showEvent('宝箱','宝箱を発見した。','宝箱を開く',()=>openTreasure(n));const dlg=$('#treasureDialog');if(!dlg.open)dlg.showModal()}
@@ -2277,33 +2273,28 @@ function renderItemTab(){
 }
 function renderJewelTab(){
  const setChip=$('#jewelSetChip'),ownedChip=$('#jewelOwnedChip');if(setChip)setChip.textContent=`${state.jewelSet.length} / ${JEWEL_SET_LIMIT} セット`;if(ownedChip)ownedChip.textContent=`所持 ${state.jewels.length}`;
+ if(jewelEditSlot!==null&&(jewelEditSlot<0||jewelEditSlot>=JEWEL_SET_LIMIT))jewelEditSlot=null;
  const root=$('#jewelTabList');if(!root)return;root.innerHTML='';
- const setTitle=document.createElement('div');setTitle.className='jewel-section-title';setTitle.innerHTML='<b>セット中</b><span>スロットをタップで変更</span>';root.appendChild(setTitle);
+ const editing=jewelEditSlot!==null;
+ const setTitle=document.createElement('div');setTitle.className='jewel-section-title';setTitle.innerHTML=`<b>セット中</b><span>${editing?`SLOT ${jewelEditSlot+1} の変更先を選択`:'変更するスロットをタップ'}</span>`;root.appendChild(setTitle);
  const setList=document.createElement('div');setList.className='jewel-set-list';
  for(let i=0;i<JEWEL_SET_LIMIT;i++){
-   const id=state.jewelSet[i],d=id?jewelDef(id):null,b=document.createElement('button');b.type='button';b.className='jewel-slot';
-   if(d)b.innerHTML=`<span class="jewel-slot-icon jewel-${d.tone||d.id}">${d.icon}</span><span class="jewel-slot-copy"><span class="jewel-slot-label">SLOT ${i+1}</span><b class="jewel-slot-name">${d.name}</b><small class="jewel-slot-text">${d.text}</small></span><span class="jewel-slot-change">変更</span>`;
-   else b.innerHTML=`<span class="jewel-slot-icon">＋</span><span class="jewel-slot-copy"><span class="jewel-slot-label">SLOT ${i+1}</span><b class="jewel-slot-name">未セット</b><small class="jewel-slot-text">所持している宝珠からセットできます。</small></span><span class="jewel-slot-change">セット</span>`;
-   b.addEventListener('click',()=>openJewelSetPicker(i));setList.appendChild(b)
+   const id=state.jewelSet[i],d=id?jewelDef(id):null,b=document.createElement('button');b.type='button';b.className=`jewel-slot${jewelEditSlot===i?' editing':''}`;
+   if(d)b.innerHTML=`<span class="jewel-slot-icon jewel-${d.tone||d.id}">${d.icon}</span><span class="jewel-slot-copy"><span class="jewel-slot-label">SLOT ${i+1}</span><b class="jewel-slot-name">${d.name}</b><small class="jewel-slot-text">${d.text}</small></span><span class="jewel-slot-change">${jewelEditSlot===i?'変更元':'変更'}</span>`;
+   else b.innerHTML=`<span class="jewel-slot-icon">＋</span><span class="jewel-slot-copy"><span class="jewel-slot-label">SLOT ${i+1}</span><b class="jewel-slot-name">未セット</b><small class="jewel-slot-text">所持している宝珠からセットできます。</small></span><span class="jewel-slot-change">${jewelEditSlot===i?'変更元':'セット'}</span>`;
+   b.addEventListener('click',()=>{jewelEditSlot=jewelEditSlot===i?null:i;renderJewelTab()});setList.appendChild(b)
  }
  root.appendChild(setList);
- const ownTitle=document.createElement('div');ownTitle.className='jewel-section-title';ownTitle.style.marginTop='4px';ownTitle.innerHTML='<b>所持宝珠</b><span>未セットのみ表示</span>';root.appendChild(ownTitle);
+ const ownTitle=document.createElement('div');ownTitle.className='jewel-section-title';ownTitle.style.marginTop='3px';ownTitle.innerHTML=`<b>所持宝珠</b><span>${editing?'変更先をタップ':'未セットのみ表示'}</span>`;root.appendChild(ownTitle);
  const ownList=document.createElement('div');ownList.className='jewel-owned-list';
  const unequipped=state.jewels.filter(id=>!state.jewelSet.includes(id));
- if(!unequipped.length){ownList.innerHTML='<div class="jewel-battle-empty">未セットの宝珠はありません。</div>'}
- else unequipped.forEach(id=>{const d=jewelDef(id);if(!d)return;const row=document.createElement('div');row.className='jewel-owned';row.innerHTML=`<span class="jewel-owned-icon jewel-${d.tone||d.id}">${d.icon}</span><span class="jewel-owned-copy"><b class="jewel-owned-name">${d.name}</b><small class="jewel-owned-text">${d.text}</small></span>`;ownList.appendChild(row)});
+ if(!unequipped.length){ownList.innerHTML=`<div class="jewel-battle-empty">${editing?'変更できる未セットの宝珠がありません。':'未セットの宝珠はありません。'}</div>`}
+ else unequipped.forEach(id=>{const d=jewelDef(id);if(!d)return;const row=document.createElement('button');row.type='button';row.className=`jewel-owned${editing?' selectable':''}`;row.disabled=!editing;row.innerHTML=`<span class="jewel-owned-icon jewel-${d.tone||d.id}">${d.icon}</span><span class="jewel-owned-copy"><b class="jewel-owned-name">${d.name}</b><small class="jewel-owned-text">${d.text}</small></span><span class="jewel-edit-mark">${editing?'変更先':''}</span>`;if(editing)row.addEventListener('click',()=>setJewelToSlotInline(id));ownList.appendChild(row)});
  root.appendChild(ownList)
 }
-function openJewelSetPicker(slot){
- if(!state||slot<0||slot>=JEWEL_SET_LIMIT)return;jewelEditSlot=slot;const dlg=$('#jewelSetDialog'),picker=$('#jewelSetPicker'),current=state.jewelSet[slot];$('#jewelSetDialogTitle').textContent=`宝珠スロット${slot+1}`;$('#jewelSetDialogLead').textContent='所持している宝珠から選択します。別スロットの宝珠を選ぶと位置を入れ替えます。';picker.innerHTML='';
- state.jewels.forEach(id=>{const d=jewelDef(id);if(!d)return;const idx=state.jewelSet.indexOf(id),b=document.createElement('button');b.type='button';b.className=`jewel-picker-choice${id===current?' current':''}`;b.innerHTML=`<span class="jewel-owned-icon jewel-${d.tone||d.id}">${d.icon}</span><span><b>${d.name}</b><small>${d.text}</small></span><span class="jewel-picker-mark">${id===current?'現在':idx>=0?`SLOT ${idx+1}`:'セット'}</span>`;b.addEventListener('click',()=>setJewelToSlot(slot,id));picker.appendChild(b)});
- if(!state.jewels.length)picker.innerHTML='<div class="jewel-battle-empty">所持している宝珠がありません。</div>';dlg.showModal()
-}
-function setJewelToSlot(slot,id){
- if(!state.jewels.includes(id)||slot<0||slot>=JEWEL_SET_LIMIT)return;const old=state.jewelSet[slot],other=state.jewelSet.indexOf(id);
- if(other===slot){$('#jewelSetDialog').close();jewelEditSlot=null;return}
- if(other>=0){state.jewelSet[other]=old;state.jewelSet[slot]=id}else state.jewelSet[slot]=id;
- state.jewelSet=state.jewelSet.filter(Boolean).slice(0,JEWEL_SET_LIMIT);$('#jewelSetDialog').close();jewelEditSlot=null;renderJewelTab();toast(`${jewelDef(id).name}をSLOT ${slot+1}にセット`)
+function setJewelToSlotInline(id){
+ const slot=jewelEditSlot;if(slot===null||!state.jewels.includes(id)||state.jewelSet.includes(id)||slot<0||slot>=JEWEL_SET_LIMIT)return;
+ state.jewelSet[slot]=id;state.jewelSet=state.jewelSet.filter(Boolean).slice(0,JEWEL_SET_LIMIT);jewelEditSlot=null;renderJewelTab()
 }
 function renderBattleJewelChoices(){
  const root=$('#battleJewelChoices');if(!root)return;root.innerHTML='';const ids=state.jewelSet.filter(id=>state.jewels.includes(id)&&jewelDef(id));
@@ -2313,6 +2304,7 @@ function renderBattleJewelChoices(){
 function openBattleJewelDialog(){if(animating||state.battleOver)return;renderBattleJewelChoices();jewelDialog.showModal()}
 
 function switchExploreTab(kind,resetGear=true){
+ if(kind!=='jewel')jewelEditSlot=null;
  const pages={explore:$('#exploreTabPage'),item:$('#itemTabPage'),gear:$('#gearTabPage'),jewel:$('#jewelTabPage')};Object.entries(pages).forEach(([k,el])=>el&&el.classList.toggle('screen-hidden',k!==kind));
  const buttons={explore:$('#exploreTabBtn'),item:$('#itemManageBtn'),gear:$('#gearManageBtn'),jewel:$('#jewelManageBtn')};Object.entries(buttons).forEach(([k,b])=>b&&b.classList.toggle('active',k===kind));
  if(kind==='gear'){if(!gearManageUid||!state.party.some(u=>u.uid===gearManageUid))gearManageUid=state.party[0].uid;if(resetGear){gearPickerSlot=null;gearFocusUid=null;}const g=$('#gearGoldChip'),p=$('#gearPpChip');if(g)g.textContent=`G ${state.gold}`;if(p)p.textContent=`PP ${state.parallelPoints}`;renderGearManager()}
@@ -2389,7 +2381,7 @@ function renderExplore(){
 function renderExploreSetup(){const p=$('#explorePartySetup');p.innerHTML='';config.party.forEach((slot,i)=>{const b=document.createElement('div');b.className='setup-slot';b.innerHTML=`<label>味方${i+1}</label><select data-explore-party="${i}">${Object.values(ALLIES).map(a=>`<option value="${a.id}" ${a.id===slot.ally?'selected':''}>${a.name}</option>`).join('')}</select><div class="gear"><label><input type="checkbox" data-explore-gear="${i}:dagger" ${slot.dagger?'checked':''}>ダガー</label><label><input type="checkbox" data-explore-gear="${i}:cloth" ${slot.cloth?'checked':''}>布の服</label><label><input type="checkbox" data-explore-gear="${i}:ring" ${slot.ring?'checked':''}>理力のリング</label></div>`;p.appendChild(b)})}
 function readExploreSetup(){document.querySelectorAll('[data-explore-party]').forEach(s=>config.party[+s.dataset.exploreParty].ally=s.value);document.querySelectorAll('[data-explore-gear]').forEach(c=>{const [i,k]=c.dataset.exploreGear.split(':');config.party[+i][k]=c.checked})}
 
-$('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').addEventListener('click',openBattleJewelDialog);$('#jewelCancelBtn').addEventListener('click',()=>jewelDialog.close());$('#jewelSetCancelBtn').addEventListener('click',()=>{jewelEditSlot=null;$('#jewelSetDialog').close()});$('#jewelSetDialog').addEventListener('cancel',e=>{e.preventDefault();jewelEditSlot=null;$('#jewelSetDialog').close()});$('#speedBtn').addEventListener('click',()=>{speedIndex=(speedIndex+1)%SPEEDS.length;render()});$('#nextBattleBtn').addEventListener('click',()=>state.runOver?resetRun():returnFromBattle());$('#detailClose').addEventListener('click',()=>{selectedDetailId=null;detailPanel.classList.remove('show')});$('#logToggle').addEventListener('click',()=>{const o=logEl.classList.toggle('show');$('#logToggleMark').textContent=o?'閉じる ▴':'開く ▾'});$('#resetBtn').addEventListener('click',resetRun);
+$('#attackBtn').addEventListener('click',()=>playTurn(false));$('#chainBtn').addEventListener('click',openBattleJewelDialog);$('#jewelCancelBtn').addEventListener('click',()=>jewelDialog.close());$('#speedBtn').addEventListener('click',()=>{speedIndex=(speedIndex+1)%SPEEDS.length;render()});$('#nextBattleBtn').addEventListener('click',()=>state.runOver?resetRun():returnFromBattle());$('#detailClose').addEventListener('click',()=>{selectedDetailId=null;detailPanel.classList.remove('show')});$('#logToggle').addEventListener('click',()=>{const o=logEl.classList.toggle('show');$('#logToggleMark').textContent=o?'閉じる ▴':'開く ▾'});$('#resetBtn').addEventListener('click',resetRun);
 $('#battleItemBtn').addEventListener('click',openBattleItemSheet);$('#battleItemCloseBtn').addEventListener('click',closeBattleItemSheet);$('#battleItemDialog').addEventListener('cancel',e=>{e.preventDefault();closeBattleItemSheet()});
 $('#statsToggle').addEventListener('click',()=>{const b=$('#statsBody'),o=b.classList.toggle('show');$('#statsMark').textContent=o?'閉じる ▴':'開く ▾'});
 $('#resetCumulativeBtn').addEventListener('click',()=>{delete cumulativeByConfig[configKey()];renderStats()});
