@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.32.3 罠擬態表示</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.32.4 罠抽選比率</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -961,7 +961,7 @@ const ENHANCE_EFFECTS=[
 ];
 const ITEM_LIMIT=12;
 const TRAP_CATALOG={
- mine:{id:'mine',name:'地雷'},large_mine:{id:'large_mine',name:'大地雷'},exhaustion:{id:'exhaustion',name:'虚脱の罠'},item_curse:{id:'item_curse',name:'呪いの罠'},alarm:{id:'alarm',name:'警報の罠'},poison_gas:{id:'poison_gas',name:'毒ガスの罠'},seal:{id:'seal',name:'封印の罠'},fear:{id:'fear',name:'恐怖の罠'},sheep:{id:'sheep',name:'羊の罠'},swap_gear:{id:'swap_gear',name:'すり替えの罠'},kitsune:{id:'kitsune',name:'妖狐の罠'},warp:{id:'warp',name:'ワープの罠'},oxidation:{id:'oxidation',name:'酸化の罠'},collapse:{id:'collapse',name:'崩壊の罠'},seizure:{id:'seizure',name:'差し押さえの罠'},forced_transfer:{id:'forced_transfer',name:'強制転移の罠'}
+ mine:{id:'mine',name:'地雷',weight:11},large_mine:{id:'large_mine',name:'大地雷',weight:4},exhaustion:{id:'exhaustion',name:'虚脱の罠',weight:9},item_curse:{id:'item_curse',name:'呪いの罠',weight:6},alarm:{id:'alarm',name:'警報の罠',weight:7},poison_gas:{id:'poison_gas',name:'毒ガスの罠',weight:8},seal:{id:'seal',name:'封印の罠',weight:6},fear:{id:'fear',name:'恐怖の罠',weight:6},sheep:{id:'sheep',name:'羊の罠',weight:8},swap_gear:{id:'swap_gear',name:'すり替えの罠',weight:4},kitsune:{id:'kitsune',name:'妖狐の罠',weight:5},warp:{id:'warp',name:'ワープの罠',weight:7},oxidation:{id:'oxidation',name:'酸化の罠',weight:3},collapse:{id:'collapse',name:'崩壊の罠',weight:7},seizure:{id:'seizure',name:'差し押さえの罠',weight:5},forced_transfer:{id:'forced_transfer',name:'強制転移の罠',weight:4}
 };
 const TRAP_IDS=Object.keys(TRAP_CATALOG);
 const ITEM_CATALOG={
@@ -2270,7 +2270,7 @@ function maybeInfect(){
  const map=currentMap();let c=Object.values(map.nodes).filter(n=>!n.hidden&&!n.isLarge&&n.type==='empty'&&!n.secretEntrance&&n.id!==explore.current);if(!c.length)return;const n=rand(c);n.type='enemy';n.infected=true;explore.lastInfected=n.id;toast(`${nodeLabel('empty')}マスが敵マスに侵食された`,true)
 }
 function trapDef(id){return TRAP_CATALOG[id]||TRAP_CATALOG.mine}
-function rollTrapId(isMonsterHouse=currentFloorState()?.isMonsterHouse){const ids=isMonsterHouse?TRAP_IDS.filter(id=>id!=='forced_transfer'):TRAP_IDS;return rand(ids)}
+function rollTrapId(isMonsterHouse=currentFloorState()?.isMonsterHouse){const ids=isMonsterHouse?TRAP_IDS.filter(id=>id!=='forced_transfer'):TRAP_IDS;return weightedPick(ids.map(id=>({id,weight:trapDef(id).weight||1}))).id}
 function ensureTrapId(n){if(!n)return'mine';if(!n.trapId||(currentFloorState()?.isMonsterHouse&&n.trapId==='forced_transfer'))n.trapId=rollTrapId(!!currentFloorState()?.isMonsterHouse);return n.trapId}
 function queueNextBattleStatus(u,st){if(!u)return;(u.pendingBattleStatuses||(u.pendingBattleStatuses=[])).push({...st})}
 function clearPendingTrapBattleStatuses(){let count=0;state.party.forEach(u=>{count+=(u.pendingBattleStatuses||[]).length;u.pendingBattleStatuses=[]});return count}
