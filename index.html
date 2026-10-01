@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.28.0 店大型ノード化</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.28.1 大型間道路修正</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -1935,12 +1935,23 @@ function largeBlockCandidates(map){
 }
 function collapseBlockToLarge(map,floor,index=0,type='large'){
  const c=largeBlockCandidates(map)[0];if(!c)return null;
- const inside=new Set(c.ids),largeId=`large_${type}_${floor}_${index}_${c.x}_${c.y}`,ports={};
+ const inside=new Set(c.ids),largeId=`large_${type}_${floor}_${index}_${c.x}_${c.y}`,ports={},largePortTransfers={};
  // 大型化前の接続点を保存。描画時はこの座標へ線を結び、碁盤目状の水平・垂直道路を維持する。
- map.edges.forEach(k=>{const [a,b]=k.split('|'),ai=inside.has(a),bi=inside.has(b);if(ai===bi)return;const inner=ai?a:b,outer=ai?b:a,src=map.nodes[inner];if(src&&!ports[outer])ports[outer]={x:src.x,y:src.y}});
+ // 既存の大型ノードと接続していた通常マスを取り込む場合は、既存大型側の接続点も新しい大型ノードへ引き継ぐ。
+ // これにより大型↔大型も、元のグリッド道路と同じ縦線／横線1本で描画できる。
+ map.edges.forEach(k=>{
+   const [a,b]=k.split('|'),ai=inside.has(a),bi=inside.has(b);if(ai===bi)return;
+   const inner=ai?a:b,outer=ai?b:a,src=map.nodes[inner],outerNode=map.nodes[outer];
+   if(src&&!ports[outer]){
+     ports[outer]={x:src.x,y:src.y};
+     if(outerNode?.isLarge&&outerNode.largePorts?.[inner])largePortTransfers[outer]={inner,point:{...outerNode.largePorts[inner]}}
+   }
+ });
  map.edges=map.edges.filter(k=>{const [a,b]=k.split('|');return !inside.has(a)&&!inside.has(b)});
  c.ids.forEach(id=>delete map.nodes[id]);
- const n={id:largeId,x:c.x+.5,y:c.y+.5,type,visited:false,infected:false,isLarge:true,footprint:{x:c.x,y:c.y,w:2,h:2},largePorts:ports,largeEvents:[]};map.nodes[largeId]=n;c.external.forEach(id=>connect(map,largeId,id));
+ const n={id:largeId,x:c.x+.5,y:c.y+.5,type,visited:false,infected:false,isLarge:true,footprint:{x:c.x,y:c.y,w:2,h:2},largePorts:ports,largeEvents:[]};map.nodes[largeId]=n;
+ Object.entries(largePortTransfers).forEach(([outerId,t])=>{const outer=map.nodes[outerId];if(!outer?.isLarge)return;outer.largePorts||(outer.largePorts={});outer.largePorts[largeId]=t.point;delete outer.largePorts[t.inner]});
+ c.external.forEach(id=>connect(map,largeId,id));
  return n
 }
 function rollLargeEventCount(){const r=Math.random();return r<.25?2:r<.75?3:4}
