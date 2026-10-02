@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.34.2 アイテム出現率調整</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.35 報酬テーブル基盤</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -1013,13 +1013,88 @@ const ITEM_CATALOG={
 const ITEM_IDS=Object.keys(ITEM_CATALOG);
 const ITEM_RARITY_ORDER=['C','U','R','SR','UR'];
 const ITEM_RARITY_TABLES={
+ // 通常床は階層が深くなっても基礎比率を変えず、解禁上限だけでフィルタする。
  floor:[{id:'C',weight:72},{id:'U',weight:22},{id:'R',weight:5},{id:'SR',weight:.9},{id:'UR',weight:.1}],
- shop:[{id:'C',weight:45},{id:'U',weight:35},{id:'R',weight:15},{id:'SR',weight:4.5},{id:'UR',weight:.5}],
- treasure:[{id:'R',weight:60},{id:'SR',weight:35},{id:'UR',weight:5}]
+ // 店は現在階で解禁済みの範囲だけ。床より上位レア寄り。
+ shop:[{id:'C',weight:45},{id:'U',weight:35},{id:'R',weight:15},{id:'SR',weight:4.5},{id:'UR',weight:.5}]
 };
+const INITIAL_REWARD_ITEM_IDS=['potion','skill_capsule','balance_scale'];
+const DEFAULT_REWARD_DUNGEON_ID='normal30';
+// 報酬テーブルだけ先行実装。現在の3Fプロトタイプは normal30 の1〜3Fとして参照する。
+// gearMin / gearMax はプレイヤー表記のTier（1始まり）。Tier8〜10は装備追加後に自動で有効になる。
+const DUNGEON_REWARD_PROFILES={
+ normal30:{id:'normal30',name:'30F',totalFloors:30,bossFloors:[10,20,30],stages:[
+  {from:1,to:2,initial:true,itemMax:'C',gearMin:1,gearMax:2,accessory:false},
+  {from:3,to:10,itemMax:'U',gearMin:1,gearMax:3,accessory:true},
+  {from:11,to:18,itemMax:'U',gearMin:1,gearMax:4,accessory:true},
+  {from:19,to:25,itemMax:'R',gearMin:1,gearMax:4,accessory:true},
+  {from:26,to:30,itemMax:'R',gearMin:2,gearMax:5,accessory:true}
+ ]},
+ hard30:{id:'hard30',name:'30F高難度',totalFloors:30,bossFloors:[10,20,30],stages:[
+  {from:1,to:2,initial:true,itemMax:'C',gearMin:1,gearMax:2,accessory:false},
+  {from:3,to:10,itemMax:'U',gearMin:1,gearMax:3,accessory:true},
+  {from:11,to:18,itemMax:'R',gearMin:1,gearMax:4,accessory:true},
+  {from:19,to:25,itemMax:'R',gearMin:2,gearMax:5,accessory:true},
+  {from:26,to:30,itemMax:'SR',gearMin:3,gearMax:6,accessory:true}
+ ]},
+ normal50:{id:'normal50',name:'50F',totalFloors:50,bossFloors:[10,20,30,40,50],stages:[
+  {from:1,to:2,initial:true,itemMax:'C',gearMin:1,gearMax:2,accessory:false},
+  {from:3,to:10,itemMax:'U',gearMin:1,gearMax:3,accessory:true},
+  {from:11,to:18,itemMax:'U',gearMin:1,gearMax:4,accessory:true},
+  {from:19,to:25,itemMax:'R',gearMin:1,gearMax:4,accessory:true},
+  {from:26,to:34,itemMax:'R',gearMin:2,gearMax:5,accessory:true},
+  {from:35,to:43,itemMax:'R',gearMin:2,gearMax:6,accessory:true},
+  {from:44,to:50,itemMax:'SR',gearMin:3,gearMax:7,accessory:true}
+ ]},
+ normal100:{id:'normal100',name:'100F',totalFloors:100,bossFloors:[10,25,40,55,70,85,100],stages:[
+  {from:1,to:2,initial:true,itemMax:'C',gearMin:1,gearMax:2,accessory:false},
+  {from:3,to:10,itemMax:'U',gearMin:1,gearMax:3,accessory:true},
+  {from:11,to:18,itemMax:'U',gearMin:1,gearMax:4,accessory:true},
+  {from:19,to:25,itemMax:'R',gearMin:1,gearMax:4,accessory:true},
+  {from:26,to:34,itemMax:'R',gearMin:2,gearMax:5,accessory:true},
+  {from:35,to:43,itemMax:'R',gearMin:2,gearMax:6,accessory:true},
+  {from:44,to:60,itemMax:'SR',gearMin:3,gearMax:7,accessory:true},
+  {from:61,to:75,itemMax:'SR',gearMin:4,gearMax:8,accessory:true},
+  {from:76,to:90,itemMax:'UR',gearMin:5,gearMax:9,accessory:true},
+  {from:91,to:100,itemMax:'UR',gearMin:6,gearMax:10,accessory:true}
+ ]}
+};
+const GEAR_TIER_WEIGHT_PATTERNS={
+ 1:[100],
+ 2:[85,15],
+ 3:[50,35,15],
+ 4:[30,35,25,10],
+ 5:[20,25,25,20,10]
+};
+function activeRewardDungeonId(){return explore?.rewardDungeonId||DEFAULT_REWARD_DUNGEON_ID}
+function rewardProfileForFloor(floor=explore?.floor||1,dungeonId=activeRewardDungeonId()){
+ const dungeon=DUNGEON_REWARD_PROFILES[dungeonId]||DUNGEON_REWARD_PROFILES[DEFAULT_REWARD_DUNGEON_ID],f=Math.max(1,Math.min(dungeon.totalFloors,Number(floor)||1));
+ return dungeon.stages.find(x=>f>=x.from&&f<=x.to)||dungeon.stages[dungeon.stages.length-1]
+}
+function rarityAtMost(rarity,maxRarity){return ITEM_RARITY_ORDER.indexOf(rarity)<=ITEM_RARITY_ORDER.indexOf(maxRarity)}
 function itemCapacity(){return ITEM_LIMIT+(state?.itemCapacityBonus||0)}
-function itemPoolForRarity(rarity,source='floor',exclude=[]){const ex=new Set(exclude);return ITEM_IDS.map(id=>ITEM_CATALOG[id]).filter(d=>d.rarity===rarity&&!ex.has(d.id)&&(source!=='treasure'||d.treasureDrop!==false)&&(source!=='shop'||d.shopDrop!==false)&&(source!=='floor'||d.floorDrop!==false))}
-function rollItemBySource(source='floor',exclude=[]){const table=ITEM_RARITY_TABLES[source]||ITEM_RARITY_TABLES.floor;const available=table.filter(r=>itemPoolForRarity(r.id,source,exclude).length);const rarity=weightedPick(available.length?available:table).id,pool=itemPoolForRarity(rarity,source,exclude);return weightedPick(pool.map(d=>({id:d.id,weight:d.dropWeight||1}))).id}
+function itemPoolForRarity(rarity,source='floor',exclude=[],profile=rewardProfileForFloor()){
+ const ex=new Set(exclude),initial=!!profile?.initial;
+ return ITEM_IDS.map(id=>ITEM_CATALOG[id]).filter(d=>d.rarity===rarity&&!ex.has(d.id)&&(!initial||INITIAL_REWARD_ITEM_IDS.includes(d.id))&&(source!=='treasure'||d.treasureDrop!==false)&&(source!=='shop'||d.shopDrop!==false)&&(source!=='floor'||d.floorDrop!==false))
+}
+function itemRarityTableForSource(source='floor',profile=rewardProfileForFloor()){
+ if(profile?.initial)return [{id:'C',weight:1}];
+ const max=profile?.itemMax||'UR';
+ if(source==='treasure'){
+  if(max==='U')return [{id:'U',weight:1}];
+  if(max==='R')return [{id:'R',weight:1}];
+  if(max==='SR')return [{id:'R',weight:65},{id:'SR',weight:35}];
+  if(max==='UR')return [{id:'R',weight:50},{id:'SR',weight:40},{id:'UR',weight:10}];
+  return [{id:'C',weight:1}];
+ }
+ const base=ITEM_RARITY_TABLES[source]||ITEM_RARITY_TABLES.floor;
+ return base.filter(r=>rarityAtMost(r.id,max))
+}
+function rollItemBySource(source='floor',exclude=[],floor=explore?.floor||1){
+ const profile=rewardProfileForFloor(floor),table=itemRarityTableForSource(source,profile),available=table.filter(r=>itemPoolForRarity(r.id,source,exclude,profile).length),rarity=weightedPick(available.length?available:table).id,pool=itemPoolForRarity(rarity,source,exclude,profile);
+ if(!pool.length){const fallback=INITIAL_REWARD_ITEM_IDS.map(id=>ITEM_CATALOG[id]).filter(d=>d&&!exclude.includes(d.id));return weightedPick(fallback.map(d=>({id:d.id,weight:d.dropWeight||1}))).id}
+ return weightedPick(pool.map(d=>({id:d.id,weight:d.dropWeight||1}))).id
+}
 const JEWEL_CATALOG={
  attack:{id:'attack',name:'攻撃の宝珠',icon:'攻',tone:'red',text:'敵に攻撃力平均の物理ダメージ。その後、攻撃力平均×0.2×参加人数の物理ダメージ。'},
  defense:{id:'defense',name:'防御の宝珠',icon:'防',tone:'blue',text:'敵に攻撃力平均×0.5の魔導ダメージ。3ターン、参加人数×10%だけ味方全員の被ダメージ減少。'},
@@ -2334,7 +2409,7 @@ function createExploreRun(){
    floorData[f]={map:generateFloor(f,hasShop,hasTreasure,isMonsterHouse),hasShop,hasTreasure,isMonsterHouse,monsterHouseDefeated:0,monsterHouseSealReleased:false,uniqueSpawned:false,uniqueDefeated:false,kills:0,treasureVaultUsed:false}
    if(!isMonsterHouse)plantTreasureVaultEntrance(floorData[f],f,false)
  }
- return {floor:1,steps:0,collapse:0,collapsed:false,current:floorData[1].map.start,floorData,bonusFloor:null,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null,largeSession:null}
+ return {floor:1,steps:0,collapse:0,collapsed:false,rewardDungeonId:DEFAULT_REWARD_DUNGEON_ID,current:floorData[1].map.start,floorData,bonusFloor:null,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null,largeSession:null}
 }
 function currentMap(){return currentFloorState().map}
 function currentNode(){return currentMap().nodes[explore.current]}
@@ -2562,18 +2637,25 @@ function createGearInstance(baseId,withAffix=false,affixCountOverride=null){
  if(withAffix&&base&&base.slot!=='accessory'){const count=affixCountOverride??(Math.random()<.20?2:1);for(let i=0;i<count;i++)affixes.push(rollGearAffix(base))}
  return {uid:`gear${++gearSerial}`,baseId,affixes,uniqueGearId:null};
 }
+function availableGearTierMax(){return Math.min(...Object.values(WEAPON_SERIES).map(x=>x.length),...Object.values(ARMOR_SERIES).map(x=>x.length))}
+function rewardGearTierChoices(depth=explore?.floor||1){
+ const p=rewardProfileForFloor(depth),catalogMax=availableGearTierMax(),min=Math.min(Math.max(1,p?.gearMin||1),catalogMax),max=Math.min(Math.max(min,p?.gearMax||min),catalogMax),count=max-min+1,weights=GEAR_TIER_WEIGHT_PATTERNS[count]||Array.from({length:count},(_,i)=>i===count-1?10:20);
+ return Array.from({length:count},(_,i)=>({tier:min+i-1,weight:weights[i]??10}))
+}
+function rollRewardGearTier(depth=explore?.floor||1){return weightedPick(rewardGearTierChoices(depth)).tier}
+function rewardAllowsAccessory(depth=explore?.floor||1){return rewardProfileForFloor(depth)?.accessory!==false}
+function rollGearCategory(depth=explore?.floor||1){const r=Math.random();if(!rewardAllowsAccessory(depth))return r<.5?'weapon':'armor';return r<.40?'weapon':r<.80?'armor':'accessory'}
 function createUniqueGearInstance(depth=1,uniqueGearId='glutton'){
- const ud=UNIQUE_GEAR_DEFS[uniqueGearId]||UNIQUE_GEAR_DEFS.glutton,slot=rand(ud.slots),attr=rand(['physical','magic','pleasure']),tier=rollGearTier(depth);
+ const ud=UNIQUE_GEAR_DEFS[uniqueGearId]||UNIQUE_GEAR_DEFS.glutton,slot=rand(ud.slots),attr=rand(['physical','magic','pleasure']),tier=rollRewardGearTier(depth);
  const baseId=slot==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0];
  const inst=createGearInstance(baseId,true,ud.affixCount??null);inst.uniqueGearId=ud.id;return inst
 }
-function rollGearTier(depth){const center=Math.max(0,Math.min(6,(depth||1)-1)),r=Math.random();if(r<.20)return Math.max(0,center-1);if(r<.90)return center;return Math.min(6,center+1)}
-function rollGearCategory(){const r=Math.random();return r<.40?'weapon':r<.80?'armor':'accessory'}
-function createRandomGearInstance(depth=1){const category=rollGearCategory();if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
+function rollGearTier(depth){return rollRewardGearTier(depth)}
+function createRandomGearInstance(depth=1){const category=rollGearCategory(depth);if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollRewardGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
 function createTreasureGearInstance(depth=1){
- const category=rollGearCategory();
+ const category=rollGearCategory(depth);
  if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);
- const attr=rand(['physical','magic','pleasure']),tier=rollGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);
+ const attr=rand(['physical','magic','pleasure']),tier=rollRewardGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);
  if(category==='weapon'&&Math.random()<TREASURE_UNIQUE_WEAPON_RATE){const ids=UNIQUE_GEAR_IDS.filter(id=>UNIQUE_GEAR_DEFS[id]?.slots?.includes('weapon')),uniqueId=rand(ids),ud=UNIQUE_GEAR_DEFS[uniqueId],inst=createGearInstance(baseId,true,ud?.affixCount??2);inst.uniqueGearId=uniqueId;return inst}
  return createGearInstance(baseId,true,2)
 }
@@ -2600,11 +2682,11 @@ function inspectLockedTreasure(n){if(!n||n.type!=='locked_treasure')return;if(n.
 function openTreasure(n){if(!isTreasureNode(n))return;if(n.type==='jewel_treasure'&&n.monsterHouseSealed){showEvent('封印された宝珠宝箱',monsterHouseSealText());return}if(n.type==='locked_treasure'&&!n.lockedOpened){inspectLockedTreasure(n);return}treasureSelectedIndex=null;treasureSelectedNodeId=n.id;const title=$('#treasureDialogTitle');if(title)title.textContent=treasureTitle(n);const rewards=ensureTreasureRewards(n),box=$('#treasureChoices');box.innerHTML='';rewards.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='treasure-choice';b.dataset.treasureIndex=String(i);b.setAttribute('aria-pressed','false');b.innerHTML=treasureRewardHtml(r);if(r.kind==='item'&&state.items.length>=itemCapacity()){b.disabled=true;b.querySelector('.treasure-take').textContent='所持上限'}else b.addEventListener('click',()=>selectTreasureReward(n,i));box.appendChild(b)});updateTreasureSelectionUI();const dlg=$('#treasureDialog');if(!dlg.open)dlg.showModal()}
 function takeTreasureReward(n,index){if(!isTreasureNode(n))return;const r=ensureTreasureRewards(n)[index];if(!r)return;if(r.kind==='item'&&state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);openTreasure(n);return}const name=treasureRewardName(r),parentId=n.largeParentId,isLarge=largeChild(n)&&largeSessionMatches(n),wasLocked=n.type==='locked_treasure';if(r.kind==='jewel')addOwnedJewel(r.jewelId);else if(r.kind==='item')state.items.push(createItemInstance(r.itemId));else addGearToInventory(r.gear);n.type=wasLocked?'locked_treasure_opened':'empty';delete n.treasureRewards;delete n.monsterHouseSealed;delete n.monsterHouseReady;treasureSelectedIndex=null;treasureSelectedNodeId=null;const dlg=$('#treasureDialog');if(dlg.open)dlg.close();renderExplore();renderItemTab();renderJewelTab();if(r.kind==='jewel'){if(!isLarge)showEvent('宝珠入手',`「${name}」を入手した。宝珠タブからセットを変更できる。`,'宝珠を見る',()=>switchExploreTab('jewel'));toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}else if(r.kind==='gear'){if(!isLarge)showEvent('装備入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);openGearPickup(r.gear,isLarge?'large':'explore')}else{if(!isLarge)showEvent('アイテム入手',`宝箱から「${name}」を選んだ。残りの報酬は消滅した。`);toast(`${name}を入手`);if(isLarge)continueLargeNode(parentId)}}
 
-function rollShopItemId(){return rollItemBySource('shop')}
-function rollShopGearTier(depth=1){const center=Math.max(0,Math.min(6,(depth||1)-1));return weightedPick(Array.from({length:7},(_,tier)=>({tier,weight:[55,22,9,4,2,1,.5][Math.abs(tier-center)]||.25}))).tier}
-function createShopGearInstance(depth=1){const category=rollGearCategory();if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollShopGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
+function rollShopItemId(depth=explore?.floor||1){return rollItemBySource('shop',[],depth)}
+function rollShopGearTier(depth=1){return rollRewardGearTier(depth)}
+function createShopGearInstance(depth=1){const category=rollGearCategory(depth);if(category==='accessory')return createGearInstance(rand(ACCESSORY_IDS),false);const attr=rand(['physical','magic','pleasure']),tier=rollShopGearTier(depth),baseId=(category==='weapon'?WEAPON_SERIES[attr][tier][0]:ARMOR_SERIES[attr][tier][0]);return createGearInstance(baseId,true)}
 function shopGearPrice(inst){const g=gearBase(inst);if(!g)return 0;if(g.slot==='weapon')return SHOP_WEAPON_PRICES[g.tier]||SHOP_WEAPON_PRICES[0];if(g.slot==='armor')return SHOP_ARMOR_PRICES[g.tier]||SHOP_ARMOR_PRICES[0];return SHOP_ACCESSORY_PRICES[g.id]||500}
-function makeShopProduct(kind,depth){if(kind==='item'){const itemId=rollShopItemId();return {kind:'item',itemId,price:itemDef(itemId).price,sold:false}}const gear=createShopGearInstance(depth);return {kind:'gear',gear,price:shopGearPrice(gear),sold:false}}
+function makeShopProduct(kind,depth){if(kind==='item'){const itemId=rollShopItemId(depth);return {kind:'item',itemId,price:itemDef(itemId).price,sold:false}}const gear=createShopGearInstance(depth);return {kind:'gear',gear,price:shopGearPrice(gear),sold:false}}
 function generateShopStock(depth){const stock=[];for(let i=0;i<3;i++)stock.push(makeShopProduct('item',depth));for(let i=0;i<3;i++)stock.push(makeShopProduct('gear',depth));for(let i=0;i<2;i++)stock.push(makeShopProduct(Math.random()<.5?'item':'gear',depth));return shuffle(stock)}
 function shopFloorSet(total){const set=new Set();if(total<=0)return set;let floor=1+Math.floor(Math.random()*Math.min(3,total));while(floor<=total){set.add(floor);floor+=rollInt(2,4)}return set}
 function addGearToInventory(inst,deferPickup=false){state.inventory.push(inst);if(deferPickup&&explore)explore.pendingGearPickupUid=inst.uid;return inst}
