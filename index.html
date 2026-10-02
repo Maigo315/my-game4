@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.37.3 戦闘終了UI</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.37.4 戦闘終了UI</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -953,7 +953,6 @@ const exploreScreen=$('#exploreScreen'),battleScreen=$('#battleScreen'),mapBoard
 let explore=null;
 const EXPLORE_CFG={floors:30,w:5,h:7,collapseMax:100,infectionChance:.20};
 const NORMAL_GEAR_DROP_RATE=.20;
-const TREASURE_RUN_COUNT_TEST=1; // テスト段階：1ランにつき通常宝箱1個を大型ノード内に確定配置
 const LARGE_NODE_COUNT_TEST=1; // テスト段階：各階に通常大型ノードを1個
 const TREASURE_UNIQUE_WEAPON_RATE=.03;
 const JEWEL_TREASURE_SPECIAL_RATE=.15; // 仮値：宝珠宝箱で特殊宝珠が1枠混ざる確率。特殊フロア設計時に再調整。
@@ -2242,17 +2241,19 @@ function collapseBlockToLarge(map,floor,index=0,type='large',avoidIds=[]){
  return n
 }
 function rollLargeEventCount(){const r=Math.random();return r<.25?2:r<.75?3:4}
-function rollLargeOtherType(){return rand(['equipment','enhance','rest'])}
-function makeLargeEventTypes(forceTreasure=false){
- const count=rollLargeEventCount(),types=[];if(forceTreasure)types.push('treasure');
- while(types.length<count){const opts=[{id:'enemy',weight:65},{id:'item',weight:23},{id:'other',weight:12}],pick=weightedPick(opts).id;types.push(pick==='other'?rollLargeOtherType():pick)}
- if(!types.includes('enemy')){let i=types.findIndex(t=>t!=='treasure');if(i<0)i=0;types[i]='enemy'}
- // 報酬系は後ろ寄り。同優先度の中だけ少し揺らして、毎回完全固定にはしない。
- const priority=t=>t==='enemy'?0:(t==='enhance'||t==='rest'?1:t==='equipment'?2:t==='item'?3:4);
- return types.map((t,i)=>({t,k:priority(t)+Math.random()*.55,i})).sort((a,b)=>a.k-b.k).map(x=>x.t)
+function makeLargeEventTypes(){
+ const count=rollLargeEventCount(),types=['enemy'];let treasureUsed=false;
+ // 大型ノードは初手戦闘を固定。2枠目以降は探索・報酬中心にし、宝箱は1ノード最大1個。
+ while(types.length<count){
+   const opts=treasureUsed
+     ?[{id:'item',weight:30},{id:'equipment',weight:30},{id:'enhance',weight:15},{id:'enemy',weight:15}]
+     :[{id:'item',weight:30},{id:'equipment',weight:30},{id:'enhance',weight:15},{id:'enemy',weight:15},{id:'treasure',weight:10}];
+   const pick=weightedPick(opts).id;types.push(pick);if(pick==='treasure')treasureUsed=true
+ }
+ return types
 }
-function createLargeEvents(map,largeNode,forceTreasure=false){
- const types=makeLargeEventTypes(forceTreasure);largeNode.largeEvents=types.map((type,i)=>{const id=`${largeNode.id}__${i}`,n={id,type,visited:true,hidden:true,largeParentId:largeNode.id,largeEventIndex:i};map.nodes[id]=n;return id});return largeNode.largeEvents
+function createLargeEvents(map,largeNode){
+ const types=makeLargeEventTypes();largeNode.largeEvents=types.map((type,i)=>{const id=`${largeNode.id}__${i}`,n={id,type,visited:true,hidden:true,largeParentId:largeNode.id,largeEventIndex:i};map.nodes[id]=n;return id});return largeNode.largeEvents
 }
 function makeTreasureVaultLargeEventTypes(){
  const count=rollLargeEventCount(),types=[];let treasureUsed=false;
@@ -2342,7 +2343,7 @@ function generateFinalBossFloor(floor){
  const entrance=newNode(2,5,'entrance'),boss=newNode(2,1,'boss');
  map.nodes[entrance.id]=entrance;map.nodes[boss.id]=boss;map.start=entrance.id;map.end=boss.id;connect(map,entrance.id,boss.id);entrance.visited=true;boss.alwaysRevealed=true;return map
 }
-function generateFloor(floor,hasShop=false,hasTreasure=false,isMonsterHouse=false){
+function generateFloor(floor,hasShop=false,isMonsterHouse=false){
  const W=EXPLORE_CFG.w,H=EXPLORE_CFG.h,map={nodes:{},edges:[],start:null,end:null};
  // 迷宮全体が縦方向にも広がるよう、まず上端まで届く「幹」を作る。出口そのものは後で別途抽選する。
  let x=2,y=H-1;let cur=newNode(x,y,'entrance');map.nodes[cur.id]=cur;map.start=cur.id;
@@ -2374,7 +2375,7 @@ function generateFloor(floor,hasShop=false,hasTreasure=false,isMonsterHouse=fals
    if(chest){chest.type='jewel_treasure';chest.monsterHouseSealed=true;chest.alwaysRevealed=true;map.monsterHouseTreasureId=chest.id}
    candidates.filter(n=>n!==chest).forEach(n=>{n.type=weightedPick(MONSTER_HOUSE_NODE_WEIGHTS).id;if(n.type==='trap')n.trapId=rollTrapId(true)});
    // 大型ノードは通常フロアと同じ内部比率。大型内部の戦闘も殲滅対象に含む。
-   largeNodes.forEach(n=>createLargeEvents(map,n,false));
+   largeNodes.forEach(n=>createLargeEvents(map,n));
    if(!Object.values(map.nodes).some(n=>n.type==='enemy')){const fallback=candidates.find(n=>n!==chest&&n.type!=='jewel_treasure');if(fallback)fallback.type='enemy'}
  }else{
    // ループ追加後の実際の最短ルートを基準に敵を置く。
@@ -2396,9 +2397,9 @@ function generateFloor(floor,hasShop=false,hasTreasure=false,isMonsterHouse=fals
    const freeAny=shuffle(candidates.filter(n=>n.type==='empty'));
    const takeFree=()=>{let n=null;while(deadEnds.length){n=deadEnds.pop();if(n.type==='empty')return n}while(freeSide.length){n=freeSide.pop();if(n.type==='empty')return n}while(freeAny.length){n=freeAny.pop();if(n.type==='empty')return n}return null};
    const itemCount=2+Math.floor(Math.random()*2);
-   const rewards=[...((hasTreasure&&!largeNodes.length)?['treasure']:[]),...Array(itemCount).fill('item'),'equipment','equipment','enhance','rest'];
+   const rewards=[...Array(itemCount).fill('item'),'equipment','equipment','enhance','rest'];
    rewards.forEach(type=>{const n=takeFree();if(n)n.type=type});
-   largeNodes.forEach((n,i)=>createLargeEvents(map,n,hasTreasure&&i===0));
+   largeNodes.forEach(n=>createLargeEvents(map,n));
    // 通常フロアの自然罠。報酬などを配置した後、残った無マスだけを候補にする。
    // shortestPathIds() で確保した1経路上には置かないため、罠回避ルートが最低1本残る。
    placeNormalFloorTraps(map,candidates);
@@ -2426,7 +2427,6 @@ function enterTreasureVault(){
 function leaveTreasureVault(){
  if(!inTreasureVault())return;const to=explore.bonusFloor.toFloor;explore.largeSession=null;explore.bonusFloor=null;if(to!==explore.floor+1)return;advanceFloor()
 }
-function treasureFloorSet(total,exclude=new Set()){const set=new Set();if(total<=0)return set;const pool=Array.from({length:total},(_,i)=>i+1).filter(f=>!exclude.has(f));const count=Math.min(TREASURE_RUN_COUNT_TEST,pool.length);while(set.size<count&&pool.length){const i=Math.floor(Math.random()*pool.length);set.add(pool.splice(i,1)[0])}return set}
 function monsterHouseFloorSet(total){
  const set=new Set();
  for(let f=MONSTER_HOUSE_RANDOM_START_FLOOR;f<=total;f++){
@@ -2440,11 +2440,10 @@ function createExploreRun(){
  EXPLORE_CFG.floors=total;
  const floorData={},monsterHouseFloors=monsterHouseFloorSet(total),shopFloors=shopFloorSet(total);
  bossFloors.forEach(f=>monsterHouseFloors.delete(f));shopFloors.delete(finalBossFloor);
- const treasureExclude=new Set([...monsterHouseFloors,finalBossFloor]),treasureFloors=treasureFloorSet(total,treasureExclude);
  monsterHouseFloors.forEach(f=>shopFloors.delete(f));
  for(let f=1;f<=total;f++){
-   const finalBoss=bossFloors.has(f)&&f===finalBossFloor,midBoss=bossFloors.has(f)&&!finalBoss,isMonsterHouse=!midBoss&&!finalBoss&&monsterHouseFloors.has(f),hasShop=!finalBoss&&!isMonsterHouse&&shopFloors.has(f),hasTreasure=!finalBoss&&!isMonsterHouse&&treasureFloors.has(f),map=finalBoss?generateFinalBossFloor(f):generateFloor(f,hasShop,hasTreasure,isMonsterHouse);
-   floorData[f]={map,hasShop,hasTreasure,isMonsterHouse,isBossFloor:midBoss||finalBoss,isMidBoss:midBoss,isFinalBoss:finalBoss,bossDefeated:false,monsterHouseDefeated:0,monsterHouseSealReleased:false,uniqueSpawned:false,uniqueDefeated:false,kills:0,treasureVaultUsed:midBoss||finalBoss}
+   const finalBoss=bossFloors.has(f)&&f===finalBossFloor,midBoss=bossFloors.has(f)&&!finalBoss,isMonsterHouse=!midBoss&&!finalBoss&&monsterHouseFloors.has(f),hasShop=!finalBoss&&!isMonsterHouse&&shopFloors.has(f),map=finalBoss?generateFinalBossFloor(f):generateFloor(f,hasShop,isMonsterHouse);
+   floorData[f]={map,hasShop,isMonsterHouse,isBossFloor:midBoss||finalBoss,isMidBoss:midBoss,isFinalBoss:finalBoss,bossDefeated:false,monsterHouseDefeated:0,monsterHouseSealReleased:false,uniqueSpawned:false,uniqueDefeated:false,kills:0,treasureVaultUsed:midBoss||finalBoss}
    if(!isMonsterHouse&&!midBoss&&!finalBoss)plantTreasureVaultEntrance(floorData[f],f,false)
  }
  return {floor:1,steps:0,collapse:0,collapsed:false,rewardDungeonId,current:floorData[1].map.start,floorData,bonusFloor:null,lastMessage:null,cleared:false,pendingAction:null,lastInfected:null,pendingGearPickupUid:null,largeSession:null}
@@ -2840,7 +2839,7 @@ function applyMilkEnemyBonusToFloor(f){
 }
 function resetCurrentFloorWithCube(){
  if(inTreasureVault())return false;const f=explore.floorData[explore.floor];if(!f||f.isMonsterHouse||f.isBossFloor||explore.largeSession)return false;
- f.map=generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,false);f.uniqueSpawned=false;f.uniqueDefeated=false;f.kills=0;f.treasureVaultUsed=false;f.mapRevealed=false;f.trapsRevealed=false;f.milkBonusChecked=false;f.milkBonusApplied=0;explore.lastMessage=null;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;f.map.nodes[explore.current].visited=true;applyMilkEnemyBonusToFloor(f);if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}return true
+ f.map=generateFloor(explore.floor,!!f.hasShop,false);f.uniqueSpawned=false;f.uniqueDefeated=false;f.kills=0;f.treasureVaultUsed=false;f.mapRevealed=false;f.trapsRevealed=false;f.milkBonusChecked=false;f.milkBonusApplied=0;explore.lastMessage=null;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;f.map.nodes[explore.current].visited=true;applyMilkEnemyBonusToFloor(f);if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}return true
 }
 function itemUsable(itemId){
  if(!explore)return false;const d=itemDef(itemId);if(d.manualUse===false||d.battleOnly)return false;
@@ -3109,7 +3108,7 @@ $('#exploreSetupToggle').addEventListener('click',()=>{const b=$('#exploreSetupB
 $('#lockedTreasurePlusBtn').addEventListener('click',()=>{const map=currentMap(),n=collapseBlockToLarge(map,explore.floor,`debug_${Date.now()}`,'locked_treasure',[explore.current]);if(!n){toast('カギ付き宝箱を置ける2×2領域がありません',true);return}renderExplore();toast('テスト用：カギ付き宝箱を追加')});
 $('#treasureKeyPlusBtn').addEventListener('click',()=>{if(state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('treasure_key'));renderExplore();renderItemTab();toast('テスト用：財宝のカギ +1')});
 $('#trapResultConfirmBtn').addEventListener('click',closeTrapResult);$('#trapResultDialog').addEventListener('cancel',e=>{e.preventDefault()});
-$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{if(inTreasureVault()){const f=currentFloorState();f.map=generateTreasureVaultMap(f.fromFloor);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}showEvent('再生成','宝物庫をテスト用に再生成した。崩壊度は維持。');renderExplore();return}const f=explore.floorData[explore.floor];f.map=f.isFinalBoss?generateFinalBossFloor(explore.floor):generateFloor(explore.floor,!!f.hasShop,!!f.hasTreasure,!!f.isMonsterHouse);f.uniqueSpawned=false;f.uniqueDefeated=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=false;f.mapRevealed=false;f.trapsRevealed=false;f.milkBonusChecked=false;f.milkBonusApplied=0;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;applyMilkEnemyBonusToFloor(f);showEvent('再生成',f.isMonsterHouse?'現在階のモンスターハウスをテスト用に再生成した。':'現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
-$('#monsterHouseTestBtn').addEventListener('click',()=>{if(inTreasureVault()){toast('宝物庫内ではMH化できません',true);return}if(isBossFloor(explore.floor)){toast('ボスフロアはMH化できません',true);return}const f=explore.floorData[explore.floor];f.isMonsterHouse=true;f.hasShop=false;f.hasTreasure=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=true;f.map=generateFloor(explore.floor,false,false,true);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`テスト用に現在階をモンスターハウスへ変更した。残りの敵 ${info.remaining}。`);renderExplore()});
+$('#goldPlusBtn').addEventListener('click',()=>{state.gold+=500;renderExplore();renderItemTab();toast('テスト用：G +500')});$('#ppPlusBtn').addEventListener('click',()=>{state.parallelPoints+=50;renderExplore();renderItemTab();toast('テスト用：PP +50')});$('#parallelJewelPlusBtn').addEventListener('click',()=>{if(state.items.length>=itemCapacity()){toast('アイテム所持上限です',true);return}state.items.push(createItemInstance('parallel_jewel'));renderExplore();renderItemTab();toast('テスト用：パラレルジュエル +1')});$('#regenMapBtn').addEventListener('click',()=>{if(inTreasureVault()){const f=currentFloorState();f.map=generateTreasureVaultMap(f.fromFloor);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;if(explore.collapsed){const u=spawnUnique();if(u)f.uniqueSpawned=true}showEvent('再生成','宝物庫をテスト用に再生成した。崩壊度は維持。');renderExplore();return}const f=explore.floorData[explore.floor];f.map=f.isFinalBoss?generateFinalBossFloor(explore.floor):generateFloor(explore.floor,!!f.hasShop,!!f.isMonsterHouse);f.uniqueSpawned=false;f.uniqueDefeated=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=false;f.mapRevealed=false;f.trapsRevealed=false;f.milkBonusChecked=false;f.milkBonusApplied=0;plantTreasureVaultEntrance(f,explore.floor,false);explore.largeSession=null;explore.current=f.map.start;applyMilkEnemyBonusToFloor(f);showEvent('再生成',f.isMonsterHouse?'現在階のモンスターハウスをテスト用に再生成した。':'現在階のマップをテスト用に再生成した。崩壊度は維持。');renderExplore()});
+$('#monsterHouseTestBtn').addEventListener('click',()=>{if(inTreasureVault()){toast('宝物庫内ではMH化できません',true);return}if(isBossFloor(explore.floor)){toast('ボスフロアはMH化できません',true);return}const f=explore.floorData[explore.floor];f.isMonsterHouse=true;f.hasShop=false;f.monsterHouseDefeated=0;f.monsterHouseSealReleased=false;f.treasureVaultUsed=true;f.map=generateFloor(explore.floor,false,true);f.uniqueSpawned=false;f.uniqueDefeated=false;explore.largeSession=null;explore.current=f.map.start;const info=monsterHouseInfo(f);showEvent('モンスターハウス！',`テスト用に現在階をモンスターハウスへ変更した。残りの敵 ${info.remaining}。`);renderExplore()});
 renderSetup();renderExploreSetup();resetRun();
 })();</script></body></html>
