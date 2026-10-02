@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.37 30Fラン構造</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.37.1 崩壊度100</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -766,9 +766,9 @@ html.parallel-scroll-lock,body.parallel-scroll-lock{overflow:hidden!important;ov
   <div id="exploreTabPage" class="explore-tab-page">
   <header class="explore-topbar"><div class="explore-title">探索</div><div class="chip explore-resource-chip gold" id="goldChip">G 0</div><div class="chip explore-resource-chip pp" id="ppChip">PP 0</div><div class="chip" id="floorChip">1F</div><div class="chip" id="stepChip">0歩</div></header>
   <section class="card explore-card">
-    <div class="explore-hud-row"><b id="collapseState">崩壊度 0 / 40</b><span id="collapseMode">安定</span></div>
+    <div class="explore-hud-row"><b id="collapseState">崩壊度 0 / 100</b><span id="collapseMode">安定</span></div>
     <div class="collapse-bar"><div class="collapse-fill" id="collapseFill"></div></div>
-    <div class="collapse-note" id="collapseNote">移動するたび+1。階をまたいで持ち越します。テスト用上限40。</div>
+    <div class="collapse-note" id="collapseNote">移動するたび+1。階をまたいで持ち越します。上限100。</div>
   </section>
   <section class="card map-card">
     <div class="map-head"><b id="mapTitle">迷宮 1F</b><div class="map-tools"><span>ドラッグで地図を移動</span><button class="map-center-btn" id="centerMapBtn" type="button" aria-label="現在地へ戻る">◎</button></div></div>
@@ -945,7 +945,7 @@ const $=s=>document.querySelector(s), ceil=Math.ceil;
 const partyGrid=$('#partyGrid'),stage=$('#stage'),enemyArt=$('#enemyArt'),eventBanner=$('#eventBanner'),logEl=$('#log'),intermission=$('#intermission'),jewelDialog=$('#jewelDialog'),detailPanel=$('#detailPanel');
 const exploreScreen=$('#exploreScreen'),battleScreen=$('#battleScreen'),mapBoard=$('#mapBoard'),mapViewport=$('#mapViewport'),mapNodesEl=$('#mapNodes'),mapLinesEl=$('#mapLines');
 let explore=null;
-const EXPLORE_CFG={floors:30,w:5,h:7,collapseMax:40,infectionChance:.20};
+const EXPLORE_CFG={floors:30,w:5,h:7,collapseMax:100,infectionChance:.20};
 const NORMAL_GEAR_DROP_RATE=.20;
 const TREASURE_RUN_COUNT_TEST=1; // テスト段階：1ランにつき通常宝箱1個を大型ノード内に確定配置
 const LARGE_NODE_COUNT_TEST=1; // テスト段階：各階に通常大型ノードを1個
@@ -3055,7 +3055,7 @@ function renderExploreParty(){
 }
 function renderExplore(){
  if(!explore)return;const floorState=currentFloorState();if(floorState?.isMonsterHouse)releaseMonsterHouseTreasureIfReady();const map=currentMap();['goldChip','itemGoldChip','gearGoldChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`G ${state.gold}`});['ppChip','itemPpChip','gearPpChip'].forEach(id=>{const el=$('#'+id);if(el)el.textContent=`PP ${state.parallelPoints}`});const itemCount=$('#itemCountChip');if(itemCount)itemCount.textContent=`${state.items.length} / ${itemCapacity()}`;$('#floorChip').textContent=inTreasureVault()?`${treasureVaultFloorLabel()} / 宝物庫`:`${explore.floor}F / ${runTotalFloors()}F`;$('#stepChip').textContent=`${explore.steps}歩`;$('#mapTitle').textContent=inTreasureVault()?'宝物庫':floorState?.isFinalBoss?`最終決戦 ${explore.floor}F`:floorState?.isMidBoss?`中間ボス ${explore.floor}F`:floorState?.isMonsterHouse?`モンスターハウス ${explore.floor}F`:`迷宮 ${explore.floor}F`;mapBoard.classList.toggle('treasure-vault-map',inTreasureVault());mapBoard.style.width=`${Math.max(100,EXPLORE_CFG.w*96)}px`;mapBoard.style.height=`${Math.max(390,EXPLORE_CFG.h*58)}px`;
- const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=floorState?.isFinalBoss?'最終ボスフロア：崩壊度は持ち越すが、この階では進行・侵食・ユニーク出現は停止。':explore.collapsed?(inTreasureVault()?'崩壊中：宝物庫では通常の敵マス侵食は発生しない。ユニーク敵撃破で0へ戻る。':'崩壊中：休憩不可。移動時20%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。'):'移動するたび+1。階をまたいで持ち越します。テスト用上限40（本番はもっと高い想定）。';
+ const pct=explore.collapse/EXPLORE_CFG.collapseMax*100;$('#collapseState').textContent=`崩壊度 ${explore.collapse} / ${EXPLORE_CFG.collapseMax}`;$('#collapseMode').textContent=explore.collapsed?'崩壊':'安定';$('#collapseFill').style.width=`${pct}%`;$('#collapseFill').classList.toggle('collapsed',explore.collapsed);$('#collapseNote').textContent=floorState?.isFinalBoss?'最終ボスフロア：崩壊度は持ち越すが、この階では進行・侵食・ユニーク出現は停止。':explore.collapsed?(inTreasureVault()?'崩壊中：宝物庫では通常の敵マス侵食は発生しない。ユニーク敵撃破で0へ戻る。':'崩壊中：休憩不可。移動時20%で無マスが敵マス化。ユニーク敵撃破で0へ戻る。'):'移動するたび+1。階をまたいで持ち越します。上限100。';
  mapLinesEl.innerHTML='';map.edges.forEach(k=>{const [a,b]=k.split('|'),na=map.nodes[a],nb=map.nodes[b],line=document.createElementNS('http://www.w3.org/2000/svg','line');const px=n=>8+n.x*(84/(EXPLORE_CFG.w-1)),py=n=>8+n.y*(84/(EXPLORE_CFG.h-1)),point=(n,otherId)=>n?.isLarge&&n.largePorts?.[otherId]?n.largePorts[otherId]:n,pa=point(na,b),pb=point(nb,a);line.setAttribute('x1',px(pa));line.setAttribute('y1',py(pa));line.setAttribute('x2',px(pb));line.setAttribute('y2',py(pb));line.setAttribute('class',`map-line ${(na.visited&&nb.visited)?'visited':''}`);mapLinesEl.appendChild(line)});
  mapNodesEl.innerHTML='';const reachable=new Set(neighborsOf(map,explore.current));const visitedIds=new Set(Object.values(map.nodes).filter(x=>!x.hidden&&x.visited).map(x=>x.id));
  const isRevealed=n=>!!floorState?.mapRevealed||n.alwaysRevealed||n.type==='boss'||n.type==='unique'||n.type==='entrance'||n.visited||neighborsOf(map,n.id).some(id=>visitedIds.has(id));
