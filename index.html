@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.35 報酬テーブル基盤</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>魔物娘 探索プロトタイプ v13.36 Tier10装備追加</title><style>
 :root{
   --bg:#090b12;
   --panel:#151927;
@@ -1136,8 +1136,8 @@ function addOwnedJewel(id){if(!jewelDef(id)||state.jewels.includes(id))return fa
 function isSpecialJewel(id){return SPECIAL_JEWEL_IDS.includes(id)}
 function unownedSpecialJewels(exclude=[]){const ex=new Set(exclude);return SPECIAL_JEWEL_IDS.filter(id=>!state.jewels.includes(id)&&!ex.has(id))}
 
-const SHOP_WEAPON_PRICES=[70,220,450,780,1200,1850,2700];
-const SHOP_ARMOR_PRICES=[60,200,400,650,1000,1500,2200];
+const SHOP_WEAPON_PRICES=[70,220,450,780,1200,1850,2700,3800,5200,6700];
+const SHOP_ARMOR_PRICES=[60,200,400,650,1000,1500,2200,3400,4800,6500];
 const SHOP_ACCESSORY_PRICES={ring:500,wisdom_ring:500,charm_ring:500,offense_ring:500,defense_ring:500,technique_ring:500,efficiency_ring:500,charge_ring:500,critical_ring:800,evasion_ring:800,protection_ring:1000,multi_hit_ring:1000,counter_ring:800,vampire_ring:800,full_power_ring:2000,last_stand_ring:2000,misfortune_ring:1000,pursuit_ring:1000,rest_ring:1000,block_ring:1500,rich_ring:2000,parallel_ring:3000};
 const GEAR_ATTR_LABEL={physical:'物理',magic:'魔導',pleasure:'快楽'};
 const GEAR_ATTR_ICON={physical:'🗡️',magic:'🪄',pleasure:'🩷'};
@@ -1145,21 +1145,21 @@ const GEAR_CATALOG={};
 const addGear=g=>{GEAR_CATALOG[g.id]=g;return g};
 const WEAPON_SERIES={
  physical:[
-  ['dagger','ダガー',2],['traveler_sword','旅人の剣',5],['iron_sword','鉄の剣',8],['silver_sword','シルバーソード',15],['desert_saber','デザートサーベル',24],['platinum_sword','プラチナソード',32],['golden_sword','煌金の剣',45]
+  ['dagger','ダガー',2],['traveler_sword','旅人の剣',5],['iron_sword','鉄の剣',8],['silver_sword','シルバーソード',15],['desert_saber','デザートサーベル',24],['platinum_sword','プラチナソード',32],['golden_sword','煌金の剣',45],['infernal_sword','煉獄の剣',62],['milesta_lightblade','ミレスタ光廻剣',78],['parallel_edge','パラレルエッジ',95]
  ],
  magic:[
-  ['cypress_staff','檜の杖',2],['mage_staff','魔術師の杖',4],['iron_rod','アイアンロッド',9],['silver_rod','シルバーロッド',15],['ritual_staff','祭杖',23],['platinum_rod','プラチナロッド',33],['golden_magic_staff','煌金の魔杖',45]
+  ['cypress_staff','檜の杖',2],['mage_staff','魔術師の杖',4],['iron_rod','アイアンロッド',9],['silver_rod','シルバーロッド',15],['ritual_staff','祭杖',23],['platinum_rod','プラチナロッド',33],['golden_magic_staff','煌金の魔杖',45],['infernal_staff','煉獄の魔杖',61],['milesta_lightstaff','ミレスタ光廻杖',79],['parallel_rod','パラレルロッド',95]
  ],
  pleasure:[
-  ['imp_heart','インプハート',2],['cutie_heart','キューティハート',4],['pink_heart','ピンクハート',8],['devil_heart','デビルハート',16],['succubus_heart','サキュバスハート',23],['nightmare_heart','ナイトメアハート',32],['lilith_heart','リリスハート',46]
+  ['imp_heart','インプハート',2],['cutie_heart','キューティハート',4],['pink_heart','ピンクハート',8],['devil_heart','デビルハート',16],['succubus_heart','サキュバスハート',23],['nightmare_heart','ナイトメアハート',32],['lilith_heart','リリスハート',46],['shemhaza_heart','シェムハザハート',61],['milesta_heart','ミレスタハート',78],['parallel_heart','パラレルハート',96]
  ]
 };
 Object.entries(WEAPON_SERIES).forEach(([weaponType,series])=>series.forEach(([id,name,atk],tier)=>addGear({id,slot:'weapon',slotName:'武器',name,icon:GEAR_ATTR_ICON[weaponType],weaponType,tier,stats:{atk},effects:[`攻撃力 +${atk}`]})));
-const ARMOR_HP=[5,10,17,25,35,47,60],ARMOR_REDUCTION=[1,3,5,7,9,11,13];
+const ARMOR_HP=[5,10,17,25,35,47,60,75,92,110],ARMOR_REDUCTION=[1,3,5,7,9,11,13,15,17,19];
 const ARMOR_SERIES={
- physical:[['cloth','布の服'],['leather_armor','革の鎧'],['iron_armor','鉄の鎧'],['silver_mail','シルバーメイル'],['knight_armor','騎士団の鎧'],['platinum_mail','プラチナメイル'],['golden_armor','煌金の鎧']],
- magic:[['ragged_robe','ボロボロローブ'],['mage_clothes','魔術師の服'],['magical_cloth','マジカルクロス'],['silver_robe','シルバーローブ'],['sage_robe','賢者の法衣'],['platinum_robe','プラチナローブ'],['golden_robe','煌金のローブ']],
- pleasure:[['priest_clothes','僧侶の服'],['anti_imp','アンチインプ'],['empty_mind_garb','無心の装束'],['anti_succubus','アンチサキュバス'],['exorcist_garb','退魔の装束'],['anti_lilith','アンチリリス'],['golden_garb','煌金の装束']]
+ physical:[['cloth','布の服'],['leather_armor','革の鎧'],['iron_armor','鉄の鎧'],['silver_mail','シルバーメイル'],['knight_armor','騎士団の鎧'],['platinum_mail','プラチナメイル'],['golden_armor','煌金の鎧'],['infernal_armor','煉獄の鎧'],['milesta_light_armor','ミレスタ光廻鎧'],['parallel_mail','パラレルメイル']],
+ magic:[['ragged_robe','ボロボロローブ'],['mage_clothes','魔術師の服'],['magical_cloth','マジカルクロス'],['silver_robe','シルバーローブ'],['sage_robe','賢者の法衣'],['platinum_robe','プラチナローブ'],['golden_robe','煌金のローブ'],['infernal_robe','煉獄のローブ'],['milesta_light_clothes','ミレスタ光廻衣'],['parallel_robe','パラレルローブ']],
+ pleasure:[['priest_clothes','僧侶の服'],['anti_imp','アンチインプ'],['empty_mind_garb','無心の装束'],['anti_succubus','アンチサキュバス'],['exorcist_garb','退魔の装束'],['anti_lilith','アンチリリス'],['golden_garb','煌金の装束'],['infernal_garb','煉獄の装束'],['anti_fallen','アンチフォールン'],['parallel_guard','パラレルガード']]
 };
 Object.entries(ARMOR_SERIES).forEach(([armorType,series])=>series.forEach(([id,name],tier)=>{const hp=ARMOR_HP[tier],red=ARMOR_REDUCTION[tier],redKey=armorType==='physical'?'physReduction':armorType==='magic'?'magicReduction':'pleasureReduction';addGear({id,slot:'armor',slotName:'防具',name,icon:'👕',armorType,tier,stats:{maxHp:hp,[redKey]:red},effects:[`最大HP +${hp}`,`被${GEAR_ATTR_LABEL[armorType]}ダメージ -${red}`]})}));
 [
